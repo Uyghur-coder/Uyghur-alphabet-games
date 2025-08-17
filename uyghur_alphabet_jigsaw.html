@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Uyghur Alphabet Jigsaw</title>
+  <!-- Tailwind (play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Minor adjustments for better local rendering */
+    body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    .card { background: white; border-radius: 1rem; padding: 1rem; box-shadow: 0 6px 18px rgba(15,23,42,0.06); }
+    .slot { min-height: 4.5rem; }
+    button:focus { outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+  </style>
+</head>
+<body class="bg-gray-50 p-6">
+  <div id="root" class="max-w-6xl mx-auto"></div>
+
+  <!-- React, ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel for JSX in the browser (ok for local file/demo) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+  const { useState, useMemo, useEffect } = React;
+
+  const LETTERS = [
+    { id: "beh", name: "ب", label: "be", forms: { isolated: "ب", initial: "بـ", medial: "ـبـ", final: "ـب" } },
+    { id: "peh", name: "پ", label: "pe", forms: { isolated: "پ", initial: "پـ", medial: "ـپـ", final: "ـپ" } },
+    { id: "teh", name: "ت", label: "te", forms: { isolated: "ت", initial: "تـ", medial: "ـتـ", final: "ـت" } },
+    { id: "jeem", name: "ج", label: "j", forms: { isolated: "ج", initial: "جـ", medial: "ـجـ", final: "ـج" } },
+    { id: "tcheh", name: "چ", label: "ch", forms: { isolated: "چ", initial: "چـ", medial: "ـچـ", final: "ـچ" } },
+    { id: "kheh", name: "خ", label: "kh", forms: { isolated: "خ", initial: "خـ", medial: "ـخـ", final: "ـخ" } },
+    { id: "seen", name: "س", label: "s", forms: { isolated: "س", initial: "سـ", medial: "ـسـ", final: "ـس" } },
+    { id: "sheen", name: "ش", label: "sh", forms: { isolated: "ش", initial: "شـ", medial: "ـشـ", final: "ـش" } },
+    { id: "feh", name: "ف", label: "f", forms: { isolated: "ف", initial: "فـ", medial: "ـفـ", final: "ـف" } },
+    { id: "qaf", name: "ق", label: "q", forms: { isolated: "ق", initial: "قـ", medial: "ـقـ", final: "ـق" } },
+    { id: "kaf", name: "ك", label: "k", forms: { isolated: "ك", initial: "كـ", medial: "ـكـ", final: "ـك" } },
+    { id: "gaf", name: "گ", label: "g", forms: { isolated: "گ", initial: "گـ", medial: "ـگـ", final: "ـگ" } },
+    { id: "lam", name: "ل", label: "l", forms: { isolated: "ل", initial: "لـ", medial: "ـلـ", final: "ـل" } },
+    { id: "meem", name: "م", label: "m", forms: { isolated: "م", initial: "مـ", medial: "ـمـ", final: "ـم" } },
+    { id: "noon", name: "ن", label: "n", forms: { isolated: "ن", initial: "نـ", medial: "ـنـ", final: "ـن" } },
+    { id: "heh", name: "ھ", label: "h", forms: { isolated: "ھ", initial: "ھـ", medial: "ـھـ", final: "ـھ" } },
+    { id: "yeh", name: "ي", label: "y", forms: { isolated: "ي", initial: "يـ", medial: "ـيـ", final: "ـي" } },
+  ];
+
+  const FORM_ORDER = ["isolated", "initial", "medial", "final"];
+
+  function shuffled(array) {
+    const a = array.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function uid(){ return Math.random().toString(36).slice(2,9); }
+
+  function UyghurAlphabetJigsaw(){
+    const [count, setCount] = useState(8);
+    const [key, setKey] = useState(0);
+    const [showHints, setShowHints] = useState(false);
+    const [rtl, setRtl] = useState(true);
+    const chosenLetters = useMemo(()=> {
+      const subset = shuffled(LETTERS).slice(0, count);
+      return subset.map(L => ({...L, rowId: uid()}));
+    }, [count, key]);
+
+    const tiles = useMemo(()=>{
+      const t=[];
+      chosenLetters.forEach(L => {
+        FORM_ORDER.forEach(form => {
+          t.push({ id: `${L.id}-${form}-${uid()}`, letterId:L.id, rowId:L.rowId, form, glyph:L.forms[form], base:L.name });
+        });
+      });
+      return shuffled(t);
+    }, [chosenLetters]);
+
+    const [placements, setPlacements] = useState({});
+
+    useEffect(()=>{ // clear placements when round changes
+      setPlacements({});
+    }, [key, count]);
+
+    const placedIds = useMemo(()=> new Set(Object.values(placements)), [placements]);
+    const availableTiles = useMemo(()=> tiles.filter(t=> !placedIds.has(t.id)), [tiles, placedIds]);
+
+    const { correctCount, totalSlots, allCorrect } = useMemo(()=>{
+      let correct=0; let total=chosenLetters.length * FORM_ORDER.length;
+      chosenLetters.forEach(L => {
+        FORM_ORDER.forEach(form => {
+          const slotId = `${L.rowId}:${L.id}:${form}`;
+          const tileId = placements[slotId];
+          if(!tileId) return;
+          const tile = tiles.find(t=> t.id===tileId);
+          if(tile && tile.letterId===L.id && tile.form===form && tile.rowId===L.rowId) correct++;
+        });
+      });
+      return { correctCount: correct, totalSlots: total, allCorrect: correct===total };
+    }, [placements, tiles, chosenLetters]);
+
+    function handleDragStart(e, tile){ e.dataTransfer.setData('application/json', JSON.stringify(tile)); }
+    function handleDrop(e, slot){
+      e.preventDefault();
+      try{
+        const data = JSON.parse(e.dataTransfer.getData('application/json'));
+        setPlacements(prev=>{
+          const next = {...prev};
+          for(const k of Object.keys(next)) if(next[k]===data.id) delete next[k];
+          next[slot] = data.id;
+          return next;
+        });
+      }catch(e){}
+    }
+    function handleDragOver(e){ e.preventDefault(); }
+    function clearBoard(){ setPlacements({}); }
+    function newRound(){ clearBoard(); setKey(k=>k+1); }
+    function Slot({slotId, expectForm}){
+      const tileId = placements[slotId];
+      const tile = tiles.find(t=> t.id===tileId);
+      const correct = tile && tile.form===expectForm && tile.rowId===slotId.split(':')[0];
+      return (
+        <div onDrop={(e)=>handleDrop(e, slotId)} onDragOver={handleDragOver}
+          className={"slot border rounded-2xl p-3 h-20 flex items-center justify-center text-3xl shadow-sm transition-all select-none " +
+            (tile ? (correct ? "border-emerald-500 ring-1 ring-emerald-400" : "border-rose-400 ring-1 ring-rose-300") : "border-gray-300") +
+            (showHints && !tile ? " bg-gray-50" : " bg-white") } title={showHints ? `Place: ${expectForm}` : ""} dir={rtl ? "rtl":"ltr"}>
+          {tile ? <span dir={rtl?"rtl":"ltr"}>{tile.glyph}</span> : <span className="text-xs text-gray-400 uppercase tracking-wide">{expectForm}</span>}
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6" dir={rtl?"rtl":"ltr"}>
+        <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold">🧩 Uyghur Alphabet Jigsaw</h1>
+            <p className="text-gray-600">Match each letter’s <span className="font-medium">isolated / initial / medial / final</span> forms.</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button onClick={newRound} className="px-4 py-2 rounded-2xl shadow-sm border hover:shadow transition">New round</button>
+            <button onClick={clearBoard} className="px-4 py-2 rounded-2xl shadow-sm border hover:shadow transition">Clear board</button>
+            <label className="px-3 py-2 rounded-2xl shadow-sm border inline-flex items-center gap-2">
+              <input type="checkbox" className="scale-110" checked={showHints} onChange={(e)=>setShowHints(e.target.checked)} />
+              <span>Hints</span>
+            </label>
+            <label className="px-3 py-2 rounded-2xl shadow-sm border inline-flex items-center gap-2">
+              <input type="checkbox" className="scale-110" checked={rtl} onChange={(e)=>setRtl(e.target.checked)} />
+              <span>RTL layout</span>
+            </label>
+            <div className="px-3 py-2 rounded-2xl shadow-sm border inline-flex items-center gap-2">
+              <span className="text-sm">Letters:</span>
+              <select className="bg-transparent outline-none" value={count} onChange={(e)=>setCount(Number(e.target.value))}>
+                {[4,6,8,10,12,16].map(n=> <option key={n} value={n}>{n}</option>)}
+              </select>
+            </div>
+          </div>
+        </header>
+
+        <div className="flex items-center gap-3">
+          <div className="h-2 bg-gray-200 rounded-full w-full overflow-hidden">
+            <div className="h-2 bg-emerald-500 transition-all" style={{width: `${(correctCount/totalSlots)*100}%`}}></div>
+          </div>
+          <div className="text-sm tabular-nums text-gray-600 w-28 text-right">{correctCount}/{totalSlots}</div>
+        </div>
+
+        {allCorrect && <div className="p-4 border rounded-2xl bg-emerald-50 border-emerald-200 text-emerald-800">✅ Great job! All matches are correct.</div>}
+
+        <section className="grid grid-cols-1 gap-4">
+          {chosenLetters.map(L => (
+            <div key={L.rowId} className="card">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="text-3xl md:text-4xl" dir={rtl?"rtl":"ltr"}>{L.name}</div>
+                  <div className="text-xs text-gray-500 uppercase">{L.label}</div>
+                </div>
+                <div className="text-xs text-gray-400">Match the 4 forms</div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {FORM_ORDER.map(form => <Slot key={L.rowId + '-' + form} slotId={`${L.rowId}:${L.id}:${form}`} expectForm={form} />)}
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section className="card">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="font-semibold">Tiles</h2>
+            <p className="text-xs text-gray-500">Drag a tile into a slot</p>
+          </div>
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3" dir={rtl?"rtl":"ltr"}>
+            {availableTiles.map(tile => (
+              <button key={tile.id} draggable onDragStart={(e)=>handleDragStart(e, tile)}
+                className="border rounded-2xl p-3 h-20 flex items-center justify-center text-3xl bg-white hover:shadow shadow-sm select-none" title={`${tile.base} – ${tile.form}`}>
+                <span dir={rtl?"rtl":"ltr"}>{tile.glyph}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <footer className="text-sm text-gray-600">
+          <details className="mt-2">
+            <summary className="cursor-pointer select-none">How it works & tips</summary>
+            <ul className="list-disc ms-6 mt-2 space-y-1">
+              <li>Choose how many letters you want to practice from the <em>Letters</em> menu, then press <strong>New round</strong>.</li>
+              <li>Drag each form (isolated / initial / medial / final) from the <em>Tiles</em> area into the matching slot for that letter.</li>
+              <li>Correct tiles highlight in green; wrong placements show pink until fixed.</li>
+              <li>Turn on <strong>Hints</strong> to see the expected slot labels.</li>
+              <li>Use <strong>RTL layout</strong> to toggle right-to-left or left-to-right layout for convenience.</li>
+            </ul>
+          </details>
+        </footer>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<UyghurAlphabetJigsaw />);
+  </script>
+</body>
+</html>

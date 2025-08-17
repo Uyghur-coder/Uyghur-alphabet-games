@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)file:///Users/akbaramat/Downloads/uyghur_jigsaw_simple.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Uyghur Alphabet Jigsaw</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 20px; text-align:center; }
+  h1 { margin-bottom: 20px; }
+  .slots { display:flex; justify-content:center; margin:10px; flex-wrap: wrap; }
+  .slot-container { display:flex; flex-direction:column; align-items:center; margin:5px; }
+  .slot-label { font-size:14px; margin-bottom:4px; }
+  .slot {
+    width:80px; height:80px; border:2px dashed #999;
+    display:flex; align-items:center; justify-content:center;
+    font-size:32px; background:#fff; cursor:pointer;
+  }
+  .slot.filled { border:2px solid #333; }
+  .tiles { display:flex; flex-wrap:wrap; justify-content:center; margin:20px; }
+  .tile {
+    width:80px; height:80px; margin:5px; background:#4CAF50; color:white;
+    font-size:32px; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; cursor:pointer;
+  }
+  .tile.selected { background:#2196F3; }
+  .controls { margin:20px; display:flex; justify-content:center; gap:10px; align-items:center; }
+  .score { font-weight:bold; margin-left:20px; }
+</style>
+</head>
+<body>
+<h1>Uyghur Alphabet Jigsaw</h1>
+<div class="slots" id="slots"><div class="slot-container"><div class="slot-label">Isolated</div><div class="slot" data-correct="ك"></div></div><div class="slot-container"><div class="slot-label">Initial</div><div class="slot" data-correct="كـ"></div></div><div class="slot-container"><div class="slot-label">Medial</div><div class="slot" data-correct="ـكـ"></div></div><div class="slot-container"><div class="slot-label">Final</div><div class="slot" data-correct="ـك"></div></div></div>
+<div class="tiles" id="tiles"><div class="tile">ك</div><div class="tile">ـكـ</div><div class="tile">ـك</div><div class="tile">كـ</div></div>
+<div class="controls">
+  <button onclick="newRound()">New Round</button>
+  <button onclick="showAnswer()">Show Answer</button>
+  <span class="score" id="score">Score: 0 / 1 (0%)</span>
+</div>
+<script>
+const letters={"ئا":["ئا","ئا","ـئا","ـا"],"ب":["ب","بـ","ـبـ","ـب"],"پ":["پ","پـ","ـپـ","ـپ"],"ت":["ت","تـ","ـتـ","ـت"],"ج":["ج","جـ","ـجـ","ـج"],"چ":["چ","چـ","ـچـ","ـچ"],"خ":["خ","خـ","ـخـ","ـخ"],"د":["د","د","ـد","ـد"],"ر":["ر","ر","ـر","ـر"],"ز":["ز","ز","ـز","ـز"],"س":["س","سـ","ـسـ","ـس"],"ش":["ش","شـ","ـشـ","ـش"],"غ":["غ","غـ","ـغـ","ـغ"],"ف":["ف","فـ","ـفـ","ـف"],"ق":["ق","قـ","ـقـ","ـق"],"ك":["ك","كـ","ـكـ","ـك"],"گ":["گ","گـ","ـگـ","ـگ"],"ڭ":["ڭ","ڭـ","ـڭـ","ـڭ"],"ل":["ل","لـ","ـلـ","ـل"],"م":["م","مـ","ـمـ","ـم"],"ن":["ن","نـ","ـنـ","ـن"],"ھ":["ھ","ھـ","ـھـ","ـھ"],"و":["و","و","ـو","ـو"],"ۇ":["ۇ","ۇ","ـۇ","ـۇ"],"ۆ":["ۆ","ۆ","ـۆ","ـۆ"],"ۈ":["ۈ","ۈ","ـۈ","ـۈ"],"ۋ":["ۋ","ۋ","ـۋ","ـۋ"],"ې":["ې","ې","ـې","ـې"],"ى":["ى","ى","ـى","ـى"],"ي":["ي","يـ","ـيـ","ـي"]};
+let currentLetter=null,selectedTile=null;const slotLabels=["Isolated","Initial","Medial","Final"];let score=0,attempts=0;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function updateScore(){const p=attempts===0?0:Math.round(score/attempts*100);document.getElementById("score").textContent=`Score: ${score} / ${attempts} (${p}%)`}
+function newRound(){attempts++;updateScore();const keys=Object.keys(letters);currentLetter=keys[Math.floor(Math.random()*keys.length)];const forms=letters[currentLetter];
+const slotsDiv=document.getElementById("slots");slotsDiv.innerHTML="";forms.forEach((form,idx)=>{const container=document.createElement("div");container.className="slot-container";const label=document.createElement("div");label.className="slot-label";label.textContent=slotLabels[idx];container.appendChild(label);const slot=document.createElement("div");slot.className="slot";slot.dataset.correct=form;slot.onclick=()=>placeTile(slot);container.appendChild(slot);slotsDiv.appendChild(container)});
+const tilesDiv=document.getElementById("tiles");tilesDiv.innerHTML="";shuffle(forms.slice()).forEach(form=>{const tile=document.createElement("div");tile.className="tile";tile.textContent=form;tile.onclick=()=>selectTile(tile);tilesDiv.appendChild(tile)});selectedTile=null}
+function selectTile(tile){if(selectedTile)selectedTile.classList.remove("selected");selectedTile=tile;tile.classList.add("selected")}
+function placeTile(slot){if(!selectedTile)return;if(slot.textContent===""){slot.textContent=selectedTile.textContent;slot.classList.add("filled");selectedTile.remove();selectedTile=null;checkWin()}}
+function showAnswer(){document.querySelectorAll(".slot").forEach(s=>s.textContent=s.dataset.correct)}
+function checkWin(){const slots=document.querySelectorAll(".slot");for(let s of slots)if(s.textContent!==s.dataset.correct)return;score++;updateScore();setTimeout(()=>alert("✅ Correct! You completed the set for "+currentLetter),100)}
+updateScore();newRound();
+</script>
+
+
+</body></html>
