@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Uyghur Alphabet Click & Match</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+  .card { background: white; border-radius: 1rem; padding: 1rem; box-shadow: 0 6px 18px rgba(15,23,42,0.06); }
+  .slot { min-height: 4.5rem; cursor: pointer; }
+  button:focus { outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+  .selected { border: 2px solid #3b82f6; }
+</style>
+</head>
+<body class="bg-gray-50 p-6">
+<div id="root" class="max-w-6xl mx-auto"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useMemo, useEffect } = React;
+
+const LETTERS = [
+{ id:"alef", name:"ئا", label:"a", forms:{final:"ـا، ـئا", isolated:"ئا، ا"} },
+{ id:"e1", name:"ئە", label:"e", forms:{final:"ـە، ـئە", isolated:"ئە، ە"} },
+{ id:"beh", name:"ب", label:"b", forms:{final:"ـب", medial:"ـبـ", initial:"بـ", isolated:"ب"} },
+{ id:"peh", name:"پ", label:"p", forms:{final:"ـپ", medial:"ـپـ", initial:"پـ", isolated:"پ"} },
+{ id:"teh", name:"ت", label:"t", forms:{final:"ـت", medial:"ـتـ", initial:"تـ", isolated:"ت"} },
+{ id:"jeem", name:"ج", label:"j", forms:{final:"ـج", medial:"ـجـ", initial:"جـ", isolated:"ج"} },
+{ id:"tcheh", name:"چ", label:"ch", forms:{final:"ـچ", medial:"ـچـ", initial:"چـ", isolated:"چ"} },
+{ id:"kheh", name:"خ", label:"kh", forms:{final:"ـخ", medial:"ـخـ", initial:"خـ", isolated:"خ"} },
+{ id:"dal", name:"د", label:"d", forms:{final:"ـد", isolated:"د"} },
+{ id:"reh", name:"ر", label:"r", forms:{final:"ـر", isolated:"ر"} },
+{ id:"zain", name:"ز", label:"z", forms:{final:"ـز", isolated:"ز"} },
+{ id:"zh", name:"ژ", label:"zh", forms:{final:"ـژ", isolated:"ژ"} },
+{ id:"seen", name:"س", label:"s", forms:{final:"ـس", medial:"ـسـ", initial:"سـ", isolated:"س"} },
+{ id:"sheen", name:"ش", label:"sh", forms:{final:"ـش", medial:"ـشـ", initial:"شـ", isolated:"ش"} },
+{ id:"gh", name:"غ", label:"gh", forms:{final:"ـغ", medial:"ـغـ", initial:"غـ", isolated:"غ"} },
+{ id:"feh", name:"ف", label:"f", forms:{final:"ـف", medial:"ـفـ", initial:"فـ", isolated:"ف"} },
+{ id:"qaf", name:"ق", label:"q", forms:{final:"ـق", medial:"ـقـ", initial:"قـ", isolated:"ق"} },
+{ id:"kaf", name:"ك", label:"k", forms:{final:"ـك", medial:"ـكـ", initial:"كـ", isolated:"ك"} },
+{ id:"gaf", name:"گ", label:"g", forms:{final:"ـگ", medial:"ـگـ", initial:"گـ", isolated:"گ"} },
+{ id:"ng", name:"ڭ", label:"ng", forms:{final:"ـڭ", medial:"ـڭـ", initial:"ڭـ", isolated:"ڭ"} },
+{ id:"lam", name:"ل", label:"l", forms:{final:"ـل", medial:"ـلـ", initial:"لـ", isolated:"ل"} },
+{ id:"meem", name:"م", label:"m", forms:{final:"ـم", medial:"ـمـ", initial:"مـ", isolated:"م"} },
+{ id:"noon", name:"ن", label:"n", forms:{final:"ـن", medial:"ـنـ", initial:"نـ", isolated:"ن"} },
+{ id:"heh", name:"ھ", label:"h", forms:{final:"ـھ", medial:"ـھـ", initial:"ھـ", isolated:"ھ"} },
+{ id:"o", name:"ئو", label:"o", forms:{final:"ـو، ـئو", isolated:"ئو، و"} },
+{ id:"u", name:"ئۇ", label:"u", forms:{final:"ـۇ، ـئۇ", isolated:"ئۇ، ۇ"} },
+{ id:"ö", name:"ئۆ", label:"ö", forms:{final:"ـۆ، ـئۆ", isolated:"ئۆ، ۆ"} },
+{ id:"ü", name:"ئۈ", label:"ü", forms:{final:"ـۈ، ـئۈ", isolated:"ئۈ، ۈ"} },
+{ id:"w", name:"ۋ", label:"w", forms:{final:"ـۋ", isolated:"ۋ"} },
+{ id:"yeh", name:"ي", label:"y", forms:{final:"ـي", medial:"ـيـ", initial:"يـ", isolated:"ي"} },
+{ id:"e2", name:"ئې", label:"e", forms:{final:"ـې", medial:"ـئېـ، ـېـ", initial:"ئېـ، ېـ", isolated:"ئې، ې"} },
+{ id:"i", name:"ئى", label:"i", forms:{final:"ـى", medial:"ـئىـ، ـىـ", initial:"ئىـ، ىـ", isolated:"ئى، ى"} }
+];
+
+const FORM_ORDER = ["final","medial","initial","isolated"];
+
+function shuffled(array){ const a = array.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+function uid(){ return Math.random().toString(36).slice(2,9); }
+
+function UyghurAlphabetClickMatch(){
+  const [count,setCount] = useState(10);
+  const [key,setKey] = useState(0);
+  const [rtl,setRtl] = useState(true);
+  const [selectedTile,setSelectedTile] = useState(null);
+
+  const chosenLetters = useMemo(()=>{
+    const subset = shuffled(LETTERS).slice(0,count);
+    return subset.map(L=>({...L,rowId:uid()}));
+  },[count,key]);
+
+  const tiles = useMemo(()=>{
+    let t=[];
+    chosenLetters.forEach(L=>{
+      FORM_ORDER.forEach(form=>{
+        if(L.forms[form]) t.push({id:`${L.id}-${form}-${uid()}`, letterId:L.id, rowId:L.rowId, form, glyph:L.forms[form], base:L.name});
+      });
+    });
+    return shuffled(t);
+  },[chosenLetters]);
+
+  const [placements,setPlacements] = useState({});
+  useEffect(()=>{ setPlacements({}); setSelectedTile(null); },[key,count]);
+
+  function handleTileClick(tile){ setSelectedTile(tile); }
+  function handleSlotClick(slotId,expectForm){
+    if(!selectedTile) return;
+    setPlacements(prev=>{
+      const next = {...prev};
+      for(const k of Object.keys(next)) if(next[k]===selectedTile.id) delete next[k];
+      next[slotId] = selectedTile.id;
+      return next;
+    });
+    setSelectedTile(null);
+  }
+
+  const placedIds = new Set(Object.values(placements));
+  const availableTiles = tiles.filter(t=>!placedIds.has(t.id));
+
+  const { correctCount,totalSlots,allCorrect } = useMemo(()=>{
+    let correct=0,total=0;
+    chosenLetters.forEach(L=>{
+      FORM_ORDER.forEach(form=>{
+        if(!L.forms[form]) return;
+        total++;
+        const slotId = `${L.rowId}:${L.id}:${form}`;
+        const tileId = placements[slotId];
+        if(!tileId) return;
+        const tile = tiles.find(t=>t.id===tileId);
+        if(tile && tile.letterId===L.id && tile.form===form && tile.rowId===L.rowId) correct++;
+      });
+    });
+    return {correctCount:correct,totalSlots:total,allCorrect:correct===total};
+  },[placements,tiles,chosenLetters]);
+
+  function Slot({slotId,expectForm}){
+    const tileId = placements[slotId];
+    const tile = tiles.find(t=>t.id===tileId);
+    const correct = tile && tile.form===expectForm && tile.rowId===slotId.split(':')[0];
+    const selected = selectedTile && tileId===selectedTile.id;
+    return (
+      <div onClick={()=>handleSlotClick(slotId,expectForm)}
+        className={"slot border rounded-2xl p-3 h-20 flex items-center justify-center text-3xl shadow-sm transition-all select-none "+
+          (tile ? (correct ? "border-emerald-500 ring-1 ring-emerald-400" : "border-rose-400 ring-1 ring-rose-300") : "border-gray-300")+
+          (selected ? " selected":"")} dir={rtl?"rtl":"ltr"}>
+        {tile ? <span dir={rtl?"rtl":"ltr"}>{tile.glyph}</span> : <span className="text-xs text-gray-400 uppercase">{expectForm}</span>}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6" dir={rtl?"rtl":"ltr"}>
+      <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold">🧩 Uyghur Alphabet Click & Match</h1>
+          <p className="text-gray-600">Click a tile, then click the matching slot.</p>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={()=>setKey(k=>k+1)} className="px-4 py-2 rounded-2xl shadow-sm border">New round</button>
+          <label className="px-3 py-2 rounded-2xl shadow-sm border inline-flex items-center gap-2">
+            <input type="checkbox" checked={rtl} onChange={(e)=>setRtl(e.target.checked)} /> RTL layout
+          </label>
+          <select className="bg-transparent outline-none" value={count} onChange={(e)=>setCount(Number(e.target.value))}>
+            {[6,10,16,20,24,32].map(n=><option key={n} value={n}>{n} letters</option>)}
+          </select>
+        </div>
+      </header>
+
+      <div className="flex items-center gap-3">
+        <div className="h-2 bg-gray-200 rounded-full w-full overflow-hidden">
+          <div className="h-2 bg-emerald-500 transition-all" style={{width:`${(correctCount/totalSlots)*100}%`}}></div>
+        </div>
+        <div className="text-sm tabular-nums text-gray-600 w-28 text-right">{correctCount}/{totalSlots}</div>
+      </div>
+
+      {allCorrect && <div className="p-4 border rounded-2xl bg-emerald-50 border-emerald-200 text-emerald-800">✅ All correct!</div>}
+
+      <section className="grid grid-cols-1 gap-4">
+        {chosenLetters.map(L=>(
+          <div key={L.rowId} className="card">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <div className="text-3xl md:text-4xl" dir={rtl?"rtl":"ltr"}>{L.name}</div>
+                <div className="text-xs text-gray-500 uppercase">{L.label}</div>
+              </div>
+              <div className="text-xs text-gray-400">Match the forms</div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {FORM_ORDER.map(form=>L.forms[form]?<Slot key={L.rowId+'-'+form} slotId={`${L.rowId}:${L.id}:${form}`} expectForm={form} />:null)}
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <section className="card">
+        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3" dir={rtl?"rtl":"ltr"}>
+          {availableTiles.map(tile=>(
+            <button key={tile.id} onClick={()=>handleTileClick(tile)}
+              className="border rounded-2xl p-3 h-20 flex items-center justify-center text-3xl bg-white hover:shadow shadow-sm select-none">
+              <span dir={rtl?"rtl":"ltr"}>{tile.glyph}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<UyghurAlphabetClickMatch />);
+</script>
+</body>
+</html>
