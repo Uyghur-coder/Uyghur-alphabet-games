@@ -39,10 +39,10 @@ body { font-family: 'UyghurFont', Arial, sans-serif; -webkit-font-smoothing: ant
 <script type="text/babel">
 const { useState, useEffect } = React;
 
-// Alphabet data with Latin names
+// Updated Uyghur alphabet array
 const LETTERS = [
-  {id:"a",isolated:"ا",initial:"ئا",medial:"ـئا",final:"ـا",latin:"a"},
-  {id:"e",isolated:"ە",initial:"ئە",medial:"ـئە",final:"ـە",latin:"e"},
+  {id:"a",isolated:"ئا",initial:"ئا",medial:"ـئا",final:"ـا",latin:"a"},
+  {id:"e",isolated:"ئە",initial:"ئە",medial:"ـئە",final:"ـە",latin:"e"},
   {id:"b",isolated:"ب",initial:"بـ",medial:"ـبـ",final:"ـب",latin:"b"},
   {id:"p",isolated:"پ",initial:"پـ",medial:"ـپـ",final:"ـپ",latin:"p"},
   {id:"t",isolated:"ت",initial:"تـ",medial:"ـتـ",final:"ـت",latin:"t"},
@@ -65,13 +65,13 @@ const LETTERS = [
   {id:"m",isolated:"م",initial:"مـ",medial:"ـمـ",final:"ـم",latin:"m"},
   {id:"n",isolated:"ن",initial:"نـ",medial:"ـنـ",final:"ـن",latin:"n"},
   {id:"h",isolated:"ھ",initial:"ھـ",medial:"ـھـ",final:"ـھ",latin:"h"},
-  {id:"o",isolated:"و",initial:"ئو",medial:"ـئو",final:"ـو",latin:"o"},
-  {id:"u",isolated:"ۇ",initial:"ئۇ",medial:"ـئۇ",final:"ـۇ",latin:"u"},
-  {id:"ö",isolated:"ۆ",initial:"ئۆ",medial:"ـئۆ",final:"ـۆ",latin:"ö"},
-  {id:"ü",isolated:"ۈ",initial:"ئۈ",medial:"ـئۈ",final:"ـۈ",latin:"ü"},
+  {id:"o",isolated:"ئو",initial:"ئو",medial:"ـئو",final:"ـو",latin:"o"},
+  {id:"u",isolated:"ئۇ",initial:"ئۇ",medial:"ـئۇ",final:"ـۇ",latin:"u"},
+  {id:"ö",isolated:"ئۆ",initial:"ئۆ",medial:"ـئۆ",final:"ـۆ",latin:"ö"},
+  {id:"ü",isolated:"ئۈ",initial:"ئۈ",medial:"ـئۈ",final:"ـۈ",latin:"ü"},
   {id:"w",isolated:"ۋ",initial:"ۋ",medial:null,final:"ـۋ",latin:"w"},
   {id:"y",isolated:"ي",initial:"يـ",medial:"ـيـ",final:"ـي",latin:"y"},
-  {id:"e2",isolated:"ئې",initial:"ئېـ، ېـ",medial:"ـئېـ، ـېـ",final:"ـې",latin:"e2"},
+  {id:"e2",isolated:"ئې، ې",initial:"ئېـ، ېـ",medial:"ـئېـ، ـېـ",final:"ـې",latin:"e2"},
   {id:"i",isolated:"ئى، ى",initial:"ئىـ، ىـ",medial:"ـئىـ، ـىـ",final:"ـى",latin:"i"}
 ];
 
@@ -147,7 +147,8 @@ function UyghurAlphabetGame() {
           return !placed && (
             <div key={tile.id} className={`tile ${selectedTile?.id===tile.id?'selected':''}`} onClick={()=>handleTileClick(tile)}>
               <div className="letter-glyph">{tile.glyph}</div>
-              <div className="letter-latin">{selectedLetters.find(l=>l.id===tile.letterId)?.latin}</div>
+              {/* Show Latin name only for isolated form */}
+              <div className="letter-latin">{tile.form==="initial"? "" : selectedLetters.find(l=>l.id===tile.letterId)?.latin}</div>
             </div>
           );
         })}
