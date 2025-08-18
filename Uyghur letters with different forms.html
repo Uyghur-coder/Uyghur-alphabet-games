@@ -64,21 +64,49 @@
   <script>
     const letters = [
       { isolated: ['ئا','ا'], latin: 'a', initial: [], medial: [], final: ['ـا','ـئا'] },
+      { isolated: ['ئە','ە'], latin: 'e', initial: [], medial: [], final: ['ـە','ـئە'] },
       { isolated: ['ب'], latin: 'b', initial: ['بـ'], medial: ['ـبـ'], final: ['ـب'] },
       { isolated: ['پ'], latin: 'p', initial: ['پـ'], medial: ['ـپـ'], final: ['ـپ'] },
       { isolated: ['ت'], latin: 't', initial: ['تـ'], medial: ['ـتـ'], final: ['ـت'] },
       { isolated: ['ج'], latin: 'j', initial: ['جـ'], medial: ['ـجـ'], final: ['ـج'] },
       { isolated: ['چ'], latin: 'ch', initial: ['چـ'], medial: ['ـچـ'], final: ['ـچ'] },
       { isolated: ['خ'], latin: 'kh', initial: ['خـ'], medial: ['ـخـ'], final: ['ـخ'] },
+      { isolated: ['د'], latin: 'd', initial: [], medial: [], final: ['ـد'] },
+      { isolated: ['ر'], latin: 'r', initial: [], medial: [], final: ['ـر'] },
+      { isolated: ['ز'], latin: 'z', initial: [], medial: [], final: ['ـز'] },
+      { isolated: ['ژ'], latin: 'zh', initial: [], medial: [], final: ['ـژ'] },
       { isolated: ['س'], latin: 's', initial: ['سـ'], medial: ['ـسـ'], final: ['ـس'] },
+      { isolated: ['ش'], latin: 'sh', initial: ['شـ'], medial: ['ـشـ'], final: ['ـش'] },
+      { isolated: ['غ'], latin: 'gh', initial: ['غـ'], medial: ['ـغـ'], final: ['ـغ'] },
+      { isolated: ['ف'], latin: 'f', initial: ['فـ'], medial: ['ـفـ'], final: ['ـف'] },
+      { isolated: ['ق'], latin: 'q', initial: ['قـ'], medial: ['ـقـ'], final: ['ـق'] },
+      { isolated: ['ك'], latin: 'k', initial: ['كـ'], medial: ['ـكـ'], final: ['ـك'] },
+      { isolated: ['گ'], latin: 'g', initial: ['گـ'], medial: ['ـگـ'], final: ['ـگ'] },
+      { isolated: ['ڭ'], latin: 'ng', initial: ['ڭـ'], medial: ['ـڭـ'], final: ['ـڭ'] },
+      { isolated: ['ل'], latin: 'l', initial: ['لـ'], medial: ['ـلـ'], final: ['ـل'] },
       { isolated: ['م'], latin: 'm', initial: ['مـ'], medial: ['ـمـ'], final: ['ـم'] },
       { isolated: ['ن'], latin: 'n', initial: ['نـ'], medial: ['ـنـ'], final: ['ـن'] },
+      { isolated: ['ھ'], latin: 'h', initial: ['ھـ'], medial: ['ـھـ'], final: ['ـھ'] },
+      { isolated: ['ئو','و'], latin: 'o', initial: [], medial: [], final: ['ـو','ـئو'] },
+      { isolated: ['ئۇ','ۇ'], latin: 'u', initial: [], medial: [], final: ['ـۇ','ـئۇ'] },
+      { isolated: ['ئۆ','ۆ'], latin: 'ö', initial: [], medial: [], final: ['ـۆ','ـئۆ'] },
+      { isolated: ['ئۈ','ۈ'], latin: 'ü', initial: [], medial: [], final: ['ـۈ','ـئۈ'] },
+      { isolated: ['ۋ'], latin: 'w', initial: [], medial: [], final: ['ـۋ'] },
       { isolated: ['ي'], latin: 'y', initial: ['يـ'], medial: ['ـيـ'], final: ['ـي'] },
+      { isolated: ['ئې','ې'], latin: 'é', initial: ['ئېـ','ېـ'], medial: ['ـئېـ','ـېـ'], final: ['ـې'] },
       { isolated: ['ئى','ى'], latin: 'i', initial: ['ئىـ','ىـ'], medial: ['ـئىـ','ـىـ'], final: ['ـى'] }
     ];
 
     let current;
     let selectedOption = null;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
 
     function newQuestion() {
       current = letters[Math.floor(Math.random() * letters.length)];
@@ -89,7 +117,14 @@
 
       const optionsDiv = document.getElementById("options");
       optionsDiv.innerHTML = '';
-      const forms = [...current.initial, ...current.medial, ...current.final];
+      let forms = [...current.initial, ...current.medial, ...current.final];
+
+      // Include some distractors from other letters
+      let distractors = letters.flatMap(l => [...l.initial, ...l.medial, ...l.final]).filter(f => !forms.includes(f));
+      shuffle(distractors);
+      forms = forms.concat(distractors.slice(0, 8)); // 8 random distractors
+      forms = shuffle(forms);
+
       forms.forEach(f => {
         const btn = document.createElement("div");
         btn.textContent = f;
