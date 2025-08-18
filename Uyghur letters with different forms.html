@@ -17,9 +17,40 @@ body { font-family: 'UyghurFont', Arial, sans-serif; -webkit-font-smoothing: ant
 
 .letter-glyph { font-size: 2rem; text-align: center; }
 .letter-latin { font-size: 0.9rem; text-align: center; color: #555; margin-bottom: 0.3rem; }
-.slot { border: 2px dashed #ccc; border-radius: 0.5rem; width: 3rem; height: 3rem; display: flex; justify-content: center; align-items: center; cursor: pointer; margin: 0.2rem; }
+
+.slot { 
+  border: 2px dashed #ccc; 
+  border-radius: 0.5rem; 
+  width: 4rem; 
+  height: 3rem; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  cursor: pointer; 
+  margin: 0.2rem; 
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
 .tiles-container { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 1rem; }
-.tile { border: 2px solid #ccc; border-radius: 0.5rem; padding: 0.3rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 3rem; height: 3rem; }
+
+.tile { 
+  border: 2px solid #ccc; 
+  border-radius: 0.5rem; 
+  padding: 0.3rem; 
+  cursor: pointer; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  width: 4rem; 
+  height: 3rem; 
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
 .tile.selected { border-color: #3b82f6; background-color: #dbebff; }
 .letter-column { display: flex; flex-direction: column; align-items: center; margin: 0.2rem; }
 .form-slot.initial { background-color: #bfdbfe; }
@@ -39,20 +70,20 @@ body { font-family: 'UyghurFont', Arial, sans-serif; -webkit-font-smoothing: ant
 <script type="text/babel">
 const { useState, useEffect } = React;
 
-// Updated Uyghur alphabet array
+// Corrected alphabet data
 const LETTERS = [
-  {id:"a",isolated:"ئا",initial:"ئا",medial:"ـئا",final:"ـا",latin:"a"},
-  {id:"e",isolated:"ئە",initial:"ئە",medial:"ـئە",final:"ـە",latin:"e"},
+  {id:"a",isolated:"ئا، ا",initial:null,medial:null,final:"ـا، ـئا",latin:"a"},
+  {id:"e",isolated:"ئە، ە",initial:null,medial:null,final:"ـە، ـئە",latin:"e"},
   {id:"b",isolated:"ب",initial:"بـ",medial:"ـبـ",final:"ـب",latin:"b"},
   {id:"p",isolated:"پ",initial:"پـ",medial:"ـپـ",final:"ـپ",latin:"p"},
   {id:"t",isolated:"ت",initial:"تـ",medial:"ـتـ",final:"ـت",latin:"t"},
   {id:"j",isolated:"ج",initial:"جـ",medial:"ـجـ",final:"ـج",latin:"j"},
   {id:"ch",isolated:"چ",initial:"چـ",medial:"ـچـ",final:"ـچ",latin:"ch"},
   {id:"kh",isolated:"خ",initial:"خـ",medial:"ـخـ",final:"ـخ",latin:"kh"},
-  {id:"d",isolated:"د",initial:"د",medial:null,final:"ـد",latin:"d"},
-  {id:"r",isolated:"ر",initial:"ر",medial:null,final:"ـر",latin:"r"},
-  {id:"z",isolated:"ز",initial:"ز",medial:null,final:"ـز",latin:"z"},
-  {id:"zh",isolated:"ژ",initial:"ژ",medial:null,final:"ـژ",latin:"zh"},
+  {id:"d",isolated:"د",initial:null,medial:null,final:"ـد",latin:"d"},
+  {id:"r",isolated:"ر",initial:null,medial:null,final:"ـر",latin:"r"},
+  {id:"z",isolated:"ز",initial:null,medial:null,final:"ـز",latin:"z"},
+  {id:"zh",isolated:"ژ",initial:null,medial:null,final:"ـژ",latin:"zh"},
   {id:"s",isolated:"س",initial:"سـ",medial:"ـسـ",final:"ـس",latin:"s"},
   {id:"sh",isolated:"ش",initial:"شـ",medial:"ـشـ",final:"ـش",latin:"sh"},
   {id:"gh",isolated:"غ",initial:"غـ",medial:"ـغـ",final:"ـغ",latin:"gh"},
@@ -65,11 +96,11 @@ const LETTERS = [
   {id:"m",isolated:"م",initial:"مـ",medial:"ـمـ",final:"ـم",latin:"m"},
   {id:"n",isolated:"ن",initial:"نـ",medial:"ـنـ",final:"ـن",latin:"n"},
   {id:"h",isolated:"ھ",initial:"ھـ",medial:"ـھـ",final:"ـھ",latin:"h"},
-  {id:"o",isolated:"ئو",initial:"ئو",medial:"ـئو",final:"ـو",latin:"o"},
-  {id:"u",isolated:"ئۇ",initial:"ئۇ",medial:"ـئۇ",final:"ـۇ",latin:"u"},
-  {id:"ö",isolated:"ئۆ",initial:"ئۆ",medial:"ـئۆ",final:"ـۆ",latin:"ö"},
-  {id:"ü",isolated:"ئۈ",initial:"ئۈ",medial:"ـئۈ",final:"ـۈ",latin:"ü"},
-  {id:"w",isolated:"ۋ",initial:"ۋ",medial:null,final:"ـۋ",latin:"w"},
+  {id:"o",isolated:"ئو، و",initial:null,medial:null,final:"ـو، ـئو",latin:"o"},
+  {id:"u",isolated:"ئۇ، ۇ",initial:null,medial:null,final:"ـۇ، ـئۇ",latin:"u"},
+  {id:"ö",isolated:"ئۆ، ۆ",initial:null,medial:null,final:"ـۆ، ـئۆ",latin:"ö"},
+  {id:"ü",isolated:"ئۈ، ۈ",initial:null,medial:null,final:"ـۈ، ـئۈ",latin:"ü"},
+  {id:"w",isolated:"ۋ",initial:null,medial:null,final:"ـۋ",latin:"w"},
   {id:"y",isolated:"ي",initial:"يـ",medial:"ـيـ",final:"ـي",latin:"y"},
   {id:"e2",isolated:"ئې، ې",initial:"ئېـ، ېـ",medial:"ـئېـ، ـېـ",final:"ـې",latin:"e2"},
   {id:"i",isolated:"ئى، ى",initial:"ئىـ، ىـ",medial:"ـئىـ، ـىـ",final:"ـى",latin:"i"}
@@ -90,7 +121,12 @@ function UyghurAlphabetGame() {
     const shuffled = LETTERS.sort(()=>0.5 - Math.random());
     const selected = shuffled.slice(0,lettersPerRound);
     setSelectedLetters(selected);
-    const newTiles = selected.flatMap(letter=>FORM_TYPES.map(form=>({id:letter.id+"-"+form,letterId:letter.id,form,glyph:letter[form]}))).sort(()=>0.5 - Math.random());
+    const newTiles = selected.flatMap(letter=>
+      FORM_TYPES.map(form=>{
+        if(!letter[form]) return null;
+        return {id:letter.id+"-"+form,letterId:letter.id,form,glyph:letter[form]};
+      }).filter(Boolean)
+    ).sort(()=>0.5 - Math.random());
     setTiles(newTiles);
     setPlacements({});
     setSelectedTile(null);
@@ -123,6 +159,7 @@ function UyghurAlphabetGame() {
             <div className="letter-glyph mb-1">{letter.isolated}</div>
             <div className="letter-latin mb-2">{letter.latin}</div>
             {FORM_TYPES.map(form => {
+              if(!letter[form]) return null;
               const placed = placements[letter.id + "-" + form];
               const label = form.charAt(0).toUpperCase() + form.slice(1);
               return (
@@ -146,9 +183,10 @@ function UyghurAlphabetGame() {
           const placed=Object.values(placements).includes(tile.id);
           return !placed && (
             <div key={tile.id} className={`tile ${selectedTile?.id===tile.id?'selected':''}`} onClick={()=>handleTileClick(tile)}>
-              <div className="letter-glyph">{tile.glyph}</div>
-              {/* Show Latin name only for isolated form */}
-              <div className="letter-latin">{tile.form==="initial"? "" : selectedLetters.find(l=>l.id===tile.letterId)?.latin}</div>
+              <div className="letter-glyph" style={{ fontSize: tile.glyph.length > 2 ? '1.2rem' : '2rem' }}>
+                {tile.glyph}
+              </div>
+              <div className="letter-latin">{tile.form==="isolated" ? selectedLetters.find(l=>l.id===tile.letterId)?.latin : ""}</div>
             </div>
           );
         })}
