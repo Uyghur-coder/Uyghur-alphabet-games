@@ -9,10 +9,7 @@
       font-family: 'UyghurFont';
       src: url('fonts/UKIJTuz.ttf') format('truetype');
     }
-    .uyghur {
-      font-family: 'UyghurFont', sans-serif;
-      font-size: 2rem;
-    }
+    .uyghur { font-family: 'UyghurFont', sans-serif; font-size: 2rem; }
     .slot, .option {
       border: 2px dashed #ccc;
       min-height: 3rem;
@@ -122,23 +119,28 @@
 
       const optionsDiv = document.getElementById("options");
       optionsDiv.innerHTML = '';
-      let forms = [...current.initial, ...current.medial, ...current.final];
 
-      // Only show existing forms
-      forms = forms.filter(f => f && f.trim() !== '');
+      // Combine grouped forms for each slot
+      const allForms = ['initial','medial','final'].flatMap(pos => current[pos].length ? [current[pos].join(',')] : []);
 
-      // Include distractors from other letters
-      let distractors = letters.flatMap(l => [...l.initial, ...l.medial, ...l.final]).filter(f => !forms.includes(f) && f && f.trim() !== '');
+      // Add distractors
+      let distractors = letters.flatMap(l => ['initial','medial','final'].flatMap(pos => l[pos]))
+                               .filter(f => f && !allForms.includes(f));
       shuffle(distractors);
-      forms = forms.concat(distractors.slice(0, 8));
-      forms = shuffle(forms);
+      const optionsList = shuffle(allForms.concat(distractors.slice(0,8)));
 
-      forms.forEach(f => {
+      optionsList.forEach(f => {
         const btn = document.createElement("div");
         btn.textContent = f;
         btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
         btn.onclick = () => selectOption(btn, f);
         optionsDiv.appendChild(btn);
+      });
+
+      // Show/hide slots depending on existence
+      ['initial','medial','final'].forEach(pos => {
+        const slot = document.getElementById(pos+'Slot');
+        slot.parentElement.style.display = current[pos].length ? 'block' : 'none';
       });
     }
 
@@ -157,8 +159,7 @@
     document.querySelectorAll('.slot').forEach(slot => {
       slot.addEventListener('click', () => {
         if (selectedOption) {
-          // Add a comma between multiple letters if already present
-          slot.textContent = slot.textContent ? slot.textContent + ',' + selectedOption.text : selectedOption.text;
+          slot.textContent = selectedOption.text;
           slot.classList.remove('selected');
           selectedOption.element.remove();
           selectedOption = null;
@@ -167,21 +168,27 @@
     });
 
     function checkAnswer() {
-      const init = document.getElementById("initialSlot").textContent.trim();
-      const med = document.getElementById("medialSlot").textContent.trim();
-      const fin = document.getElementById("finalSlot").textContent.trim();
+      const slots = ['initial','medial','final'];
+      let allCorrect = true;
 
-      const correctInit = current.initial.length === 0 || current.initial.includes(init.replace(/,/g,''));
-      const correctMed = current.medial.length === 0 || current.medial.includes(med.replace(/,/g,''));
-      const correctFin = current.final.length === 0 || current.final.includes(fin.replace(/,/g,''));
+      slots.forEach(pos => {
+        const slot = document.getElementById(pos+'Slot');
+        if (slot.parentElement.style.display === 'none') return;
+        const values = slot.textContent.split(',').map(s => s.trim());
+        const correctValues = current[pos];
+        if (values.length !== correctValues.length || !values.every(v => correctValues.includes(v))) {
+          allCorrect = false;
+        }
+      });
 
-      if (correctInit && correctMed && correctFin) {
-        document.getElementById("feedback").textContent = "✅ Correct!";
-        document.getElementById("feedback").className = "mt-4 font-semibold text-green-600";
+      const feedback = document.getElementById("feedback");
+      if (allCorrect) {
+        feedback.textContent = "✅ Correct!";
+        feedback.className = "mt-4 font-semibold text-green-600";
         setTimeout(newQuestion, 1500);
       } else {
-        document.getElementById("feedback").textContent = "❌ Try again.";
-        document.getElementById("feedback").className = "mt-4 font-semibold text-red-600";
+        feedback.textContent = "❌ Try again.";
+        feedback.className = "mt-4 font-semibold text-red-600";
       }
     }
 
