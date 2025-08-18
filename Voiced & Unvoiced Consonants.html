@@ -2,10 +2,11 @@
 <html lang="ug" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Uyghur Voiced vs Unvoiced Sorting Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uyghur Voiced vs Unvoiced Consonants</title>
 <style>
   body { font-family: sans-serif; text-align: center; margin: 20px; }
-  
+
   #consonants {
     display: flex;
     flex-wrap: wrap;      /* Wrap consonants to next line if needed */
@@ -13,16 +14,16 @@
     gap: 10px;
     margin-bottom: 20px;
   }
-  
+
   .consonant {
-    font-size: 32px; 
+    font-size: 2rem; 
     margin: 5px; 
     padding: 10px; 
     border: 1px solid #555; 
     border-radius: 5px; 
     cursor: grab;
     background-color: #f0f0f0;
-    min-width: 40px;      /* ensures a consistent box size */
+    min-width: 40px;      
     text-align: center;
   }
 
@@ -41,15 +42,15 @@
     min-height: 200px;
     border: 2px dashed #333;
     padding: 10px; 
-    font-size: 24px; 
+    font-size: 1.5rem; 
     display: flex; 
     flex-wrap: wrap; 
     justify-content: center; 
     align-content: flex-start;
   }
 
-  #feedback { font-size: 24px; margin-top: 20px; min-height: 30px; }
-  #score { font-size: 20px; margin-top: 10px; }
+  #feedback { font-size: 1.5rem; margin-top: 20px; min-height: 30px; }
+  #score { font-size: 1.2rem; margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -86,6 +87,7 @@ const consonants = [
 
 let score = 0;
 
+// Initialize consonants
 function initConsonants() {
   const container = document.getElementById('consonants');
   consonants.forEach(c => {
@@ -109,7 +111,7 @@ function drop(ev) {
   const data = ev.dataTransfer.getData("text");
   const elem = document.getElementById(data);
   const dropBox = ev.currentTarget;
-  
+
   if(elem.dataset.type === (dropBox.id === 'voiced' ? 'voiced' : 'unvoiced')) {
     dropBox.appendChild(elem);
     document.getElementById('feedback').innerText = '✅ Correct!';
@@ -118,7 +120,7 @@ function drop(ev) {
     document.getElementById('feedback').innerText = '❌ Wrong! Try again.';
     score = Math.max(0, score - 1);
   }
-  
+
   document.getElementById('score').innerText = `Score: ${score}`;
 }
 
