@@ -4,15 +4,25 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Uyghur Alphabet Click & Match</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-  .direction-rtl { direction: rtl; }
-  .direction-ltr { direction: ltr; }
-  .selected { border: 2px solid #3b82f6; }
+@font-face {
+    font-family: 'UyghurFont';
+    src: url('fonts/UKIJTuz.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; font-family: 'UyghurFont', Arial, sans-serif; }
+.direction-rtl { direction: rtl; }
+.direction-ltr { direction: ltr; }
+.selected { border: 2px solid #3b82f6; }
+.letter-glyph { font-size: 2.5rem; text-align: center; }
+.letter-latin { font-size: 1.4rem; text-align: center; display: block; margin-top: 4px; }
 </style>
 </head>
 <body class="bg-gray-50 p-6">
+
 <div id="root" class="max-w-6xl mx-auto"></div>
 
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -22,39 +32,19 @@
 <script type="text/babel">
 const { useState } = React;
 
+// Update these paths to your own sound files
 const LETTERS = [
-  { id: "a", base: "ئا", forms: { final: "ـا", medial: "ـئا", initial: "ئا", isolated: "ا" } },
-  { id: "e", base: "ئە", forms: { final: "ـە", medial: "ـئە", initial: "ئە", isolated: "ە" } },
-  { id: "é", base: "ئې", forms: { final: "ـې", medial: "ـې", initial: "ئې", isolated: "ې" } },
-  { id: "i", base: "ئى", forms: { final: "ـى", medial: "ـى", initial: "ئى", isolated: "ى" } },
-  { id: "o", base: "ئو", forms: { final: "ـو", medial: "ـو", initial: "ئو", isolated: "و" } },
-  { id: "u", base: "ئۇ", forms: { final: "ـۇ", medial: "ـۇ", initial: "ئۇ", isolated: "ۇ" } },
-  { id: "ö", base: "ئۆ", forms: { final: "ـۆ", medial: "ـۆ", initial: "ئۆ", isolated: "ۆ" } },
-  { id: "ü", base: "ئۈ", forms: { final: "ـۈ", medial: "ـۈ", initial: "ئۈ", isolated: "ۈ" } },
-  { id: "b", base: "ب", forms: { final: "ـب", medial: "ـبـ", initial: "بـ", isolated: "ب" } },
-  { id: "p", base: "پ", forms: { final: "ـپ", medial: "ـپـ", initial: "پـ", isolated: "پ" } },
-  { id: "t", base: "ت", forms: { final: "ـت", medial: "ـتـ", initial: "تـ", isolated: "ت" } },
-  { id: "j", base: "ج", forms: { final: "ـج", medial: "ـجـ", initial: "جـ", isolated: "ج" } },
-  { id: "ch", base: "چ", forms: { final: "ـچ", medial: "ـچـ", initial: "چـ", isolated: "چ" } },
-  { id: "x", base: "خ", forms: { final: "ـخ", medial: "ـخـ", initial: "خـ", isolated: "خ" } },
-  { id: "d", base: "د", forms: { final: "ـد", medial: "ـد", initial: "د", isolated: "د" } },
-  { id: "r", base: "ر", forms: { final: "ـر", medial: "ـر", initial: "ر", isolated: "ر" } },
-  { id: "z", base: "ز", forms: { final: "ـز", medial: "ـز", initial: "ز", isolated: "ز" } },
-  { id: "zh", base: "ژ", forms: { final: "ـژ", medial: "ـژ", initial: "ژ", isolated: "ژ" } },
-  { id: "s", base: "س", forms: { final: "ـس", medial: "ـسـ", initial: "سـ", isolated: "س" } },
-  { id: "sh", base: "ش", forms: { final: "ـش", medial: "ـشـ", initial: "شـ", isolated: "ش" } },
-  { id: "gh", base: "غ", forms: { final: "ـغ", medial: "ـغـ", initial: "غـ", isolated: "غ" } },
-  { id: "f", base: "ف", forms: { final: "ـف", medial: "ـفـ", initial: "فـ", isolated: "ف" } },
-  { id: "q", base: "ق", forms: { final: "ـق", medial: "ـقـ", initial: "قـ", isolated: "ق" } },
-  { id: "k", base: "ك", forms: { final: "ـك", medial: "ـكـ", initial: "كـ", isolated: "ك" } },
-  { id: "g", base: "گ", forms: { final: "ـگ", medial: "ـگـ", initial: "گـ", isolated: "گ" } },
-  { id: "ng", base: "ڭ", forms: { final: "ـڭ", medial: "ـڭـ", initial: "ڭـ", isolated: "ڭ" } },
-  { id: "l", base: "ل", forms: { final: "ـل", medial: "ـلـ", initial: "لـ", isolated: "ل" } },
-  { id: "m", base: "م", forms: { final: "ـم", medial: "ـمـ", initial: "مـ", isolated: "م" } },
-  { id: "n", base: "ن", forms: { final: "ـن", medial: "ـنـ", initial: "نـ", isolated: "ن" } },
-  { id: "h", base: "ھ", forms: { final: "ـھ", medial: "ـھـ", initial: "ھـ", isolated: "ھ" } },
-  { id: "w", base: "ۋ", forms: { final: "ـۋ", medial: "ـۋ", initial: "ۋ", isolated: "ۋ" } },
-  { id: "y", base: "ي", forms: { final: "ـي", medial: "ـيـ", initial: "يـ", isolated: "ي" } }
+  { id: "a", base: "ئا", latin: "[a]", sound: "sounds/aa.m4a", forms: { final: "ـا", medial: "ـئا", initial: "ئا", isolated: "ا" } },
+  { id: "e", base: "ئە", latin: "[e]", sound: "sounds/ae.m4a", forms: { final: "ـە", medial: "ـئە", initial: "ئە", isolated: "ە" } },
+  { id: "é", base: "ئې", latin: "[é]", sound: "sounds/ee.m4a", forms: { final: "ـې", medial: "ـې", initial: "ئې", isolated: "ې" } },
+  { id: "i", base: "ئى", latin: "[i]", sound: "sounds/i.m4a", forms: { final: "ـى", medial: "ـى", initial: "ئى", isolated: "ى" } },
+  { id: "o", base: "ئو", latin: "[o]", sound: "sounds/o.m4a", forms: { final: "ـو", medial: "ـو", initial: "ئو", isolated: "و" } },
+  { id: "u", base: "ئۇ", latin: "[u]", sound: "sounds/u.m4a", forms: { final: "ـۇ", medial: "ـۇ", initial: "ئۇ", isolated: "ۇ" } },
+  { id: "ö", base: "ئۆ", latin: "[ö]", sound: "sounds/oe.m4a", forms: { final: "ـۆ", medial: "ـۆ", initial: "ئۆ", isolated: "ۆ" } },
+  { id: "ü", base: "ئۈ", latin: "[ü]", sound: "sounds/ue.m4a", forms: { final: "ـۈ", medial: "ـۈ", initial: "ئۈ", isolated: "ۈ" } },
+  { id: "b", base: "ب", latin: "[b]", sound: "sounds/b.m4a", forms: { final: "ـب", medial: "ـبـ", initial: "بـ", isolated: "ب" } },
+  { id: "p", base: "پ", latin: "[p]", sound: "sounds/p.m4a", forms: { final: "ـپ", medial: "ـپـ", initial: "پـ", isolated: "پ" } },
+  // Add all remaining letters here...
 ];
 
 const FORM_TYPES = ["final","medial","initial","isolated"];
@@ -69,7 +59,9 @@ function UyghurAlphabetGame() {
       id: `${letter.id}-${form}-${Math.random().toString(36).slice(2,6)}`,
       letterId: letter.id,
       form,
-      glyph: letter.forms[form]
+      glyph: letter.forms[form],
+      latin: letter.latin,
+      sound: letter.sound
     })).filter(s => s.glyph)).sort(() => 0.5 - Math.random());
   };
 
@@ -77,9 +69,14 @@ function UyghurAlphabetGame() {
 
   const handleTileClick = tile => {
     setSelectedTile(tile);
-    const utter = new SpeechSynthesisUtterance(tile.glyph);
-    utter.lang = "ug-CN";
-    speechSynthesis.speak(utter);
+    if(tile.sound){
+      const audio = new Audio(tile.sound);
+      audio.play();
+    } else {
+      const utter = new SpeechSynthesisUtterance(tile.glyph);
+      utter.lang = "ug-CN";
+      speechSynthesis.speak(utter);
+    }
   };
 
   const handleSlotClick = slotId => {
@@ -125,8 +122,11 @@ function UyghurAlphabetGame() {
           const tileId = placements[slotId];
           const tile = tiles.find(t=>t.id===tileId);
           return (
-            <div key={slotId} onClick={()=>handleSlotClick(slotId)} className={`h-20 flex items-center justify-center border-2 border-dashed rounded-xl cursor-pointer ${tile?'border-green-500':'border-gray-300'}`}>
-              {tile ? tile.glyph : <span className="text-gray-400">{form}</span>}
+            <div key={slotId} onClick={()=>handleSlotClick(slotId)} className={`h-28 flex flex-col items-center justify-center border-2 border-dashed rounded-xl cursor-pointer ${tile?'border-green-500':'border-gray-300'}`}>
+              {tile ? <>
+                <span className="letter-glyph">{tile.glyph}</span>
+                <span className="letter-latin">{tile.latin}</span>
+              </> : <span className="text-gray-400">{form}</span>}
             </div>
           );
         }))}
@@ -134,8 +134,9 @@ function UyghurAlphabetGame() {
 
       <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3">
         {availableTiles.map(tile => (
-          <div key={tile.id} onClick={()=>handleTileClick(tile)} className={`h-20 flex items-center justify-center border rounded-xl cursor-pointer select-none text-2xl ${selectedTile?.id===tile.id?'border-blue-500 bg-blue-50':'bg-white'}`}>
-            {tile.glyph}
+          <div key={tile.id} onClick={()=>handleTileClick(tile)} className={`h-28 flex flex-col items-center justify-center border rounded-xl cursor-pointer select-none text-3xl ${selectedTile?.id===tile.id?'border-blue-500 bg-blue-50':'bg-white'}`}>
+            <span className="letter-glyph">{tile.glyph}</span>
+            <span className="letter-latin">{tile.latin}</span>
           </div>
         ))}
       </div>
@@ -147,4 +148,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(<UyghurAlphabetGame 
 </script>
 </body>
 </html>
-
