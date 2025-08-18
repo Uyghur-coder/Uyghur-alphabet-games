@@ -17,8 +17,10 @@ body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; fo
 .direction-rtl { direction: rtl; }
 .direction-ltr { direction: ltr; }
 .selected { border: 2px solid #3b82f6; }
-.letter-glyph { font-size: 2.5rem; text-align: center; }
+.letter-glyph { font-size: 2.5rem; text-align: center; word-break: break-word; }
 .letter-latin { font-size: 1.4rem; text-align: center; display: block; margin-top: 4px; }
+.flash-correct { background-color: #d1fae5 !important; } /* green-100 */
+.flash-wrong { background-color: #fee2e2 !important; }   /* red-100 */
 </style>
 </head>
 <body class="bg-gray-50 p-6">
@@ -30,9 +32,9 @@ body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; fo
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <script type="text/babel">
-const { useState } = React;
+const { useState, useEffect } = React;
 
-// Update these paths to your own sound files
+// Full Uyghur alphabet array
 const LETTERS = [
   { id: "a", base: "ئا", latin: "[a]", sound: "sounds/aa.m4a", forms: { final: "ـا", medial: "ـئا", initial: "ئا", isolated: "ا" } },
   { id: "e", base: "ئە", latin: "[e]", sound: "sounds/ae.m4a", forms: { final: "ـە", medial: "ـئە", initial: "ئە", isolated: "ە" } },
@@ -44,15 +46,48 @@ const LETTERS = [
   { id: "ü", base: "ئۈ", latin: "[ü]", sound: "sounds/ue.m4a", forms: { final: "ـۈ", medial: "ـۈ", initial: "ئۈ", isolated: "ۈ" } },
   { id: "b", base: "ب", latin: "[b]", sound: "sounds/b.m4a", forms: { final: "ـب", medial: "ـبـ", initial: "بـ", isolated: "ب" } },
   { id: "p", base: "پ", latin: "[p]", sound: "sounds/p.m4a", forms: { final: "ـپ", medial: "ـپـ", initial: "پـ", isolated: "پ" } },
-  // Add all remaining letters here...
+  { id: "t", base: "ت", latin: "[t]", sound: "sounds/t.m4a", forms: { final: "ـت", medial: "ـتـ", initial: "تـ", isolated: "ت" } },
+  { id: "j", base: "ج", latin: "[j]", sound: "sounds/j.m4a", forms: { final: "ـج", medial: "ـجـ", initial: "جـ", isolated: "ج" } },
+  { id: "ch", base: "چ", latin: "[ch]", sound: "sounds/ch.m4a", forms: { final: "ـچ", medial: "ـچـ", initial: "چـ", isolated: "چ" } },
+  { id: "x", base: "خ", latin: "[x]", sound: "sounds/x.m4a", forms: { final: "ـخ", medial: "ـخـ", initial: "خـ", isolated: "خ" } },
+  { id: "d", base: "د", latin: "[d]", sound: "sounds/d.m4a", forms: { final: "ـد", medial: null, initial: "د", isolated: "د" } },
+  { id: "r", base: "ر", latin: "[r]", sound: "sounds/r.m4a", forms: { final: "ـر", medial: null, initial: "ر", isolated: "ر" } },
+  { id: "z", base: "ز", latin: "[z]", sound: "sounds/z.m4a", forms: { final: "ـز", medial: null, initial: "ز", isolated: "ز" } },
+  { id: "s", base: "س", latin: "[s]", sound: "sounds/s.m4a", forms: { final: "ـس", medial: "ـسـ", initial: "سـ", isolated: "س" } },
+  { id: "sh", base: "ش", latin: "[sh]", sound: "sounds/sh.m4a", forms: { final: "ـش", medial: "ـشـ", initial: "شـ", isolated: "ش" } },
+  { id: "gh", base: "غ", latin: "[gh]", sound: "sounds/gh.m4a", forms: { final: "ـغ", medial: "ـغـ", initial: "غـ", isolated: "غ" } },
+  { id: "f", base: "ف", latin: "[f]", sound: "sounds/f.m4a", forms: { final: "ـف", medial: "ـفـ", initial: "فـ", isolated: "ف" } },
+  { id: "k", base: "ك", latin: "[k]", sound: "sounds/k.m4a", forms: { final: "ـك", medial: "ـكـ", initial: "كـ", isolated: "ك" } },
+  { id: "q", base: "ق", latin: "[q]", sound: "sounds/q.m4a", forms: { final: "ـق", medial: "ـقـ", initial: "قـ", isolated: "ق" } },
+  { id: "ng", base: "ڭ", latin: "[ng]", sound: "sounds/ng.m4a", forms: { final: "ـڭ", medial: "ـڭـ", initial: "ڭـ", isolated: "ڭ" } },
+  { id: "l", base: "ل", latin: "[l]", sound: "sounds/l.m4a", forms: { final: "ـل", medial: "ـلـ", initial: "لـ", isolated: "ل" } },
+  { id: "m", base: "م", latin: "[m]", sound: "sounds/m.m4a", forms: { final: "ـم", medial: "ـمـ", initial: "مـ", isolated: "م" } },
+  { id: "n", base: "ن", latin: "[n]", sound: "sounds/n.m4a", forms: { final: "ـن", medial: "ـنـ", initial: "نـ", isolated: "ن" } },
+  { id: "h", base: "ھ", latin: "[h]", sound: "sounds/h.m4a", forms: { final: "ـھ", medial: "ـھـ", initial: "ھـ", isolated: "ھ" } },
+  { id: "o", base: "ۋ", latin: "[w]", sound: "sounds/w.m4a", forms: { final: "ـۋ", medial: "ـۋـ", initial: "ۋـ", isolated: "ۋ" } },
+  { id: "y", base: "ي", latin: "[y]", sound: "sounds/y.m4a", forms: { final: "ـي", medial: "ـيـ", initial: "يـ", isolated: "ي" } },
+  { id: "é", base: "ئ", latin: "[']", sound: "sounds/apostrophe.m4a", forms: { final: null, medial: null, initial: "ئ", isolated: "ئ" } }
 ];
 
 const FORM_TYPES = ["final","medial","initial","isolated"];
+
+// Preload all sounds
+const soundMap = {};
+LETTERS.forEach(letter => {
+  if(letter.sound){
+    const audio = new Audio(letter.sound);
+    audio.preload = "auto";
+    soundMap[letter.id] = audio;
+  }
+});
 
 function UyghurAlphabetGame() {
   const [placements, setPlacements] = useState({});
   const [selectedTile, setSelectedTile] = useState(null);
   const [rtl, setRtl] = useState(true);
+  const [tiles, setTiles] = useState([]);
+
+  useEffect(() => { setTiles(generateTiles()); }, []);
 
   const generateTiles = () => {
     return LETTERS.flatMap(letter => FORM_TYPES.map(form => ({
@@ -65,13 +100,11 @@ function UyghurAlphabetGame() {
     })).filter(s => s.glyph)).sort(() => 0.5 - Math.random());
   };
 
-  const [tiles, setTiles] = useState(generateTiles);
-
   const handleTileClick = tile => {
     setSelectedTile(tile);
-    if(tile.sound){
-      const audio = new Audio(tile.sound);
-      audio.play();
+    if(tile.sound && soundMap[tile.letterId]){
+      soundMap[tile.letterId].currentTime = 0;
+      soundMap[tile.letterId].play();
     } else {
       const utter = new SpeechSynthesisUtterance(tile.glyph);
       utter.lang = "ug-CN";
@@ -81,12 +114,22 @@ function UyghurAlphabetGame() {
 
   const handleSlotClick = slotId => {
     if(!selectedTile) return;
+    const slotCorrect = selectedTile.letterId === slotId.split('-')[0] &&
+                        selectedTile.form === slotId.split('-')[1];
+
     setPlacements(prev => {
       const next = { ...prev };
       Object.keys(next).forEach(k => { if(next[k]===selectedTile.id) delete next[k]; });
       next[slotId] = selectedTile.id;
       return next;
     });
+
+    const el = document.getElementById(slotId);
+    if(el){
+      el.classList.add(slotCorrect ? 'flash-correct' : 'flash-wrong');
+      setTimeout(()=>el.classList.remove(slotCorrect ? 'flash-correct' : 'flash-wrong'),500);
+    }
+
     setSelectedTile(null);
   };
 
@@ -122,7 +165,7 @@ function UyghurAlphabetGame() {
           const tileId = placements[slotId];
           const tile = tiles.find(t=>t.id===tileId);
           return (
-            <div key={slotId} onClick={()=>handleSlotClick(slotId)} className={`h-28 flex flex-col items-center justify-center border-2 border-dashed rounded-xl cursor-pointer ${tile?'border-green-500':'border-gray-300'}`}>
+            <div key={slotId} id={slotId} onClick={()=>handleSlotClick(slotId)} className={`h-28 flex flex-col items-center justify-center border-2 border-dashed rounded-xl cursor-pointer ${tile?'border-green-500':'border-gray-300'}`}>
               {tile ? <>
                 <span className="letter-glyph">{tile.glyph}</span>
                 <span className="letter-latin">{tile.latin}</span>
