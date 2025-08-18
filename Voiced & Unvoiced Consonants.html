@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur Voiced vs Unvoiced Sorting Game</title>
+<style>
+  body { font-family: sans-serif; text-align: center; margin: 20px; }
+  
+  #consonants {
+    display: flex;
+    flex-wrap: wrap;      /* Wrap consonants to next line if needed */
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .consonant {
+    font-size: 32px; 
+    margin: 5px; 
+    padding: 10px; 
+    border: 1px solid #555; 
+    border-radius: 5px; 
+    cursor: grab;
+    background-color: #f0f0f0;
+    min-width: 40px;      /* ensures a consistent box size */
+    text-align: center;
+  }
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;      /* Responsive for narrow screens */
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .box {
+    flex: 1 1 200px;      /* Grow/shrink with screen width */
+    min-width: 180px;
+    max-width: 250px;
+    min-height: 200px;
+    border: 2px dashed #333;
+    padding: 10px; 
+    font-size: 24px; 
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    align-content: flex-start;
+  }
+
+  #feedback { font-size: 24px; margin-top: 20px; min-height: 30px; }
+  #score { font-size: 20px; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<h1>Uyghur: Voiced vs Unvoiced Consonants</h1>
+
+<div id="consonants"></div>
+
+<div class="container">
+  <div id="voiced" class="box" ondrop="drop(event)" ondragover="allowDrop(event)">
+    Voiced (جاراڭلىق)
+  </div>
+  <div id="unvoiced" class="box" ondrop="drop(event)" ondragover="allowDrop(event)">
+    Unvoiced (جاراڭسىز)
+  </div>
+</div>
+
+<div id="feedback"></div>
+<div id="score">Score: 0</div>
+
+<script>
+const consonants = [
+  {char: 'ب', type: 'voiced'}, {char: 'پ', type: 'unvoiced'},
+  {char: 'د', type: 'voiced'}, {char: 'ت', type: 'unvoiced'},
+  {char: 'ج', type: 'voiced'}, {char: 'چ', type: 'unvoiced'},
+  {char: 'غ', type: 'voiced'}, {char: 'خ', type: 'unvoiced'},
+  {char: 'گ', type: 'voiced'}, {char: 'ك', type: 'unvoiced'},
+  {char: 'ز', type: 'voiced'}, {char: 'س', type: 'unvoiced'},
+  {char: 'ۋ', type: 'voiced'}, {char: 'ف', type: 'unvoiced'},
+  {char: 'ل', type: 'voiced'}, {char: 'م', type: 'voiced'},
+  {char: 'ن', type: 'voiced'}, {char: 'ر', type: 'voiced'},
+  {char: 'ي', type: 'voiced'}
+];
+
+let score = 0;
+
+function initConsonants() {
+  const container = document.getElementById('consonants');
+  consonants.forEach(c => {
+    let div = document.createElement('div');
+    div.innerText = c.char;
+    div.className = 'consonant';
+    div.draggable = true;
+    div.id = 'consonant-' + c.char;
+    div.dataset.type = c.type;
+    div.ondragstart = drag;
+    container.appendChild(div);
+  });
+}
+
+// Drag & Drop functions
+function allowDrop(ev) { ev.preventDefault(); }
+function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+
+function drop(ev) {
+  ev.preventDefault();
+  const data = ev.dataTransfer.getData("text");
+  const elem = document.getElementById(data);
+  const dropBox = ev.currentTarget;
+  
+  if(elem.dataset.type === (dropBox.id === 'voiced' ? 'voiced' : 'unvoiced')) {
+    dropBox.appendChild(elem);
+    document.getElementById('feedback').innerText = '✅ Correct!';
+    score++;
+  } else {
+    document.getElementById('feedback').innerText = '❌ Wrong! Try again.';
+    score = Math.max(0, score - 1);
+  }
+  
+  document.getElementById('score').innerText = `Score: ${score}`;
+}
+
+initConsonants();
+</script>
+
+</body>
+</html>
