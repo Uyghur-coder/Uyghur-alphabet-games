@@ -109,16 +109,20 @@ LETTERS.forEach(letter => {
 });
 
 function UyghurAlphabetGame() {
+  const { useState, useEffect } = React;
   const [placements, setPlacements] = useState({});
   const [selectedTile, setSelectedTile] = useState(null);
   const [rtl, setRtl] = useState(true);
   const [tiles, setTiles] = useState([]);
   const [gridCols, setGridCols] = useState(4);
+  const [lettersPerRound, setLettersPerRound] = useState(4);
+  const LETTER_OPTIONS = [2,4,6,8,10];
 
-  useEffect(() => { setTiles(generateTiles()); }, []);
+  useEffect(() => { setTiles(generateTiles()); }, [lettersPerRound]);
 
   const generateTiles = () => {
-    return LETTERS.flatMap(letter => FORM_TYPES.map(form => ({
+    const selectedLetters = LETTERS.sort(() => 0.5 - Math.random()).slice(0, lettersPerRound);
+    return selectedLetters.flatMap(letter => FORM_TYPES.map(form => ({
       id: `${letter.id}-${form}-${Math.random().toString(36).slice(2,6)}`,
       letterId: letter.id,
       form,
@@ -163,28 +167,26 @@ function UyghurAlphabetGame() {
 
   const placedIds = new Set(Object.values(placements));
   const availableTiles = tiles.filter(t => !placedIds.has(t.id));
-
-  const correctCount = LETTERS.reduce((acc,letter)=>{
-    FORM_TYPES.forEach(form=>{
-      const slotId = `${letter.id}-${form}`;
-      const tileId = placements[slotId];
-      const tile = tiles.find(t=>t.id===tileId);
-      if(tile && tile.letterId===letter.id && tile.form===form) acc++;
-    });
+  const correctCount = tiles.reduce((acc,tile)=>{
+    const slotId = `${tile.letterId}-${tile.form}`;
+    if(placements[slotId] === tile.id) acc++;
     return acc;
   },0);
 
-  const handleNewRound = () => {
-    setPlacements({});
-    setTiles(generateTiles());
-  };
+  const handleNewRound = () => { setPlacements({}); setTiles(generateTiles()); };
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between mb-4 flex-wrap gap-2">
         <button onClick={()=>setRtl(!rtl)} className="px-3 py-1 rounded bg-gray-200">Toggle RTL</button>
+        <div>
+          Letters per round: 
+          <select value={lettersPerRound} onChange={e => setLettersPerRound(Number(e.target.value))} className="ml-2 p-1 border rounded">
+            {LETTER_OPTIONS.map(n => <option key={n} value={n}>{n}</option>)}
+          </select>
+        </div>
         <button onClick={handleNewRound} className="px-3 py-1 rounded bg-blue-500 text-white">New Round / Shuffle</button>
-        <div>Correct: {correctCount} / {LETTERS.length*FORM_TYPES.length}</div>
+        <div>Correct: {correctCount} / {tiles.length}</div>
         <div>
           Grid: 
           <select value={gridCols} onChange={e=>setGridCols(Number(e.target.value))} className="ml-2 p-1 border rounded">
@@ -195,51 +197,41 @@ function UyghurAlphabetGame() {
 
       {/* Prompt row */}
       <div className={`grid grid-cols-${gridCols} gap-1 mb-2 ${rtl?'direction-rtl':'direction-ltr'}`}>
-        {LETTERS.flatMap(letter => FORM_TYPES.map(form => (
-          <div key={`prompt-${letter.id}-${form}`} className="flex flex-col items-center justify-center border-b border-gray-300 h-14">
-            <span className="letter-glyph text-xl">{letter.forms.isolated}</span>
-            <span className={`text-sm ${form==='initial'?'form-initial':form==='medial'?'form-medial':form==='final'?'form-final':'form-isolated'}`}>
-              {form}
+        {tiles.map(tile => (
+          <div key={`prompt-${tile.id}`} className="flex flex-col items-center justify-center border-b border-gray-300 h-14">
+            <span className="letter-glyph text-xl">{tile.glyph}</span>
+            <span className={`text-sm ${tile.form==='initial'?'form-initial':tile.form==='medial'?'form-medial':tile.form==='final'?'form-final':'form-isolated'}`}>
+              {tile.form}
             </span>
           </div>
-        )))}
+        ))}
       </div>
 
       {/* Grids for filling */}
       <div className={`grid grid-cols-${gridCols} gap-3 mb-6 ${rtl?'direction-rtl':'direction-ltr'}`}>
-        {LETTERS.flatMap(letter => FORM_TYPES.map(form => {
-          const slotId = `${letter.id}-${form}`;
-          const tileId = placements[slotId];
-          const tile = tiles.find(t=>t.id===tileId);
-          const formColorClass = form==='initial'?'form-initial':form==='medial'?'form-medial':form==='final'?'form-final':'form-isolated';
+        {tiles.map(tile => {
+          const slotId = `${tile.letterId}-${tile.form}`;
+          const placedTileId = placements[slotId];
+          const placedTile = tiles.find(t=>t.id===placedTileId);
+          const formColorClass = tile.form==='initial'?'form-initial':tile.form==='medial'?'form-medial':tile.form==='final'?'form-final':'form-isolated';
 
           return (
             <div key={slotId} id={slotId} onClick={()=>handleSlotClick(slotId)}
-                 className={`slot h-28 flex flex-col items-center justify-center border-2 border-dashed rounded-xl cursor-pointer ${tile?'border-green-500':'border-gray-300'}`}>
-              {tile ? (
+                 className={`slot h-28 flex flex-col items-center justify-center border-2 border-dashed rounded-xl cursor-pointer ${placedTile?'border-green-500':'border-gray-300'}`}>
+              {placedTile ? (
                 <>
-                  <span className="letter-glyph">{tile.glyph}</span>
-                  <span className="letter-latin">{tile.latin}</span>
+                  <span className="letter-glyph">{placedTile.glyph}</span>
+                  <span className="letter-latin">{placedTile.latin}</span>
                 </>
               ) : (
                 <>
-                  <span className={`hint ${formColorClass}`}>{letter.forms[form]}</span>
-                  <span className={`text-sm ${formColorClass}`}>{form}</span>
+                  <span className={`hint ${formColorClass}`}>{tile.glyph}</span>
+                  <span className={`text-sm ${formColorClass}`}>{tile.form}</span>
                 </>
               )}
             </div>
           );
-        }))}
-      </div>
-
-      {/* Available tiles */}
-      <div className={`grid grid-cols-${gridCols} gap-3`}>
-        {availableTiles.map(tile => (
-          <div key={tile.id} onClick={()=>handleTileClick(tile)} className={`h-28 flex flex-col items-center justify-center border rounded-xl cursor-pointer select-none text-3xl ${selectedTile?.id===tile.id?'border-blue-500 bg-blue-50':'bg-white'}`}>
-            <span className="letter-glyph">{tile.glyph}</span>
-            <span className="letter-latin">{tile.latin}</span>
-          </div>
-        ))}
+        })}
       </div>
     </div>
   );
