@@ -13,13 +13,27 @@
       font-family: 'UyghurFont', sans-serif;
       font-size: 2rem;
     }
+    .slot, .option {
+      border: 2px dashed #ccc;
+      min-height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+    }
+    .slot.selected, .option.selected {
+      border-color: #2563eb;
+      background-color: #dbeafe;
+    }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-6">
   <h1 class="text-2xl font-bold mb-6">Uyghur Alphabet Forms Game</h1>
 
   <div id="gameBox" class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-2xl text-center">
-    <p class="mb-4">Fill in the <b>initial</b>, <b>medial</b>, and <b>final</b> forms of the letter shown below:</p>
+    <p class="mb-4">Click a letter form, then click the correct slot (<b>initial</b>, <b>medial</b>, <b>final</b>).</p>
 
     <div id="question" class="mb-6">
       <span id="letter" class="uyghur text-5xl"></span>
@@ -29,17 +43,19 @@
     <div class="grid grid-cols-3 gap-4 mb-6">
       <div>
         <label class="block mb-1">Initial</label>
-        <input id="initialInput" class="w-full border rounded-lg p-2 text-center" />
+        <div id="initialSlot" class="slot"></div>
       </div>
       <div>
         <label class="block mb-1">Medial</label>
-        <input id="medialInput" class="w-full border rounded-lg p-2 text-center" />
+        <div id="medialSlot" class="slot"></div>
       </div>
       <div>
         <label class="block mb-1">Final</label>
-        <input id="finalInput" class="w-full border rounded-lg p-2 text-center" />
+        <div id="finalSlot" class="slot"></div>
       </div>
     </div>
+
+    <div id="options" class="flex flex-wrap gap-2 justify-center mb-6"></div>
 
     <button onclick="checkAnswer()" class="bg-blue-500 text-white px-6 py-2 rounded-xl shadow hover:bg-blue-600">Check</button>
     <p id="feedback" class="mt-4 font-semibold"></p>
@@ -48,55 +64,62 @@
   <script>
     const letters = [
       { isolated: ['ئا','ا'], latin: 'a', initial: [], medial: [], final: ['ـا','ـئا'] },
-      { isolated: ['ئە','ە'], latin: 'e', initial: [], medial: [], final: ['ـە','ـئە'] },
       { isolated: ['ب'], latin: 'b', initial: ['بـ'], medial: ['ـبـ'], final: ['ـب'] },
       { isolated: ['پ'], latin: 'p', initial: ['پـ'], medial: ['ـپـ'], final: ['ـپ'] },
       { isolated: ['ت'], latin: 't', initial: ['تـ'], medial: ['ـتـ'], final: ['ـت'] },
       { isolated: ['ج'], latin: 'j', initial: ['جـ'], medial: ['ـجـ'], final: ['ـج'] },
       { isolated: ['چ'], latin: 'ch', initial: ['چـ'], medial: ['ـچـ'], final: ['ـچ'] },
       { isolated: ['خ'], latin: 'kh', initial: ['خـ'], medial: ['ـخـ'], final: ['ـخ'] },
-      { isolated: ['د'], latin: 'd', initial: [], medial: [], final: ['ـد'] },
-      { isolated: ['ر'], latin: 'r', initial: [], medial: [], final: ['ـر'] },
-      { isolated: ['ز'], latin: 'z', initial: [], medial: [], final: ['ـز'] },
-      { isolated: ['ژ'], latin: 'zh', initial: [], medial: [], final: ['ـژ'] },
       { isolated: ['س'], latin: 's', initial: ['سـ'], medial: ['ـسـ'], final: ['ـس'] },
-      { isolated: ['ش'], latin: 'sh', initial: ['شـ'], medial: ['ـشـ'], final: ['ـش'] },
-      { isolated: ['غ'], latin: 'gh', initial: ['غـ'], medial: ['ـغـ'], final: ['ـغ'] },
-      { isolated: ['ف'], latin: 'f', initial: ['فـ'], medial: ['ـفـ'], final: ['ـف'] },
-      { isolated: ['ق'], latin: 'q', initial: ['قـ'], medial: ['ـقـ'], final: ['ـق'] },
-      { isolated: ['ك'], latin: 'k', initial: ['كـ'], medial: ['ـكـ'], final: ['ـك'] },
-      { isolated: ['گ'], latin: 'g', initial: ['گـ'], medial: ['ـگـ'], final: ['ـگ'] },
-      { isolated: ['ڭ'], latin: 'ng', initial: ['ڭـ'], medial: ['ـڭـ'], final: ['ـڭ'] },
-      { isolated: ['ل'], latin: 'l', initial: ['لـ'], medial: ['ـلـ'], final: ['ـل'] },
       { isolated: ['م'], latin: 'm', initial: ['مـ'], medial: ['ـمـ'], final: ['ـم'] },
       { isolated: ['ن'], latin: 'n', initial: ['نـ'], medial: ['ـنـ'], final: ['ـن'] },
-      { isolated: ['ھ'], latin: 'h', initial: ['ھـ'], medial: ['ـھـ'], final: ['ـھ'] },
-      { isolated: ['ئو','و'], latin: 'o', initial: [], medial: [], final: ['ـو','ـئو'] },
-      { isolated: ['ئۇ','ۇ'], latin: 'u', initial: [], medial: [], final: ['ـۇ','ـئۇ'] },
-      { isolated: ['ئۆ','ۆ'], latin: 'ö', initial: [], medial: [], final: ['ـۆ','ـئۆ'] },
-      { isolated: ['ئۈ','ۈ'], latin: 'ü', initial: [], medial: [], final: ['ـۈ','ـئۈ'] },
-      { isolated: ['ۋ'], latin: 'w', initial: [], medial: [], final: ['ـۋ'] },
       { isolated: ['ي'], latin: 'y', initial: ['يـ'], medial: ['ـيـ'], final: ['ـي'] },
-      { isolated: ['ئې','ې'], latin: 'e', initial: ['ئېـ','ېـ'], medial: ['ـئېـ','ـېـ'], final: ['ـې'] },
       { isolated: ['ئى','ى'], latin: 'i', initial: ['ئىـ','ىـ'], medial: ['ـئىـ','ـىـ'], final: ['ـى'] }
     ];
 
     let current;
+    let selectedOption = null;
 
     function newQuestion() {
       current = letters[Math.floor(Math.random() * letters.length)];
       document.getElementById("letter").textContent = current.isolated[0];
       document.getElementById("latin").textContent = `(${current.latin})`;
-      document.getElementById("initialInput").value = '';
-      document.getElementById("medialInput").value = '';
-      document.getElementById("finalInput").value = '';
+      document.querySelectorAll('.slot').forEach(s => s.textContent = '');
       document.getElementById("feedback").textContent = '';
+
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = '';
+      const forms = [...current.initial, ...current.medial, ...current.final];
+      forms.forEach(f => {
+        const btn = document.createElement("div");
+        btn.textContent = f;
+        btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
+        btn.onclick = () => selectOption(btn, f);
+        optionsDiv.appendChild(btn);
+      });
     }
 
+    function selectOption(btn, form) {
+      document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedOption = { text: form, element: btn };
+    }
+
+    document.querySelectorAll('.slot').forEach(slot => {
+      slot.addEventListener('click', () => {
+        if (selectedOption) {
+          slot.textContent = selectedOption.text;
+          slot.classList.remove('selected');
+          selectedOption.element.remove();
+          selectedOption = null;
+        }
+      });
+    });
+
     function checkAnswer() {
-      const init = document.getElementById("initialInput").value.trim();
-      const med = document.getElementById("medialInput").value.trim();
-      const fin = document.getElementById("finalInput").value.trim();
+      const init = document.getElementById("initialSlot").textContent.trim();
+      const med = document.getElementById("medialSlot").textContent.trim();
+      const fin = document.getElementById("finalSlot").textContent.trim();
 
       const correctInit = current.initial.length === 0 || current.initial.includes(init);
       const correctMed = current.medial.length === 0 || current.medial.includes(med);
