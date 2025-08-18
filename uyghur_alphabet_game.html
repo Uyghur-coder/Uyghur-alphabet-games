@@ -2,18 +2,13 @@
 <html lang="ug" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Uyghur Alphabet Sounds</title>
-
-<!-- Tailwind CSS -->
+<title>Uyghur Letter Quiz</title>
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-/* Load UKIJTUZ font */
 @font-face {
     font-family: 'UKIJTUZ';
-    src: url('fonts/UKIJTuz.ttf') format('truetype'); /* Adjust path if needed */
-    font-weight: normal;
-    font-style: normal;
+    src: url('fonts/UKIJTuz.ttf') format('truetype');
 }
 
 body {
@@ -21,7 +16,6 @@ body {
     direction: rtl;
     text-align: center;
     padding: 20px;
-    background-color: #f9fafb;
 }
 
 h1 {
@@ -29,21 +23,26 @@ h1 {
     margin-bottom: 20px;
 }
 
-.letter-grid {
+#latin-letter {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
     gap: 10px;
-    justify-items: center;
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 600px;
+    margin: 0 auto 20px auto;
 }
 
 .letter-box {
     background-color: #fff;
     border: 2px solid #333;
     border-radius: 12px;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -56,53 +55,110 @@ h1 {
     background-color: #e2e8f0;
     transform: scale(1.1);
 }
+
+#feedback {
+    font-size: 1.2rem;
+    margin-top: 15px;
+}
 </style>
 </head>
 <body>
 
-<h1>ئۇيغۇچە ھەرپلەر</h1>
+<h1>Uyghur Letter Quiz</h1>
+<div id="latin-letter">A</div>
 
-<div class="letter-grid">
-    <!-- Each letter box -->
-    <div class="letter-box" onclick="playSound('sounds/aa.mp3')">ئا</div>
-    <div class="letter-box" onclick="playSound('sounds/e.mp3')">ئە</div>
-    <div class="letter-box" onclick="playSound('sounds/b.mp3')">ب</div>
-    <div class="letter-box" onclick="playSound('sounds/p.mp3')">پ</div>
-    <div class="letter-box" onclick="playSound('sounds/t.mp3')">ت</div>
-    <div class="letter-box" onclick="playSound('sounds/j.mp3')">ج</div>
-    <div class="letter-box" onclick="playSound('sounds/ch.mp3')">چ</div>
-    <div class="letter-box" onclick="playSound('sounds/kh.mp3')">خ</div>
-    <div class="letter-box" onclick="playSound('sounds/d.mp3')">د</div>
-    <div class="letter-box" onclick="playSound('sounds/r.mp3')">ر</div>
-    <div class="letter-box" onclick="playSound('sounds/z.mp3')">ز</div>
-    <div class="letter-box" onclick="playSound('sounds/zh.mp3')">ژ</div>
-    <div class="letter-box" onclick="playSound('sounds/s.mp3')">س</div>
-    <div class="letter-box" onclick="playSound('sounds/sh.mp3')">ش</div>
-    <div class="letter-box" onclick="playSound('sounds/gh.mp3')">غ</div>
-    <div class="letter-box" onclick="playSound('sounds/f.mp3')">ف</div>
-    <div class="letter-box" onclick="playSound('sounds/q.mp3')">ق</div>
-    <div class="letter-box" onclick="playSound('sounds/k.mp3')">ك</div>
-    <div class="letter-box" onclick="playSound('sounds/g.mp3')">گ</div>
-    <div class="letter-box" onclick="playSound('sounds/ng.mp3')">ڭ</div>
-    <div class="letter-box" onclick="playSound('sounds/l.mp3')">ل</div>
-    <div class="letter-box" onclick="playSound('sounds/m.mp3')">م</div>
-    <div class="letter-box" onclick="playSound('sounds/n.mp3')">ن</div>
-    <div class="letter-box" onclick="playSound('sounds/h.mp3')">ھ</div>
-    <div class="letter-box" onclick="playSound('sounds/o.mp3')">ئو</div>
-    <div class="letter-box" onclick="playSound('sounds/u.mp3')">ئۇ</div>
-    <div class="letter-box" onclick="playSound('sounds/ö.mp3')">ئۆ</div>
-    <div class="letter-box" onclick="playSound('sounds/ü.mp3')">ئۈ</div>
-    <div class="letter-box" onclick="playSound('sounds/w.mp3')">ۋ</div>
-    <div class="letter-box" onclick="playSound('sounds/y.mp3')">ي</div>
-    <div class="letter-box" onclick="playSound('sounds/e2.mp3')">ئې</div>
-    <div class="letter-box" onclick="playSound('sounds/i.mp3')">ئى</div>
-</div>
+<div class="grid" id="letter-grid"></div>
+
+<div id="feedback"></div>
 
 <script>
-function playSound(src) {
-    const audio = new Audio(src);
-    audio.play();
+// Map Latin letters to Uyghur isolated forms
+const letters = [
+    {latin: 'A', uyghur: 'ئا'},
+    {latin: 'E', uyghur: 'ئە'},
+    {latin: 'B', uyghur: 'ب'},
+    {latin: 'P', uyghur: 'پ'},
+    {latin: 'T', uyghur: 'ت'},
+    {latin: 'J', uyghur: 'ج'},
+    {latin: 'CH', uyghur: 'چ'},
+    {latin: 'KH', uyghur: 'خ'},
+    {latin: 'D', uyghur: 'د'},
+    {latin: 'R', uyghur: 'ر'},
+    {latin: 'Z', uyghur: 'ز'},
+    {latin: 'ZH', uyghur: 'ژ'},
+    {latin: 'S', uyghur: 'س'},
+    {latin: 'SH', uyghur: 'ش'},
+    {latin: 'GH', uyghur: 'غ'},
+    {latin: 'F', uyghur: 'ف'},
+    {latin: 'Q', uyghur: 'ق'},
+    {latin: 'K', uyghur: 'ك'},
+    {latin: 'G', uyghur: 'گ'},
+    {latin: 'NG', uyghur: 'ڭ'},
+    {latin: 'L', uyghur: 'ل'},
+    {latin: 'M', uyghur: 'م'},
+    {latin: 'N', uyghur: 'ن'},
+    {latin: 'H', uyghur: 'ھ'},
+    {latin: 'O', uyghur: 'ئو'},
+    {latin: 'U', uyghur: 'ئۇ'},
+    {latin: 'Ö', uyghur: 'ئۆ'},
+    {latin: 'Ü', uyghur: 'ئۈ'},
+    {latin: 'W', uyghur: 'ۋ'},
+    {latin: 'Y', uyghur: 'ي'},
+    {latin: 'E2', uyghur: 'ئې'},
+    {latin: 'I', uyghur: 'ئى'}
+];
+
+// HTML elements
+const grid = document.getElementById('letter-grid');
+const latinLetterEl = document.getElementById('latin-letter');
+const feedback = document.getElementById('feedback');
+
+let currentIndex = 0;
+
+// Shuffle letters for display
+function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
 }
+
+// Render letter buttons
+function renderGrid() {
+    grid.innerHTML = '';
+    const options = shuffle(letters);
+    options.forEach(letter => {
+        const div = document.createElement('div');
+        div.className = 'letter-box';
+        div.textContent = letter.uyghur;
+        div.onclick = () => checkAnswer(letter.uyghur);
+        grid.appendChild(div);
+    });
+}
+
+// Show current Latin letter
+function showLatinLetter() {
+    latinLetterEl.textContent = letters[currentIndex].latin;
+}
+
+// Check answer
+function checkAnswer(selected) {
+    if(selected === letters[currentIndex].uyghur) {
+        feedback.textContent = '✅ توغرا!';
+        nextLetter();
+    } else {
+        feedback.textContent = '❌ خاتا، قايتا تەكشۈرۈڭ.';
+    }
+}
+
+// Move to next letter
+function nextLetter() {
+    currentIndex = (currentIndex + 1) % letters.length;
+    showLatinLetter();
+    renderGrid();
+    feedback.textContent = '';
+}
+
+// Initialize
+showLatinLetter();
+renderGrid();
 </script>
 
 </body>
