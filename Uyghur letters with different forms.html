@@ -157,7 +157,8 @@
     document.querySelectorAll('.slot').forEach(slot => {
       slot.addEventListener('click', () => {
         if (selectedOption) {
-          slot.textContent = slot.textContent ? slot.textContent + selectedOption.text : selectedOption.text;
+          // Add a comma between multiple letters if already present
+          slot.textContent = slot.textContent ? slot.textContent + ',' + selectedOption.text : selectedOption.text;
           slot.classList.remove('selected');
           selectedOption.element.remove();
           selectedOption = null;
@@ -170,9 +171,9 @@
       const med = document.getElementById("medialSlot").textContent.trim();
       const fin = document.getElementById("finalSlot").textContent.trim();
 
-      const correctInit = current.initial.length === 0 || current.initial.includes(init);
-      const correctMed = current.medial.length === 0 || current.medial.includes(med);
-      const correctFin = current.final.length === 0 || current.final.includes(fin);
+      const correctInit = current.initial.length === 0 || current.initial.includes(init.replace(/,/g,''));
+      const correctMed = current.medial.length === 0 || current.medial.includes(med.replace(/,/g,''));
+      const correctFin = current.final.length === 0 || current.final.includes(fin.replace(/,/g,''));
 
       if (correctInit && correctMed && correctFin) {
         document.getElementById("feedback").textContent = "✅ Correct!";
