@@ -16,6 +16,7 @@ body {
     direction: rtl;
     text-align: center;
     padding: 20px;
+    background-color: #f9fafb;
 }
 
 h1 {
@@ -64,63 +65,62 @@ h1 {
 </head>
 <body>
 
-<h1>Uyghur Letter Quiz</h1>
-<div id="latin-letter">A</div>
+<h1>ئۇيغۇر Letter Quiz</h1>
+<div id="latin-letter">a</div>
 
 <div class="grid" id="letter-grid"></div>
 
 <div id="feedback"></div>
 
 <script>
-// Map Latin letters to Uyghur isolated forms
+// Map lowercase Latin letters to Uyghur isolated forms
 const letters = [
-    {latin: 'A', uyghur: 'ئا'},
-    {latin: 'E', uyghur: 'ئە'},
-    {latin: 'B', uyghur: 'ب'},
-    {latin: 'P', uyghur: 'پ'},
-    {latin: 'T', uyghur: 'ت'},
-    {latin: 'J', uyghur: 'ج'},
-    {latin: 'CH', uyghur: 'چ'},
-    {latin: 'KH', uyghur: 'خ'},
-    {latin: 'D', uyghur: 'د'},
-    {latin: 'R', uyghur: 'ر'},
-    {latin: 'Z', uyghur: 'ز'},
-    {latin: 'ZH', uyghur: 'ژ'},
-    {latin: 'S', uyghur: 'س'},
-    {latin: 'SH', uyghur: 'ش'},
-    {latin: 'GH', uyghur: 'غ'},
-    {latin: 'F', uyghur: 'ف'},
-    {latin: 'Q', uyghur: 'ق'},
-    {latin: 'K', uyghur: 'ك'},
-    {latin: 'G', uyghur: 'گ'},
-    {latin: 'NG', uyghur: 'ڭ'},
-    {latin: 'L', uyghur: 'ل'},
-    {latin: 'M', uyghur: 'م'},
-    {latin: 'N', uyghur: 'ن'},
-    {latin: 'H', uyghur: 'ھ'},
-    {latin: 'O', uyghur: 'ئو'},
-    {latin: 'U', uyghur: 'ئۇ'},
-    {latin: 'Ö', uyghur: 'ئۆ'},
-    {latin: 'Ü', uyghur: 'ئۈ'},
-    {latin: 'W', uyghur: 'ۋ'},
-    {latin: 'Y', uyghur: 'ي'},
-    {latin: 'E2', uyghur: 'ئې'},
-    {latin: 'I', uyghur: 'ئى'}
+    {latin: 'a', uyghur: 'ئا'},
+    {latin: 'e', uyghur: 'ئە'},
+    {latin: 'b', uyghur: 'ب'},
+    {latin: 'p', uyghur: 'پ'},
+    {latin: 't', uyghur: 'ت'},
+    {latin: 'j', uyghur: 'ج'},
+    {latin: 'ch', uyghur: 'چ'},
+    {latin: 'kh', uyghur: 'خ'},
+    {latin: 'd', uyghur: 'د'},
+    {latin: 'r', uyghur: 'ر'},
+    {latin: 'z', uyghur: 'ز'},
+    {latin: 'zh', uyghur: 'ژ'},
+    {latin: 's', uyghur: 'س'},
+    {latin: 'sh', uyghur: 'ش'},
+    {latin: 'gh', uyghur: 'غ'},
+    {latin: 'f', uyghur: 'ف'},
+    {latin: 'q', uyghur: 'ق'},
+    {latin: 'k', uyghur: 'ك'},
+    {latin: 'g', uyghur: 'گ'},
+    {latin: 'ng', uyghur: 'ڭ'},
+    {latin: 'l', uyghur: 'ل'},
+    {latin: 'm', uyghur: 'م'},
+    {latin: 'n', uyghur: 'ن'},
+    {latin: 'h', uyghur: 'ھ'},
+    {latin: 'o', uyghur: 'ئو'},
+    {latin: 'u', uyghur: 'ئۇ'},
+    {latin: 'ö', uyghur: 'ئۆ'},
+    {latin: 'ü', uyghur: 'ئۈ'},
+    {latin: 'w', uyghur: 'ۋ'},
+    {latin: 'y', uyghur: 'ي'},
+    {latin: 'é', uyghur: 'ئې'},
+    {latin: 'i', uyghur: 'ئى'}
 ];
 
-// HTML elements
 const grid = document.getElementById('letter-grid');
 const latinLetterEl = document.getElementById('latin-letter');
 const feedback = document.getElementById('feedback');
 
 let currentIndex = 0;
 
-// Shuffle letters for display
+// Shuffle letters for grid display
 function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
 }
 
-// Render letter buttons
+// Render clickable Uyghur letters
 function renderGrid() {
     grid.innerHTML = '';
     const options = shuffle(letters);
@@ -133,7 +133,7 @@ function renderGrid() {
     });
 }
 
-// Show current Latin letter
+// Show current lowercase Latin letter
 function showLatinLetter() {
     latinLetterEl.textContent = letters[currentIndex].latin;
 }
