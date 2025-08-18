@@ -7,10 +7,9 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-  .card { background: white; border-radius: 1rem; padding: 1rem; box-shadow: 0 6px 18px rgba(15,23,42,0.06); }
-  .slot { min-height: 3.5rem; cursor: pointer; }
-  button:focus { outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
-  .selected { border: 2px solid #3b82f6; background:#eff6ff; }
+  .direction-rtl { direction: rtl; }
+  .direction-ltr { direction: ltr; }
+  .selected { border: 2px solid #3b82f6; }
 </style>
 </head>
 <body class="bg-gray-50 p-6">
@@ -21,188 +20,130 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <script type="text/babel">
-const { useState, useMemo, useEffect } = React;
+const { useState } = React;
 
 const LETTERS = [
-{ id:"alef", name:"ئا", label:"a", forms:{final:"ـا، ـئا", isolated:"ئا، ا"} },
-{ id:"e1", name:"ئە", label:"e (a)", forms:{final:"ـە، ـئە", isolated:"ئە، ە"} },
-{ id:"beh", name:"ب", label:"b", forms:{final:"ـب", medial:"ـبـ", initial:"بـ", isolated:"ب"} },
-{ id:"peh", name:"پ", label:"p", forms:{final:"ـپ", medial:"ـپـ", initial:"پـ", isolated:"پ"} },
-{ id:"teh", name:"ت", label:"t", forms:{final:"ـت", medial:"ـتـ", initial:"تـ", isolated:"ت"} },
-{ id:"jeem", name:"ج", label:"j", forms:{final:"ـج", medial:"ـجـ", initial:"جـ", isolated:"ج"} },
-{ id:"tcheh", name:"چ", label:"ch", forms:{final:"ـچ", medial:"ـچـ", initial:"چـ", isolated:"چ"} },
-{ id:"kheh", name:"خ", label:"kh", forms:{final:"ـخ", medial:"ـخـ", initial:"خـ", isolated:"خ"} },
-{ id:"dal", name:"د", label:"d", forms:{final:"ـد", isolated:"د"} },
-{ id:"reh", name:"ر", label:"r", forms:{final:"ـر", isolated:"ر"} },
-{ id:"zain", name:"ز", label:"z", forms:{final:"ـز", isolated:"ز"} },
-{ id:"zh", name:"ژ", label:"zh", forms:{final:"ـژ", isolated:"ژ"} },
-{ id:"seen", name:"س", label:"s", forms:{final:"ـس", medial:"ـسـ", initial:"سـ", isolated:"س"} },
-{ id:"sheen", name:"ش", label:"sh", forms:{final:"ـش", medial:"ـشـ", initial:"شـ", isolated:"ش"} },
-{ id:"gh", name:"غ", label:"gh", forms:{final:"ـغ", medial:"ـغـ", initial:"غـ", isolated:"غ"} },
-{ id:"feh", name:"ف", label:"f", forms:{final:"ـف", medial:"ـفـ", initial:"فـ", isolated:"ف"} },
-{ id:"qaf", name:"ق", label:"q", forms:{final:"ـق", medial:"ـقـ", initial:"قـ", isolated:"ق"} },
-{ id:"kaf", name:"ك", label:"k", forms:{final:"ـك", medial:"ـكـ", initial:"كـ", isolated:"ك"} },
-{ id:"gaf", name:"گ", label:"g", forms:{final:"ـگ", medial:"ـگـ", initial:"گـ", isolated:"گ"} },
-{ id:"ng", name:"ڭ", label:"ng", forms:{final:"ـڭ", medial:"ـڭـ", initial:"ڭـ", isolated:"ڭ"} },
-{ id:"lam", name:"ل", label:"l", forms:{final:"ـل", medial:"ـلـ", initial:"لـ", isolated:"ل"} },
-{ id:"meem", name:"م", label:"m", forms:{final:"ـم", medial:"ـمـ", initial:"مـ", isolated:"م"} },
-{ id:"noon", name:"ن", label:"n", forms:{final:"ـن", medial:"ـنـ", initial:"نـ", isolated:"ن"} },
-{ id:"heh", name:"ھ", label:"h", forms:{final:"ـھ", medial:"ـھـ", initial:"ھـ", isolated:"ھ"} },
-{ id:"o", name:"ئو", label:"o", forms:{final:"ـو، ـئو", isolated:"ئو، و"} },
-{ id:"u", name:"ئۇ", label:"u", forms:{final:"ـۇ، ـئۇ", isolated:"ئۇ، ۇ"} },
-{ id:"ö", name:"ئۆ", label:"ö", forms:{final:"ـۆ، ـئۆ", isolated:"ئۆ، ۆ"} },
-{ id:"ü", name:"ئۈ", label:"ü", forms:{final:"ـۈ، ـئۈ", isolated:"ئۈ، ۈ"} },
-{ id:"w", name:"ۋ", label:"w", forms:{final:"ـۋ", isolated:"ۋ"} },
-{ id:"yeh", name:"ي", label:"y", forms:{final:"ـي", medial:"ـيـ", initial:"يـ", isolated:"ي"} },
-{ id:"e2", name:"ئې", label:"e (e)", forms:{final:"ـې", medial:"ـئېـ، ـېـ", initial:"ئېـ، ېـ", isolated:"ئې، ې"} },
-{ id:"i", name:"ئى", label:"i", forms:{final:"ـى", medial:"ـئىـ، ـىـ", initial:"ئىـ، ىـ", isolated:"ئى، ى"} }
+  { id: "a", base: "ئا", forms: { final: "ـا", medial: "ـئا", initial: "ئا", isolated: "ا" } },
+  { id: "e", base: "ئە", forms: { final: "ـە", medial: "ـئە", initial: "ئە", isolated: "ە" } },
+  { id: "ë", base: "ئې", forms: { final: "ـې", medial: "ـې", initial: "ئې", isolated: "ې" } },
+  { id: "i", base: "ئى", forms: { final: "ـى", medial: "ـى", initial: "ئى", isolated: "ى" } },
+  { id: "o", base: "ئو", forms: { final: "ـو", medial: "ـو", initial: "ئو", isolated: "و" } },
+  { id: "u", base: "ئۇ", forms: { final: "ـۇ", medial: "ـۇ", initial: "ئۇ", isolated: "ۇ" } },
+  { id: "ö", base: "ئۆ", forms: { final: "ـۆ", medial: "ـۆ", initial: "ئۆ", isolated: "ۆ" } },
+  { id: "ü", base: "ئۈ", forms: { final: "ـۈ", medial: "ـۈ", initial: "ئۈ", isolated: "ۈ" } },
+  { id: "b", base: "ب", forms: { final: "ـب", medial: "ـبـ", initial: "بـ", isolated: "ب" } },
+  { id: "p", base: "پ", forms: { final: "ـپ", medial: "ـپـ", initial: "پـ", isolated: "پ" } },
+  { id: "t", base: "ت", forms: { final: "ـت", medial: "ـتـ", initial: "تـ", isolated: "ت" } },
+  { id: "j", base: "ج", forms: { final: "ـج", medial: "ـجـ", initial: "جـ", isolated: "ج" } },
+  { id: "ch", base: "چ", forms: { final: "ـچ", medial: "ـچـ", initial: "چـ", isolated: "چ" } },
+  { id: "x", base: "خ", forms: { final: "ـخ", medial: "ـخـ", initial: "خـ", isolated: "خ" } },
+  { id: "d", base: "د", forms: { final: "ـد", medial: "ـد", initial: "د", isolated: "د" } },
+  { id: "r", base: "ر", forms: { final: "ـر", medial: "ـر", initial: "ر", isolated: "ر" } },
+  { id: "z", base: "ز", forms: { final: "ـز", medial: "ـز", initial: "ز", isolated: "ز" } },
+  { id: "zh", base: "ژ", forms: { final: "ـژ", medial: "ـژ", initial: "ژ", isolated: "ژ" } },
+  { id: "s", base: "س", forms: { final: "ـس", medial: "ـسـ", initial: "سـ", isolated: "س" } },
+  { id: "sh", base: "ش", forms: { final: "ـش", medial: "ـشـ", initial: "شـ", isolated: "ش" } },
+  { id: "gh", base: "غ", forms: { final: "ـغ", medial: "ـغـ", initial: "غـ", isolated: "غ" } },
+  { id: "f", base: "ف", forms: { final: "ـف", medial: "ـفـ", initial: "فـ", isolated: "ف" } },
+  { id: "q", base: "ق", forms: { final: "ـق", medial: "ـقـ", initial: "قـ", isolated: "ق" } },
+  { id: "k", base: "ك", forms: { final: "ـك", medial: "ـكـ", initial: "كـ", isolated: "ك" } },
+  { id: "g", base: "گ", forms: { final: "ـگ", medial: "ـگـ", initial: "گـ", isolated: "گ" } },
+  { id: "ng", base: "ڭ", forms: { final: "ـڭ", medial: "ـڭـ", initial: "ڭـ", isolated: "ڭ" } },
+  { id: "l", base: "ل", forms: { final: "ـل", medial: "ـلـ", initial: "لـ", isolated: "ل" } },
+  { id: "m", base: "م", forms: { final: "ـم", medial: "ـمـ", initial: "مـ", isolated: "م" } },
+  { id: "n", base: "ن", forms: { final: "ـن", medial: "ـنـ", initial: "نـ", isolated: "ن" } },
+  { id: "h", base: "ھ", forms: { final: "ـھ", medial: "ـھـ", initial: "ھـ", isolated: "ھ" } },
+  { id: "w", base: "ۋ", forms: { final: "ـۋ", medial: "ـۋ", initial: "ۋ", isolated: "ۋ" } },
+  { id: "y", base: "ي", forms: { final: "ـي", medial: "ـيـ", initial: "يـ", isolated: "ي" } }
 ];
 
-const FORM_ORDER = ["final","medial","initial","isolated"];
+const FORM_TYPES = ["final","medial","initial","isolated"];
 
-function shuffled(array){ const a = array.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
-function uid(){ return Math.random().toString(36).slice(2,9); }
+function UyghurAlphabetGame() {
+  const [placements, setPlacements] = useState({});
+  const [selectedTile, setSelectedTile] = useState(null);
+  const [rtl, setRtl] = useState(true);
 
-function UyghurAlphabetClickMatch(){
-  const [count,setCount] = useState(10);
-  const [key,setKey] = useState(0);
-  const [rtl,setRtl] = useState(true);
-  const [selectedTile,setSelectedTile] = useState(null);
-  const [sessionScore,setSessionScore] = useState(0);
+  const generateTiles = () => {
+    return LETTERS.flatMap(letter => FORM_TYPES.map(form => ({
+      id: `${letter.id}-${form}-${Math.random().toString(36).slice(2,6)}`,
+      letterId: letter.id,
+      form,
+      glyph: letter.forms[form]
+    })).filter(s => s.glyph)).sort(() => 0.5 - Math.random());
+  };
 
-  const chosenLetters = useMemo(()=>{
-    const subset = shuffled(LETTERS).slice(0,count);
-    return subset.map(L=>({...L,rowId:uid()}));
-  },[count,key]);
+  const [tiles, setTiles] = useState(generateTiles);
 
-  const tiles = useMemo(()=>{
-    let t=[];
-    chosenLetters.forEach(L=>{
-      FORM_ORDER.forEach(form=>{
-        if(L.forms[form]) t.push({id:`${L.id}-${form}-${uid()}`, letterId:L.id, rowId:L.rowId, form, glyph:L.forms[form], base:L.name});
-      });
-    });
-    return shuffled(t);
-  },[chosenLetters]);
+  const handleTileClick = tile => {
+    setSelectedTile(tile);
+    const utter = new SpeechSynthesisUtterance(tile.glyph);
+    utter.lang = "ug-CN";
+    speechSynthesis.speak(utter);
+  };
 
-  const [placements,setPlacements] = useState({});
-  useEffect(()=>{ setPlacements({}); setSelectedTile(null); },[key,count]);
-
-  function handleTileClick(tile){ setSelectedTile(tile); }
-  function handleSlotClick(slotId,expectForm){
+  const handleSlotClick = slotId => {
     if(!selectedTile) return;
-    setPlacements(prev=>{
-      const next = {...prev};
-      for(const k of Object.keys(next)) if(next[k]===selectedTile.id) delete next[k];
+    setPlacements(prev => {
+      const next = { ...prev };
+      Object.keys(next).forEach(k => { if(next[k]===selectedTile.id) delete next[k]; });
       next[slotId] = selectedTile.id;
       return next;
     });
     setSelectedTile(null);
-  }
+  };
 
   const placedIds = new Set(Object.values(placements));
-  const availableTiles = tiles.filter(t=>!placedIds.has(t.id));
+  const availableTiles = tiles.filter(t => !placedIds.has(t.id));
 
-  const { correctCount,totalSlots,allCorrect } = useMemo(()=>{
-    let correct=0,total=0;
-    chosenLetters.forEach(L=>{
-      FORM_ORDER.forEach(form=>{
-        if(!L.forms[form]) return;
-        total++;
-        const slotId = `${L.rowId}:${L.id}:${form}`;
-        const tileId = placements[slotId];
-        if(!tileId) return;
-        const tile = tiles.find(t=>t.id===tileId);
-        if(tile && tile.letterId===L.id && tile.form===form && tile.rowId===L.rowId) correct++;
-      });
+  const correctCount = LETTERS.reduce((acc,letter)=>{
+    FORM_TYPES.forEach(form=>{
+      const slotId = `${letter.id}-${form}`;
+      const tileId = placements[slotId];
+      const tile = tiles.find(t=>t.id===tileId);
+      if(tile && tile.letterId===letter.id && tile.form===form) acc++;
     });
-    return {correctCount:correct,totalSlots:total,allCorrect:correct===total};
-  },[placements,tiles,chosenLetters]);
+    return acc;
+  },0);
 
-  useEffect(()=>{
-    if(allCorrect) setSessionScore(s=>s+correctCount);
-  },[allCorrect]);
-
-  function Slot({slotId,expectForm}){
-    const tileId = placements[slotId];
-    const tile = tiles.find(t=>t.id===tileId);
-    const correct = tile && tile.form===expectForm && tile.rowId===slotId.split(':')[0];
-    return (
-      <div onClick={()=>handleSlotClick(slotId,expectForm)}
-        className={"slot border rounded-2xl p-3 h-16 flex items-center justify-center text-2xl md:text-3xl shadow-sm transition-all select-none "+
-          (tile ? (correct ? "border-emerald-500 ring-1 ring-emerald-400" : "border-rose-400 ring-1 ring-rose-300") : "border-gray-300")}
-        dir={rtl?"rtl":"ltr"}>
-        {tile ? <span dir={rtl?"rtl":"ltr"}>{tile.glyph}</span> : <span className="text-xs text-gray-400 uppercase">{expectForm}</span>}
-      </div>
-    );
-  }
+  const handleNewRound = () => {
+    setPlacements({});
+    setTiles(generateTiles());
+  };
 
   return (
-    <div className="space-y-6" dir={rtl?"rtl":"ltr"}>
-      <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold">🧩 Uyghur Alphabet Click & Match</h1>
-          <p className="text-gray-600">Click a tile, then click the matching slot.</p>
-          <p className="text-sm text-gray-500">Session Score: <span className="font-semibold">{sessionScore}</span></p>
-        </div>
-        <div className="flex gap-2">
-          <button onClick={()=>setKey(k=>k+1)} className="px-4 py-2 rounded-2xl shadow-sm border">New round</button>
-          <label className="px-3 py-2 rounded-2xl shadow-sm border inline-flex items-center gap-2">
-            <input type="checkbox" checked={rtl} onChange={(e)=>setRtl(e.target.checked)} /> RTL layout
-          </label>
-          <select className="bg-transparent outline-none" value={count} onChange={(e)=>setCount(Number(e.target.value))}>
-            {[2, 4, 6, 8, 10, 12, 16].map(n=><option key={n} value={n}>{n} letters</option>)}
-          </select>
-        </div>
-      </header>
-
-      <div className="flex items-center gap-3">
-        <div className="h-2 bg-gray-200 rounded-full w-full overflow-hidden">
-          <div className="h-2 bg-emerald-500 transition-all" style={{width:`${(correctCount/totalSlots)*100}%`}}></div>
-        </div>
-        <div className="text-sm tabular-nums text-gray-600 w-28 text-right">{correctCount}/{totalSlots}</div>
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex justify-between mb-4">
+        <button onClick={()=>setRtl(!rtl)} className="px-3 py-1 rounded bg-gray-200">Toggle RTL</button>
+        <button onClick={handleNewRound} className="px-3 py-1 rounded bg-blue-500 text-white">New Round / Shuffle</button>
+        <div>Correct: {correctCount} / {LETTERS.length*FORM_TYPES.length}</div>
       </div>
 
-      {allCorrect && <div className="p-4 border rounded-2xl bg-emerald-50 border-emerald-200 text-emerald-800">✅ All correct!</div>}
+      <div className={`grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 mb-6 ${rtl?'direction-rtl':'direction-ltr'}`}>
+        {LETTERS.flatMap(letter => FORM_TYPES.map(form => {
+          const slotId = `${letter.id}-${form}`;
+          const tileId = placements[slotId];
+          const tile = tiles.find(t=>t.id===tileId);
+          return (
+            <div key={slotId} onClick={()=>handleSlotClick(slotId)} className={`h-20 flex items-center justify-center border-2 border-dashed rounded-xl cursor-pointer ${tile?'border-green-500':'border-gray-300'}`}>
+              {tile ? tile.glyph : <span className="text-gray-400">{form}</span>}
+            </div>
+          );
+        }))}
+      </div>
 
-      <section className="grid grid-cols-1 gap-4">
-        {chosenLetters.map(L=>(
-          <div key={L.rowId} className="card space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="text-3xl md:text-4xl" dir={rtl?"rtl":"ltr"}>{L.name}</div>
-                <div className="text-xs text-gray-500 uppercase">{L.label}</div>
-              </div>
-              <div className="text-xs text-gray-400">Match the forms</div>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {FORM_ORDER.map(form=>L.forms[form]?<Slot key={L.rowId+'-'+form} slotId={`${L.rowId}:${L.id}:${form}`} expectForm={form} />:null)}
-            </div>
-            <div className="text-xs text-gray-400">
-              {FORM_ORDER.map(form=>L.forms[form]?<span key={form} className="mr-3">{form}: {L.forms[form]}</span>:null)}
-            </div>
+      <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3">
+        {availableTiles.map(tile => (
+          <div key={tile.id} onClick={()=>handleTileClick(tile)} className={`h-20 flex items-center justify-center border rounded-xl cursor-pointer select-none text-2xl ${selectedTile?.id===tile.id?'border-blue-500 bg-blue-50':'bg-white'}`}>
+            {tile.glyph}
           </div>
         ))}
-      </section>
-
-      <section className="card">
-        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-3" dir={rtl?"rtl":"ltr"}>
-          {availableTiles.map(tile=>(
-            <button key={tile.id} onClick={()=>handleTileClick(tile)}
-              aria-label={`${tile.base} - ${tile.form}`}
-              className={`border rounded-2xl p-3 h-16 flex items-center justify-center text-2xl md:text-3xl bg-white hover:shadow shadow-sm select-none ${
-                selectedTile?.id===tile.id ? "selected" : ""
-              }`}>
-              <span dir={rtl?"rtl":"ltr"}>{tile.glyph}</span>
-            </button>
-          ))}
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<UyghurAlphabetClickMatch />);
+ReactDOM.createRoot(document.getElementById('root')).render(<UyghurAlphabetGame />);
 </script>
 </body>
 </html>
