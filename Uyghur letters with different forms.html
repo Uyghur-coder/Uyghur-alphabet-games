@@ -7,8 +7,16 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body { font-family: Arial, sans-serif; }
+@font-face {
+    font-family: 'UyghurFont';
+    src: url('fonts/UKIJTuz.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+body { font-family: 'UyghurFont', Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
 .letter-glyph { font-size: 2rem; text-align: center; }
+.letter-latin { font-size: 0.9rem; text-align: center; color: #555; margin-bottom: 0.3rem; }
 .slot { border: 2px dashed #ccc; border-radius: 0.5rem; width: 3rem; height: 3rem; display: flex; justify-content: center; align-items: center; cursor: pointer; margin: 0.2rem; }
 .tiles-container { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 1rem; }
 .tile { border: 2px solid #ccc; border-radius: 0.5rem; padding: 0.3rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 3rem; height: 3rem; }
@@ -31,40 +39,40 @@ body { font-family: Arial, sans-serif; }
 <script type="text/babel">
 const { useState, useEffect } = React;
 
-// Alphabet data from your table
+// Alphabet data with Latin names
 const LETTERS = [
-  {id:"a",isolated:"ا",initial:"ئا",medial:"ـئا",final:"ـا"},
-  {id:"e",isolated:"ە",initial:"ئە",medial:"ـئە",final:"ـە"},
-  {id:"b",isolated:"ب",initial:"بـ",medial:"ـبـ",final:"ـب"},
-  {id:"p",isolated:"پ",initial:"پـ",medial:"ـپـ",final:"ـپ"},
-  {id:"t",isolated:"ت",initial:"تـ",medial:"ـتـ",final:"ـت"},
-  {id:"j",isolated:"ج",initial:"جـ",medial:"ـجـ",final:"ـج"},
-  {id:"ch",isolated:"چ",initial:"چـ",medial:"ـچـ",final:"ـچ"},
-  {id:"kh",isolated:"خ",initial:"خـ",medial:"ـخـ",final:"ـخ"},
-  {id:"d",isolated:"د",initial:"د",medial:null,final:"ـد"},
-  {id:"r",isolated:"ر",initial:"ر",medial:null,final:"ـر"},
-  {id:"z",isolated:"ز",initial:"ز",medial:null,final:"ـز"},
-  {id:"zh",isolated:"ژ",initial:"ژ",medial:null,final:"ـژ"},
-  {id:"s",isolated:"س",initial:"سـ",medial:"ـسـ",final:"ـس"},
-  {id:"sh",isolated:"ش",initial:"شـ",medial:"ـشـ",final:"ـش"},
-  {id:"gh",isolated:"غ",initial:"غـ",medial:"ـغـ",final:"ـغ"},
-  {id:"f",isolated:"ف",initial:"فـ",medial:"ـفـ",final:"ـف"},
-  {id:"q",isolated:"ق",initial:"قـ",medial:"ـقـ",final:"ـق"},
-  {id:"k",isolated:"ك",initial:"كـ",medial:"ـكـ",final:"ـك"},
-  {id:"g",isolated:"گ",initial:"گـ",medial:"ـگـ",final:"ـگ"},
-  {id:"ng",isolated:"ڭ",initial:"ڭـ",medial:"ـڭـ",final:"ـڭ"},
-  {id:"l",isolated:"ل",initial:"لـ",medial:"ـلـ",final:"ـل"},
-  {id:"m",isolated:"م",initial:"مـ",medial:"ـمـ",final:"ـم"},
-  {id:"n",isolated:"ن",initial:"نـ",medial:"ـنـ",final:"ـن"},
-  {id:"h",isolated:"ھ",initial:"ھـ",medial:"ـھـ",final:"ـھ"},
-  {id:"o",isolated:"و",initial:"ئو",medial:"ـئو",final:"ـو"},
-  {id:"u",isolated:"ۇ",initial:"ئۇ",medial:"ـئۇ",final:"ـۇ"},
-  {id:"ö",isolated:"ۆ",initial:"ئۆ",medial:"ـئۆ",final:"ـۆ"},
-  {id:"ü",isolated:"ۈ",initial:"ئۈ",medial:"ـئۈ",final:"ـۈ"},
-  {id:"w",isolated:"ۋ",initial:"ۋ",medial:null,final:"ـۋ"},
-  {id:"y",isolated:"ي",initial:"يـ",medial:"ـيـ",final:"ـي"},
-  {id:"e2",isolated:"ئې",initial:"ئېـ، ېـ",medial:"ـئېـ، ـېـ",final:"ـې"},
-  {id:"i",isolated:"ئى، ى",initial:"ئىـ، ىـ",medial:"ـئىـ، ـىـ",final:"ـى"}
+  {id:"a",isolated:"ا",initial:"ئا",medial:"ـئا",final:"ـا",latin:"a"},
+  {id:"e",isolated:"ە",initial:"ئە",medial:"ـئە",final:"ـە",latin:"e"},
+  {id:"b",isolated:"ب",initial:"بـ",medial:"ـبـ",final:"ـب",latin:"b"},
+  {id:"p",isolated:"پ",initial:"پـ",medial:"ـپـ",final:"ـپ",latin:"p"},
+  {id:"t",isolated:"ت",initial:"تـ",medial:"ـتـ",final:"ـت",latin:"t"},
+  {id:"j",isolated:"ج",initial:"جـ",medial:"ـجـ",final:"ـج",latin:"j"},
+  {id:"ch",isolated:"چ",initial:"چـ",medial:"ـچـ",final:"ـچ",latin:"ch"},
+  {id:"kh",isolated:"خ",initial:"خـ",medial:"ـخـ",final:"ـخ",latin:"kh"},
+  {id:"d",isolated:"د",initial:"د",medial:null,final:"ـد",latin:"d"},
+  {id:"r",isolated:"ر",initial:"ر",medial:null,final:"ـر",latin:"r"},
+  {id:"z",isolated:"ز",initial:"ز",medial:null,final:"ـز",latin:"z"},
+  {id:"zh",isolated:"ژ",initial:"ژ",medial:null,final:"ـژ",latin:"zh"},
+  {id:"s",isolated:"س",initial:"سـ",medial:"ـسـ",final:"ـس",latin:"s"},
+  {id:"sh",isolated:"ش",initial:"شـ",medial:"ـشـ",final:"ـش",latin:"sh"},
+  {id:"gh",isolated:"غ",initial:"غـ",medial:"ـغـ",final:"ـغ",latin:"gh"},
+  {id:"f",isolated:"ف",initial:"فـ",medial:"ـفـ",final:"ـف",latin:"f"},
+  {id:"q",isolated:"ق",initial:"قـ",medial:"ـقـ",final:"ـق",latin:"q"},
+  {id:"k",isolated:"ك",initial:"كـ",medial:"ـكـ",final:"ـك",latin:"k"},
+  {id:"g",isolated:"گ",initial:"گـ",medial:"ـگـ",final:"ـگ",latin:"g"},
+  {id:"ng",isolated:"ڭ",initial:"ڭـ",medial:"ـڭـ",final:"ـڭ",latin:"ng"},
+  {id:"l",isolated:"ل",initial:"لـ",medial:"ـلـ",final:"ـل",latin:"l"},
+  {id:"m",isolated:"م",initial:"مـ",medial:"ـمـ",final:"ـم",latin:"m"},
+  {id:"n",isolated:"ن",initial:"نـ",medial:"ـنـ",final:"ـن",latin:"n"},
+  {id:"h",isolated:"ھ",initial:"ھـ",medial:"ـھـ",final:"ـھ",latin:"h"},
+  {id:"o",isolated:"و",initial:"ئو",medial:"ـئو",final:"ـو",latin:"o"},
+  {id:"u",isolated:"ۇ",initial:"ئۇ",medial:"ـئۇ",final:"ـۇ",latin:"u"},
+  {id:"ö",isolated:"ۆ",initial:"ئۆ",medial:"ـئۆ",final:"ـۆ",latin:"ö"},
+  {id:"ü",isolated:"ۈ",initial:"ئۈ",medial:"ـئۈ",final:"ـۈ",latin:"ü"},
+  {id:"w",isolated:"ۋ",initial:"ۋ",medial:null,final:"ـۋ",latin:"w"},
+  {id:"y",isolated:"ي",initial:"يـ",medial:"ـيـ",final:"ـي",latin:"y"},
+  {id:"e2",isolated:"ئې",initial:"ئېـ، ېـ",medial:"ـئېـ، ـېـ",final:"ـې",latin:"e2"},
+  {id:"i",isolated:"ئى، ى",initial:"ئىـ، ىـ",medial:"ـئىـ، ـىـ",final:"ـى",latin:"i"}
 ];
 
 const FORM_TYPES = ["initial","medial","final"];
@@ -110,14 +118,22 @@ function UyghurAlphabetGame() {
       </div>
 
       <div className="prompt-row">
-        {selectedLetters.map(letter=>(
+        {selectedLetters.map(letter => (
           <div key={letter.id} className="letter-column">
-            <div className="letter-glyph">{letter.isolated}</div>
-            {FORM_TYPES.map(form=>{
-              const placed=placements[letter.id+"-"+form];
+            <div className="letter-glyph mb-1">{letter.isolated}</div>
+            <div className="letter-latin mb-2">{letter.latin}</div>
+            {FORM_TYPES.map(form => {
+              const placed = placements[letter.id + "-" + form];
+              const label = form.charAt(0).toUpperCase() + form.slice(1);
               return (
-                <div key={form} className={`form-slot slot ${form}`} onClick={()=>handleSlotClick(letter.id,form)}>
-                  {placed && <span className="letter-glyph">{letter[form]}</span>}
+                <div key={form} className="mb-1 text-center">
+                  <div className="text-sm text-gray-600">{label}</div>
+                  <div
+                    className={`form-slot slot ${form}`}
+                    onClick={() => handleSlotClick(letter.id, form)}
+                  >
+                    {placed && <span className="letter-glyph">{letter[form]}</span>}
+                  </div>
                 </div>
               );
             })}
@@ -131,6 +147,7 @@ function UyghurAlphabetGame() {
           return !placed && (
             <div key={tile.id} className={`tile ${selectedTile?.id===tile.id?'selected':''}`} onClick={()=>handleTileClick(tile)}>
               <div className="letter-glyph">{tile.glyph}</div>
+              <div className="letter-latin">{selectedLetters.find(l=>l.id===tile.letterId)?.latin}</div>
             </div>
           );
         })}
