@@ -57,7 +57,12 @@
 
     <div id="options" class="flex flex-wrap gap-2 justify-center mb-6"></div>
 
-    <button onclick="checkAnswer()" class="bg-blue-500 text-white px-6 py-2 rounded-xl shadow hover:bg-blue-600">Check</button>
+    <div class="flex justify-center gap-4 mb-4">
+      <button onclick="checkAnswer()" class="bg-blue-500 text-white px-6 py-2 rounded-xl shadow hover:bg-blue-600">Check</button>
+      <button onclick="newQuestion()" class="bg-gray-500 text-white px-6 py-2 rounded-xl shadow hover:bg-gray-600">New Round</button>
+      <button onclick="clearSlots()" class="bg-yellow-500 text-white px-6 py-2 rounded-xl shadow hover:bg-yellow-600">Clear</button>
+    </div>
+
     <p id="feedback" class="mt-4 font-semibold"></p>
   </div>
 
@@ -112,15 +117,18 @@
       current = letters[Math.floor(Math.random() * letters.length)];
       document.getElementById("letter").textContent = current.isolated[0];
       document.getElementById("latin").textContent = `(${current.latin})`;
-      document.querySelectorAll('.slot').forEach(s => s.textContent = '');
+      clearSlots();
       document.getElementById("feedback").textContent = '';
 
       const optionsDiv = document.getElementById("options");
       optionsDiv.innerHTML = '';
       let forms = [...current.initial, ...current.medial, ...current.final];
 
+      // Only show existing forms
+      forms = forms.filter(f => f && f.trim() !== '');
+
       // Include distractors from other letters
-      let distractors = letters.flatMap(l => [...l.initial, ...l.medial, ...l.final]).filter(f => !forms.includes(f));
+      let distractors = letters.flatMap(l => [...l.initial, ...l.medial, ...l.final]).filter(f => !forms.includes(f) && f && f.trim() !== '');
       shuffle(distractors);
       forms = forms.concat(distractors.slice(0, 8));
       forms = shuffle(forms);
@@ -134,6 +142,12 @@
       });
     }
 
+    function clearSlots() {
+      document.querySelectorAll('.slot').forEach(s => s.textContent = '');
+      document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      selectedOption = null;
+    }
+
     function selectOption(btn, form) {
       document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
       btn.classList.add('selected');
@@ -143,7 +157,6 @@
     document.querySelectorAll('.slot').forEach(slot => {
       slot.addEventListener('click', () => {
         if (selectedOption) {
-          // Append instead of replace to keep all letters
           slot.textContent = slot.textContent ? slot.textContent + selectedOption.text : selectedOption.text;
           slot.classList.remove('selected');
           selectedOption.element.remove();
