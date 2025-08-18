@@ -1,201 +1,118 @@
-<!doctype html>
-<html lang="en" dir="rtl">
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Uyghur Alphabet Click & Match</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-@font-face {
-    font-family: 'UyghurFont';
-    src: url('fonts/UKIJTuz.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-body { font-family: 'UyghurFont', Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-
-.letter-glyph { font-size: 2rem; text-align: center; }
-.letter-latin { font-size: 0.9rem; text-align: center; color: #555; margin-bottom: 0.3rem; }
-
-.slot { 
-  border: 2px dashed #ccc; 
-  border-radius: 0.5rem; 
-  width: 4rem; 
-  height: 3rem; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  cursor: pointer; 
-  margin: 0.2rem; 
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 1.2;
-}
-
-.tiles-container { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 1rem; }
-
-.tile { 
-  border: 2px solid #ccc; 
-  border-radius: 0.5rem; 
-  padding: 0.3rem; 
-  cursor: pointer; 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: center; 
-  width: 4rem; 
-  height: 3rem; 
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 1.2;
-}
-
-.tile.selected { border-color: #3b82f6; background-color: #dbebff; }
-.letter-column { display: flex; flex-direction: column; align-items: center; margin: 0.2rem; }
-.form-slot.initial { background-color: #bfdbfe; }
-.form-slot.medial { background-color: #bbf7d0; }
-.form-slot.final { background-color: #fef9c3; }
-.prompt-row { display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 1rem; }
-</style>
-</head>
-<body class="p-4">
-
-<div id="root" class="max-w-6xl mx-auto"></div>
-
-<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-<script type="text/babel">
-const { useState, useEffect } = React;
-
-// Corrected alphabet data
-const LETTERS = [
-  {id:"a",isolated:"ئا، ا",initial:null,medial:null,final:"ـا، ـئا",latin:"a"},
-  {id:"e",isolated:"ئە، ە",initial:null,medial:null,final:"ـە، ـئە",latin:"e"},
-  {id:"b",isolated:"ب",initial:"بـ",medial:"ـبـ",final:"ـب",latin:"b"},
-  {id:"p",isolated:"پ",initial:"پـ",medial:"ـپـ",final:"ـپ",latin:"p"},
-  {id:"t",isolated:"ت",initial:"تـ",medial:"ـتـ",final:"ـت",latin:"t"},
-  {id:"j",isolated:"ج",initial:"جـ",medial:"ـجـ",final:"ـج",latin:"j"},
-  {id:"ch",isolated:"چ",initial:"چـ",medial:"ـچـ",final:"ـچ",latin:"ch"},
-  {id:"kh",isolated:"خ",initial:"خـ",medial:"ـخـ",final:"ـخ",latin:"kh"},
-  {id:"d",isolated:"د",initial:null,medial:null,final:"ـد",latin:"d"},
-  {id:"r",isolated:"ر",initial:null,medial:null,final:"ـر",latin:"r"},
-  {id:"z",isolated:"ز",initial:null,medial:null,final:"ـز",latin:"z"},
-  {id:"zh",isolated:"ژ",initial:null,medial:null,final:"ـژ",latin:"zh"},
-  {id:"s",isolated:"س",initial:"سـ",medial:"ـسـ",final:"ـس",latin:"s"},
-  {id:"sh",isolated:"ش",initial:"شـ",medial:"ـشـ",final:"ـش",latin:"sh"},
-  {id:"gh",isolated:"غ",initial:"غـ",medial:"ـغـ",final:"ـغ",latin:"gh"},
-  {id:"f",isolated:"ف",initial:"فـ",medial:"ـفـ",final:"ـف",latin:"f"},
-  {id:"q",isolated:"ق",initial:"قـ",medial:"ـقـ",final:"ـق",latin:"q"},
-  {id:"k",isolated:"ك",initial:"كـ",medial:"ـكـ",final:"ـك",latin:"k"},
-  {id:"g",isolated:"گ",initial:"گـ",medial:"ـگـ",final:"ـگ",latin:"g"},
-  {id:"ng",isolated:"ڭ",initial:"ڭـ",medial:"ـڭـ",final:"ـڭ",latin:"ng"},
-  {id:"l",isolated:"ل",initial:"لـ",medial:"ـلـ",final:"ـل",latin:"l"},
-  {id:"m",isolated:"م",initial:"مـ",medial:"ـمـ",final:"ـم",latin:"m"},
-  {id:"n",isolated:"ن",initial:"نـ",medial:"ـنـ",final:"ـن",latin:"n"},
-  {id:"h",isolated:"ھ",initial:"ھـ",medial:"ـھـ",final:"ـھ",latin:"h"},
-  {id:"o",isolated:"ئو، و",initial:null,medial:null,final:"ـو، ـئو",latin:"o"},
-  {id:"u",isolated:"ئۇ، ۇ",initial:null,medial:null,final:"ـۇ، ـئۇ",latin:"u"},
-  {id:"ö",isolated:"ئۆ، ۆ",initial:null,medial:null,final:"ـۆ، ـئۆ",latin:"ö"},
-  {id:"ü",isolated:"ئۈ، ۈ",initial:null,medial:null,final:"ـۈ، ـئۈ",latin:"ü"},
-  {id:"w",isolated:"ۋ",initial:null,medial:null,final:"ـۋ",latin:"w"},
-  {id:"y",isolated:"ي",initial:"يـ",medial:"ـيـ",final:"ـي",latin:"y"},
-  {id:"e2",isolated:"ئې، ې",initial:"ئېـ، ېـ",medial:"ـئېـ، ـېـ",final:"ـې",latin:"e2"},
-  {id:"i",isolated:"ئى، ى",initial:"ئىـ، ىـ",medial:"ـئىـ، ـىـ",final:"ـى",latin:"i"}
-];
-
-const FORM_TYPES = ["initial","medial","final"];
-
-function UyghurAlphabetGame() {
-  const [lettersPerRound,setLettersPerRound]=useState(4);
-  const [selectedLetters,setSelectedLetters]=useState([]);
-  const [tiles,setTiles]=useState([]);
-  const [placements,setPlacements]=useState({});
-  const [selectedTile,setSelectedTile]=useState(null);
-
-  useEffect(()=>{ startNewRound(); },[lettersPerRound]);
-
-  function startNewRound() {
-    const shuffled = LETTERS.sort(()=>0.5 - Math.random());
-    const selected = shuffled.slice(0,lettersPerRound);
-    setSelectedLetters(selected);
-    const newTiles = selected.flatMap(letter=>
-      FORM_TYPES.map(form=>{
-        if(!letter[form]) return null;
-        return {id:letter.id+"-"+form,letterId:letter.id,form,glyph:letter[form]};
-      }).filter(Boolean)
-    ).sort(()=>0.5 - Math.random());
-    setTiles(newTiles);
-    setPlacements({});
-    setSelectedTile(null);
-  }
-
-  function handleTileClick(tile){ setSelectedTile(tile); }
-
-  function handleSlotClick(letterId,form){
-    if(!selectedTile) return;
-    if(selectedTile.letterId===letterId && selectedTile.form===form){
-      setPlacements({...placements,[letterId+"-"+form]:selectedTile.id});
+  <meta charset="UTF-8">
+  <title>Uyghur Letter Forms Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @font-face {
+      font-family: 'UyghurFont';
+      src: url('fonts/UKIJTuz.ttf') format('truetype');
     }
-    setSelectedTile(null);
-  }
+    .uyghur {
+      font-family: 'UyghurFont', sans-serif;
+      font-size: 2rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-6">
+  <h1 class="text-2xl font-bold mb-6">Uyghur Alphabet Forms Game</h1>
 
-  return (
-    <div>
-      <div className="flex gap-4 items-center mb-4 flex-wrap">
-        <label>Letters per round:
-          <select className="ml-2 p-1 border rounded" value={lettersPerRound} onChange={e=>setLettersPerRound(Number(e.target.value))}>
-            {[2,4,6,8,10].map(n=> <option key={n} value={n}>{n}</option>)}
-          </select>
-        </label>
-        <button className="px-3 py-1 bg-blue-500 text-white rounded" onClick={startNewRound}>New Round</button>
+  <div id="gameBox" class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-2xl text-center">
+    <p class="mb-4">Fill in the <b>initial</b>, <b>medial</b>, and <b>final</b> forms of the letter shown below:</p>
+
+    <div id="question" class="mb-6">
+      <span id="letter" class="uyghur text-5xl"></span>
+      <span id="latin" class="ml-4 text-xl text-gray-600"></span>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4 mb-6">
+      <div>
+        <label class="block mb-1">Initial</label>
+        <input id="initialInput" class="w-full border rounded-lg p-2 text-center" />
       </div>
-
-      <div className="prompt-row">
-        {selectedLetters.map(letter => (
-          <div key={letter.id} className="letter-column">
-            <div className="letter-glyph mb-1">{letter.isolated}</div>
-            <div className="letter-latin mb-2">{letter.latin}</div>
-            {FORM_TYPES.map(form => {
-              if(!letter[form]) return null;
-              const placed = placements[letter.id + "-" + form];
-              const label = form.charAt(0).toUpperCase() + form.slice(1);
-              return (
-                <div key={form} className="mb-1 text-center">
-                  <div className="text-sm text-gray-600">{label}</div>
-                  <div
-                    className={`form-slot slot ${form}`}
-                    onClick={() => handleSlotClick(letter.id, form)}
-                  >
-                    {placed && <span className="letter-glyph">{letter[form]}</span>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ))}
+      <div>
+        <label class="block mb-1">Medial</label>
+        <input id="medialInput" class="w-full border rounded-lg p-2 text-center" />
       </div>
-
-      <div className="tiles-container">
-        {tiles.map(tile=>{
-          const placed=Object.values(placements).includes(tile.id);
-          return !placed && (
-            <div key={tile.id} className={`tile ${selectedTile?.id===tile.id?'selected':''}`} onClick={()=>handleTileClick(tile)}>
-              <div className="letter-glyph" style={{ fontSize: tile.glyph.length > 2 ? '1.2rem' : '2rem' }}>
-                {tile.glyph}
-              </div>
-              <div className="letter-latin">{tile.form==="isolated" ? selectedLetters.find(l=>l.id===tile.letterId)?.latin : ""}</div>
-            </div>
-          );
-        })}
+      <div>
+        <label class="block mb-1">Final</label>
+        <input id="finalInput" class="w-full border rounded-lg p-2 text-center" />
       </div>
     </div>
-  );
-}
 
-ReactDOM.createRoot(document.getElementById('root')).render(<UyghurAlphabetGame />);
-</script>
+    <button onclick="checkAnswer()" class="bg-blue-500 text-white px-6 py-2 rounded-xl shadow hover:bg-blue-600">Check</button>
+    <p id="feedback" class="mt-4 font-semibold"></p>
+  </div>
+
+  <script>
+    const letters = [
+      { isolated: ['ئا','ا'], latin: 'a', initial: [], medial: [], final: ['ـا','ـئا'] },
+      { isolated: ['ئە','ە'], latin: 'e', initial: [], medial: [], final: ['ـە','ـئە'] },
+      { isolated: ['ب'], latin: 'b', initial: ['بـ'], medial: ['ـبـ'], final: ['ـب'] },
+      { isolated: ['پ'], latin: 'p', initial: ['پـ'], medial: ['ـپـ'], final: ['ـپ'] },
+      { isolated: ['ت'], latin: 't', initial: ['تـ'], medial: ['ـتـ'], final: ['ـت'] },
+      { isolated: ['ج'], latin: 'j', initial: ['جـ'], medial: ['ـجـ'], final: ['ـج'] },
+      { isolated: ['چ'], latin: 'ch', initial: ['چـ'], medial: ['ـچـ'], final: ['ـچ'] },
+      { isolated: ['خ'], latin: 'kh', initial: ['خـ'], medial: ['ـخـ'], final: ['ـخ'] },
+      { isolated: ['د'], latin: 'd', initial: [], medial: [], final: ['ـد'] },
+      { isolated: ['ر'], latin: 'r', initial: [], medial: [], final: ['ـر'] },
+      { isolated: ['ز'], latin: 'z', initial: [], medial: [], final: ['ـز'] },
+      { isolated: ['ژ'], latin: 'zh', initial: [], medial: [], final: ['ـژ'] },
+      { isolated: ['س'], latin: 's', initial: ['سـ'], medial: ['ـسـ'], final: ['ـس'] },
+      { isolated: ['ش'], latin: 'sh', initial: ['شـ'], medial: ['ـشـ'], final: ['ـش'] },
+      { isolated: ['غ'], latin: 'gh', initial: ['غـ'], medial: ['ـغـ'], final: ['ـغ'] },
+      { isolated: ['ف'], latin: 'f', initial: ['فـ'], medial: ['ـفـ'], final: ['ـف'] },
+      { isolated: ['ق'], latin: 'q', initial: ['قـ'], medial: ['ـقـ'], final: ['ـق'] },
+      { isolated: ['ك'], latin: 'k', initial: ['كـ'], medial: ['ـكـ'], final: ['ـك'] },
+      { isolated: ['گ'], latin: 'g', initial: ['گـ'], medial: ['ـگـ'], final: ['ـگ'] },
+      { isolated: ['ڭ'], latin: 'ng', initial: ['ڭـ'], medial: ['ـڭـ'], final: ['ـڭ'] },
+      { isolated: ['ل'], latin: 'l', initial: ['لـ'], medial: ['ـلـ'], final: ['ـل'] },
+      { isolated: ['م'], latin: 'm', initial: ['مـ'], medial: ['ـمـ'], final: ['ـم'] },
+      { isolated: ['ن'], latin: 'n', initial: ['نـ'], medial: ['ـنـ'], final: ['ـن'] },
+      { isolated: ['ھ'], latin: 'h', initial: ['ھـ'], medial: ['ـھـ'], final: ['ـھ'] },
+      { isolated: ['ئو','و'], latin: 'o', initial: [], medial: [], final: ['ـو','ـئو'] },
+      { isolated: ['ئۇ','ۇ'], latin: 'u', initial: [], medial: [], final: ['ـۇ','ـئۇ'] },
+      { isolated: ['ئۆ','ۆ'], latin: 'ö', initial: [], medial: [], final: ['ـۆ','ـئۆ'] },
+      { isolated: ['ئۈ','ۈ'], latin: 'ü', initial: [], medial: [], final: ['ـۈ','ـئۈ'] },
+      { isolated: ['ۋ'], latin: 'w', initial: [], medial: [], final: ['ـۋ'] },
+      { isolated: ['ي'], latin: 'y', initial: ['يـ'], medial: ['ـيـ'], final: ['ـي'] },
+      { isolated: ['ئې','ې'], latin: 'e', initial: ['ئېـ','ېـ'], medial: ['ـئېـ','ـېـ'], final: ['ـې'] },
+      { isolated: ['ئى','ى'], latin: 'i', initial: ['ئىـ','ىـ'], medial: ['ـئىـ','ـىـ'], final: ['ـى'] }
+    ];
+
+    let current;
+
+    function newQuestion() {
+      current = letters[Math.floor(Math.random() * letters.length)];
+      document.getElementById("letter").textContent = current.isolated[0];
+      document.getElementById("latin").textContent = `(${current.latin})`;
+      document.getElementById("initialInput").value = '';
+      document.getElementById("medialInput").value = '';
+      document.getElementById("finalInput").value = '';
+      document.getElementById("feedback").textContent = '';
+    }
+
+    function checkAnswer() {
+      const init = document.getElementById("initialInput").value.trim();
+      const med = document.getElementById("medialInput").value.trim();
+      const fin = document.getElementById("finalInput").value.trim();
+
+      const correctInit = current.initial.length === 0 || current.initial.includes(init);
+      const correctMed = current.medial.length === 0 || current.medial.includes(med);
+      const correctFin = current.final.length === 0 || current.final.includes(fin);
+
+      if (correctInit && correctMed && correctFin) {
+        document.getElementById("feedback").textContent = "✅ Correct!";
+        document.getElementById("feedback").className = "mt-4 font-semibold text-green-600";
+        setTimeout(newQuestion, 1500);
+      } else {
+        document.getElementById("feedback").textContent = "❌ Try again.";
+        document.getElementById("feedback").className = "mt-4 font-semibold text-red-600";
+      }
+    }
+
+    newQuestion();
+  </script>
 </body>
 </html>
