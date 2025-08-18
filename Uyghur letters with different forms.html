@@ -14,13 +14,41 @@
     font-style: normal;
 }
 body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; font-family: 'UyghurFont', Arial, sans-serif; }
+
 .direction-rtl { direction: rtl; }
 .direction-ltr { direction: ltr; }
 .selected { border: 2px solid #3b82f6; }
+
 .letter-glyph { font-size: 2.5rem; text-align: center; word-break: break-word; }
 .letter-latin { font-size: 1.4rem; text-align: center; display: block; margin-top: 4px; }
+
 .flash-correct { background-color: #d1fae5 !important; }
 .flash-wrong { background-color: #fee2e2 !important; }
+
+/* Form colors */
+.form-initial { color: #16a34a; font-weight: bold; }   /* green */
+.form-medial { color: #eab308; font-weight: bold; }    /* yellow */
+.form-final { color: #dc2626; font-weight: bold; }     /* red */
+.form-isolated { color: #2563eb; font-weight: bold; }  /* blue */
+
+/* Hint glyph */
+.hint { 
+  opacity: 0.3; 
+  font-size: 2rem; 
+  transition: transform 0.3s, opacity 0.3s; 
+}
+.slot:hover .hint {
+  transform: scale(1.3);
+  opacity: 0.6;
+}
+
+/* Pop animation */
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+.pop { animation: pop 0.3s ease-in-out; }
 </style>
 </head>
 <body class="bg-gray-50 p-6">
@@ -34,7 +62,6 @@ body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; fo
 <script type="text/babel">
 const { useState, useEffect } = React;
 
-// Full Uyghur alphabet array
 const LETTERS = [
   { id: "a", base: "ئا", latin: "[a]", sound: "sounds/aa.m4a", forms: { final: "ـا", medial: "ـئا", initial: "ئا", isolated: "ا" } },
   { id: "e", base: "ئە", latin: "[e]", sound: "sounds/ae.m4a", forms: { final: "ـە", medial: "ـئە", initial: "ئە", isolated: "ە" } },
@@ -69,10 +96,9 @@ const LETTERS = [
   { id: "é", base: "ئ", latin: "[']", sound: "sounds/apostrophe.m4a", forms: { final: null, medial: null, initial: "ئ", isolated: "ئ" } }
 ];
 
-const FORM_TYPES = ["final","medial","initial","isolated"];
+const FORM_TYPES = ["initial","medial","final","isolated"];
 const GRID_OPTIONS = [2,4,6,8,10];
 
-// Preload all sounds
 const soundMap = {};
 LETTERS.forEach(letter => {
   if(letter.sound){
@@ -87,7 +113,7 @@ function UyghurAlphabetGame() {
   const [selectedTile, setSelectedTile] = useState(null);
   const [rtl, setRtl] = useState(true);
   const [tiles, setTiles] = useState([]);
-  const [gridCols, setGridCols] = useState(4); // default 4 columns
+  const [gridCols, setGridCols] = useState(4);
 
   useEffect(() => { setTiles(generateTiles()); }, []);
 
@@ -107,10 +133,6 @@ function UyghurAlphabetGame() {
     if(tile.sound && soundMap[tile.letterId]){
       soundMap[tile.letterId].currentTime = 0;
       soundMap[tile.letterId].play();
-    } else {
-      const utter = new SpeechSynthesisUtterance(tile.glyph);
-      utter.lang = "ug-CN";
-      speechSynthesis.speak(utter);
     }
   };
 
@@ -129,6 +151,10 @@ function UyghurAlphabetGame() {
     const el = document.getElementById(slotId);
     if(el){
       el.classList.add(slotCorrect ? 'flash-correct' : 'flash-wrong');
+      if(slotCorrect){
+        el.classList.add('pop');
+        setTimeout(()=>el.classList.remove('pop'), 300);
+      }
       setTimeout(()=>el.classList.remove(slotCorrect ? 'flash-correct' : 'flash-wrong'),500);
     }
 
@@ -167,22 +193,46 @@ function UyghurAlphabetGame() {
         </div>
       </div>
 
+      {/* Prompt row */}
+      <div className={`grid grid-cols-${gridCols} gap-1 mb-2 ${rtl?'direction-rtl':'direction-ltr'}`}>
+        {LETTERS.flatMap(letter => FORM_TYPES.map(form => (
+          <div key={`prompt-${letter.id}-${form}`} className="flex flex-col items-center justify-center border-b border-gray-300 h-14">
+            <span className="letter-glyph text-xl">{letter.forms.isolated}</span>
+            <span className={`text-sm ${form==='initial'?'form-initial':form==='medial'?'form-medial':form==='final'?'form-final':'form-isolated'}`}>
+              {form}
+            </span>
+          </div>
+        )))}
+      </div>
+
+      {/* Grids for filling */}
       <div className={`grid grid-cols-${gridCols} gap-3 mb-6 ${rtl?'direction-rtl':'direction-ltr'}`}>
         {LETTERS.flatMap(letter => FORM_TYPES.map(form => {
           const slotId = `${letter.id}-${form}`;
           const tileId = placements[slotId];
           const tile = tiles.find(t=>t.id===tileId);
+          const formColorClass = form==='initial'?'form-initial':form==='medial'?'form-medial':form==='final'?'form-final':'form-isolated';
+
           return (
-            <div key={slotId} id={slotId} onClick={()=>handleSlotClick(slotId)} className={`h-28 flex flex-col items-center justify-center border-2 border-dashed rounded-xl cursor-pointer ${tile?'border-green-500':'border-gray-300'}`}>
-              {tile ? <>
-                <span className="letter-glyph">{tile.glyph}</span>
-                <span className="letter-latin">{tile.latin}</span>
-              </> : <span className="text-gray-400">{form}</span>}
+            <div key={slotId} id={slotId} onClick={()=>handleSlotClick(slotId)}
+                 className={`slot h-28 flex flex-col items-center justify-center border-2 border-dashed rounded-xl cursor-pointer ${tile?'border-green-500':'border-gray-300'}`}>
+              {tile ? (
+                <>
+                  <span className="letter-glyph">{tile.glyph}</span>
+                  <span className="letter-latin">{tile.latin}</span>
+                </>
+              ) : (
+                <>
+                  <span className={`hint ${formColorClass}`}>{letter.forms[form]}</span>
+                  <span className={`text-sm ${formColorClass}`}>{form}</span>
+                </>
+              )}
             </div>
           );
         }))}
       </div>
 
+      {/* Available tiles */}
       <div className={`grid grid-cols-${gridCols} gap-3`}>
         {availableTiles.map(tile => (
           <div key={tile.id} onClick={()=>handleTileClick(tile)} className={`h-28 flex flex-col items-center justify-center border rounded-xl cursor-pointer select-none text-3xl ${selectedTile?.id===tile.id?'border-blue-500 bg-blue-50':'bg-white'}`}>
