@@ -119,10 +119,10 @@
       optionsDiv.innerHTML = '';
       let forms = [...current.initial, ...current.medial, ...current.final];
 
-      // Include some distractors from other letters
+      // Include distractors from other letters
       let distractors = letters.flatMap(l => [...l.initial, ...l.medial, ...l.final]).filter(f => !forms.includes(f));
       shuffle(distractors);
-      forms = forms.concat(distractors.slice(0, 8)); // 8 random distractors
+      forms = forms.concat(distractors.slice(0, 8));
       forms = shuffle(forms);
 
       forms.forEach(f => {
@@ -143,7 +143,8 @@
     document.querySelectorAll('.slot').forEach(slot => {
       slot.addEventListener('click', () => {
         if (selectedOption) {
-          slot.textContent = selectedOption.text;
+          // Append instead of replace to keep all letters
+          slot.textContent = slot.textContent ? slot.textContent + selectedOption.text : selectedOption.text;
           slot.classList.remove('selected');
           selectedOption.element.remove();
           selectedOption = null;
