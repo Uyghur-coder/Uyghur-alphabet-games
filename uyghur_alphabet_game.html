@@ -1,175 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ug" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>Uyghur Alphabet Matching Game</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 30px; }
-    h1 { font-size: 26px; margin-bottom: 10px; }
-    .latin { font-size: 40px; font-weight: bold; margin: 20px; }
-    .options { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 10px; }
-    .option {
-      font-size: 32px; 
-      padding: 15px 25px; 
-      border: 2px solid #333; 
-      border-radius: 12px;
-      cursor: pointer;
-      transition: 0.3s;
-      background: #fff;
-      min-width: 60px;
-    }
-    .option:hover { background: #f0f0f0; }
-    .correct { background: #c8f7c5 !important; }
-    .wrong { background: #f7c5c5 !important; }
-    #nextBtn, #restartBtn { 
-      margin-top: 20px; 
-      padding: 10px 20px; 
-      font-size: 18px; 
-      cursor: pointer; 
-      display: none; 
-    }
-    #score { font-size: 18px; margin-top: 15px; }
-    #finalScreen { display: none; margin-top: 30px; }
-    #finalScore { font-size: 22px; font-weight: bold; margin-bottom: 20px; }
-  </style>
+<meta charset="UTF-8">
+<title>Uyghur Alphabet Sounds</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+/* Load UKIJTUZ font */
+@font-face {
+    font-family: 'UKIJTUZ';
+    src: url('fonts/UKIJTuz.ttf') format('truetype'); /* Adjust path if needed */
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'UKIJTUZ', sans-serif;
+    direction: rtl;
+    text-align: center;
+    padding: 20px;
+    background-color: #f9fafb;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.letter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 10px;
+    justify-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.letter-box {
+    background-color: #fff;
+    border: 2px solid #333;
+    border-radius: 12px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.letter-box:hover {
+    background-color: #e2e8f0;
+    transform: scale(1.1);
+}
+</style>
 </head>
 <body>
 
-<h1>Uyghur Alphabet Matching Game</h1>
-<p id="instructions">Choose the correct Uyghur letter for the given Latin spelling:</p>
+<h1>ئۇيغۇچە ھەرپلەر</h1>
 
-<div class="latin" id="latinPrompt">A</div>
-<div class="options" id="options"></div>
-
-<button id="nextBtn">Next</button>
-
-<div id="score">Score: 0 / 0</div>
-
-<!-- Final Score Screen -->
-<div id="finalScreen">
-  <div id="finalScore"></div>
-  <button id="restartBtn">Restart Game</button>
+<div class="letter-grid">
+    <!-- Each letter box -->
+    <div class="letter-box" onclick="playSound('sounds/aa.mp3')">ئا</div>
+    <div class="letter-box" onclick="playSound('sounds/e.mp3')">ئە</div>
+    <div class="letter-box" onclick="playSound('sounds/b.mp3')">ب</div>
+    <div class="letter-box" onclick="playSound('sounds/p.mp3')">پ</div>
+    <div class="letter-box" onclick="playSound('sounds/t.mp3')">ت</div>
+    <div class="letter-box" onclick="playSound('sounds/j.mp3')">ج</div>
+    <div class="letter-box" onclick="playSound('sounds/ch.mp3')">چ</div>
+    <div class="letter-box" onclick="playSound('sounds/kh.mp3')">خ</div>
+    <div class="letter-box" onclick="playSound('sounds/d.mp3')">د</div>
+    <div class="letter-box" onclick="playSound('sounds/r.mp3')">ر</div>
+    <div class="letter-box" onclick="playSound('sounds/z.mp3')">ز</div>
+    <div class="letter-box" onclick="playSound('sounds/zh.mp3')">ژ</div>
+    <div class="letter-box" onclick="playSound('sounds/s.mp3')">س</div>
+    <div class="letter-box" onclick="playSound('sounds/sh.mp3')">ش</div>
+    <div class="letter-box" onclick="playSound('sounds/gh.mp3')">غ</div>
+    <div class="letter-box" onclick="playSound('sounds/f.mp3')">ف</div>
+    <div class="letter-box" onclick="playSound('sounds/q.mp3')">ق</div>
+    <div class="letter-box" onclick="playSound('sounds/k.mp3')">ك</div>
+    <div class="letter-box" onclick="playSound('sounds/g.mp3')">گ</div>
+    <div class="letter-box" onclick="playSound('sounds/ng.mp3')">ڭ</div>
+    <div class="letter-box" onclick="playSound('sounds/l.mp3')">ل</div>
+    <div class="letter-box" onclick="playSound('sounds/m.mp3')">م</div>
+    <div class="letter-box" onclick="playSound('sounds/n.mp3')">ن</div>
+    <div class="letter-box" onclick="playSound('sounds/h.mp3')">ھ</div>
+    <div class="letter-box" onclick="playSound('sounds/o.mp3')">ئو</div>
+    <div class="letter-box" onclick="playSound('sounds/u.mp3')">ئۇ</div>
+    <div class="letter-box" onclick="playSound('sounds/ö.mp3')">ئۆ</div>
+    <div class="letter-box" onclick="playSound('sounds/ü.mp3')">ئۈ</div>
+    <div class="letter-box" onclick="playSound('sounds/w.mp3')">ۋ</div>
+    <div class="letter-box" onclick="playSound('sounds/y.mp3')">ي</div>
+    <div class="letter-box" onclick="playSound('sounds/e2.mp3')">ئې</div>
+    <div class="letter-box" onclick="playSound('sounds/i.mp3')">ئى</div>
 </div>
 
 <script>
-  const letters = [
-    { latin: "A", uyghur: "ئا" },
-    { latin: "E", uyghur: "ئە" },
-    { latin: "B", uyghur: "ب" },
-    { latin: "P", uyghur: "پ" },
-    { latin: "T", uyghur: "ت" },
-    { latin: "J", uyghur: "ج" },
-    { latin: "Ch", uyghur: "چ" },
-    { latin: "X", uyghur: "خ" },
-    { latin: "D", uyghur: "د" },
-    { latin: "R", uyghur: "ر" },
-    { latin: "Z", uyghur: "ز" },
-    { latin: "Zh", uyghur: "ژ" },
-    { latin: "S", uyghur: "س" },
-    { latin: "Sh", uyghur: "ش" },
-    { latin: "Gh", uyghur: "غ" },
-    { latin: "F", uyghur: "ف" },
-    { latin: "Q", uyghur: "ق" },
-    { latin: "K", uyghur: "ك" },
-    { latin: "G", uyghur: "گ" },
-    { latin: "Ng", uyghur: "ڭ" },
-    { latin: "L", uyghur: "ل" },
-    { latin: "M", uyghur: "م" },
-    { latin: "N", uyghur: "ن" },
-    { latin: "H", uyghur: "ھ" },
-    { latin: "O", uyghur: "ئو" },
-    { latin: "U", uyghur: "ئۇ" },
-    { latin: "Ü", uyghur: "ئۈ" },
-    { latin: "Ö", uyghur: "ئۆ" },
-    { latin: "É", uyghur: "ئې" },
-    { latin: "I", uyghur: "ئى" },
-    { latin: "W", uyghur: "ۋ" },
-    { latin: "Y", uyghur: "ي" }
-  ];
-
-  let current;
-  let correctCount = 0;
-  let totalCount = 0;
-  const maxQuestions = 20;
-
-  function newQuestion() {
-    if (totalCount >= maxQuestions) {
-      endGame();
-      return;
-    }
-
-    document.getElementById("nextBtn").style.display = "none";
-    document.getElementById("options").innerHTML = "";
-    document.getElementById("latinPrompt").style.display = "block";
-    document.getElementById("instructions").style.display = "block";
-
-    // Pick a random letter
-    current = letters[Math.floor(Math.random() * letters.length)];
-    document.getElementById("latinPrompt").innerText = current.latin;
-    
-    // Generate options (1 correct + 3 random)
-    let choices = [current.uyghur];
-    while (choices.length < 4) {
-      let r = letters[Math.floor(Math.random() * letters.length)].uyghur;
-      if (!choices.includes(r)) choices.push(r);
-    }
-    choices.sort(() => Math.random() - 0.5);
-    
-    // Display options
-    choices.forEach(ch => {
-      let btn = document.createElement("div");
-      btn.className = "option";
-      btn.innerText = ch;
-      btn.onclick = () => checkAnswer(btn, ch);
-      document.getElementById("options").appendChild(btn);
-    });
-  }
-
-  function checkAnswer(btn, choice) {
-    let opts = document.querySelectorAll(".option");
-    opts.forEach(o => o.style.pointerEvents = "none"); // disable after answer
-    totalCount++;
-    if (choice === current.uyghur) {
-      btn.classList.add("correct");
-      correctCount++;
-    } else {
-      btn.classList.add("wrong");
-      // highlight correct one
-      opts.forEach(o => { if (o.innerText === current.uyghur) o.classList.add("correct"); });
-    }
-    updateScore();
-    document.getElementById("nextBtn").style.display = "inline-block";
-  }
-
-  function updateScore() {
-    document.getElementById("score").innerText = `Score: ${correctCount} / ${totalCount}`;
-  }
-
-  function endGame() {
-    document.getElementById("latinPrompt").style.display = "none";
-    document.getElementById("options").innerHTML = "";
-    document.getElementById("nextBtn").style.display = "none";
-    document.getElementById("instructions").style.display = "none";
-    document.getElementById("score").style.display = "none";
-
-    let percent = Math.round((correctCount / maxQuestions) * 100);
-    document.getElementById("finalScore").innerText = 
-      `Final Score: ${correctCount} / ${maxQuestions} (${percent}%)`;
-    document.getElementById("finalScreen").style.display = "block";
-  }
-
-  document.getElementById("nextBtn").onclick = newQuestion;
-  document.getElementById("restartBtn").onclick = () => {
-    correctCount = 0;
-    totalCount = 0;
-    document.getElementById("score").style.display = "block";
-    document.getElementById("finalScreen").style.display = "none";
-    updateScore();
-    newQuestion();
-  };
-
-  // Start the game
-  newQuestion();
+function playSound(src) {
+    const audio = new Audio(src);
+    audio.play();
+}
 </script>
 
 </body>
