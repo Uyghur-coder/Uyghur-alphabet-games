@@ -4,33 +4,14 @@
 <meta charset="UTF-8">
 <title>Uyghur Vowel Harmony Game</title>
 <style>
-/* Load ALKATIPAsliya font */
 @font-face {
   font-family: 'ALKATIPAsliya';
   src: url('https://Uyghur-coder.github.io/Uyghur-alphabet-games/fonts/ALKATIPAsliya.TTF') format('truetype');
 }
 
 body { font-family: 'ALKATIPAsliya', sans-serif; text-align: center; margin: 30px; }
-h1 { margin-bottom: 10px; }
 
-/* Reference tables */
-table { margin: 0 auto 20px auto; border-collapse: collapse; font-family: 'ALKATIPAsliya'; }
-th, td { border: 1px solid #888; padding: 6px 12px; font-size: 18px; }
-
-/* Lighter colors for vowel groups */
-.front { background-color: #F0F8FF; }
-.back { background-color: #FFF0F0; }
-.central { background-color: #F0FFF0; }
-
-/* Section labels */
-.section-label { 
-  font-weight: bold; 
-  font-size: 20px; 
-  margin-top: 20px; 
-  margin-bottom: 5px; 
-  text-decoration: underline; 
-  color: #333;
-}
+h1, h2 { margin-bottom: 15px; }
 
 /* Draggable vowels */
 .vowel {
@@ -47,12 +28,7 @@ th, td { border: 1px solid #888; padding: 6px 12px; font-size: 18px; }
   font-family: 'ALKATIPAsliya';
   transition: 0.2s;
 }
-
-.vowel:hover {
-  transform: scale(1.1);
-  background-color: #FFE680;
-  color: #222;
-}
+.vowel:hover { transform: scale(1.1); background-color: #FFE680; }
 
 /* Drop zones */
 .dropzone {
@@ -62,8 +38,8 @@ th, td { border: 1px solid #888; padding: 6px 12px; font-size: 18px; }
   border: 2px dashed #888;
   border-radius: 8px;
   width: 250px;
-  height: 80px;
-  vertical-align: middle;
+  height: 120px;
+  vertical-align: top;
   font-size: 22px;
   font-weight: bold;
   line-height: 30px;
@@ -71,56 +47,69 @@ th, td { border: 1px solid #888; padding: 6px 12px; font-size: 18px; }
   background-color: #F8F8F8;
   transition: 0.2s;
 }
-
 .dropzone.correct { border-color: green; background-color: #D0FFD0; }
 .dropzone.wrong { border-color: red; background-color: #FFD0D0; }
 
-#feedback { font-weight:bold; margin-top: 20px; }
+#feedback { font-weight:bold; margin-top: 20px; font-size: 20px; }
 button { font-size: 18px; margin: 10px; padding: 8px 16px; }
+
+/* Reference tables */
+table { margin: 15px auto; border-collapse: collapse; width: 80%; font-size: 18px; }
+th, td { border: 1px solid #888; padding: 8px; }
+.front { background-color: #D0E7FF; }   /* light blue */
+.back { background-color: #FFD0D0; }    /* light pink */
+.central { background-color: #EDEDED; } /* light gray */
+.section-label { font-weight: bold; margin-top: 20px; font-size: 20px; }
 </style>
 </head>
 <body>
 
 <h1>Uyghur Vowel Harmony Game 🎵</h1>
+<p>Drag each vowel to the correct category: Front, Back, or Neutral</p>
 
-<h2>Uyghur Vowel Reference</h2>
-
-<div class="section-label">Front Vowels</div>
+<!-- Reference tables -->
+<h2>Front Vowels</h2>
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
-  <tr class="front"><td>ә / e</td><td>[æ] / [e]</td><td>ئەمگەك (emgek)</td><td>labor</td></tr>
-  <tr class="front"><td>i / ئى</td><td>[i]</td><td>كىشى (kishi)</td><td>person</td></tr>
-  <tr class="front"><td>é / ئې</td><td>[eː]</td><td>ئېلىپبە (élipbe)</td><td>alphabet</td></tr>
+  <tr class="front"><td>ә / ئە</td><td>[æ] / [e]</td><td>ئەمگەك (emgek)</td><td>labor</td></tr>
+  <tr class="front"><td>i / ئى</td><td>[i]</td><td>كىشى (kishi)</td><td>nest</td></tr>
+  <tr class="front"><td>é / ئې</td><td>[eː]</td><td>ئېلىپبە (élipbe)</td><td>take</td></tr>
   <tr class="front"><td>ö / ئۆ</td><td>[ø]</td><td>ئۆي (öy)</td><td>house</td></tr>
   <tr class="front"><td>ü / ئۈ</td><td>[y]</td><td>ئۈزۈم (üzüm)</td><td>grape</td></tr>
 </table>
 
-<div class="section-label">Back Vowels</div>
+<h2>Back Vowels</h2>
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
   <tr class="back"><td>a / ئا</td><td>[ɑ]</td><td>ئاۋاز (awaz)</td><td>voice</td></tr>
-  <tr class="back"><td>o / ئو</td><td>[o]</td><td>ئورمان (orman)</td><td>forest</td></tr>
+  <tr class="back"><td>o / ئو</td><td>[o]</td><td>ئورمان (orman)</td><td>past</td></tr>
   <tr class="back"><td>u / ئۇ</td><td>[u]</td><td>ئۇچۇر (uchur)</td><td>information</td></tr>
   <tr class="back"><td>å / ئا</td><td>[ɒ]</td><td>–</td><td>low a (dialectal)</td></tr>
 </table>
 
-<div class="section-label">Neutral / Central Vowels</div>
+<h2>Neutral / Central Vowels</h2>
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
   <tr class="central"><td>ï / ئى</td><td>[ɨ]</td><td>ئىچ (ich)</td><td>inside</td></tr>
 </table>
 
-<p>Drag the vowels to the correct category!</p>
-<div id="rounds"></div>
+<!-- Draggable vowels -->
 <div id="vowels"></div>
+
+<!-- Drop zones -->
+<div>
+  <div id="frontZone" class="dropzone" ondrop="drop(event,'front')" ondragover="allowDrop(event)">Front</div>
+  <div id="backZone" class="dropzone" ondrop="drop(event,'back')" ondragover="allowDrop(event)">Back</div>
+  <div id="neutralZone" class="dropzone" ondrop="drop(event,'central')" ondragover="allowDrop(event)">Neutral</div>
+</div>
+
 <p id="feedback"></p>
 <p>Score: <span id="score">0</span></p>
-<button onclick="clearDrop()">Clear</button>
-<button onclick="nextRound()">Next Round</button>
+<button onclick="startGame()">New Round</button>
 
 <script>
 const vowels = [
-  {letter:'ә / e', type:'front'},
+  {letter:'ә / ئە', type:'front'},
   {letter:'i / ئى', type:'front'},
   {letter:'é / ئې', type:'front'},
   {letter:'ö / ئۆ', type:'front'},
@@ -133,106 +122,49 @@ const vowels = [
 ];
 
 let score = 0;
-let currentRound = [];
-
-function getCategoryLabel(type){
-  switch(type){
-    case 'front': return 'Front';
-    case 'back': return 'Back';
-    case 'central': return 'Neutral';
-    default: return '';
-  }
-}
-
-function nextRound(){
-  document.getElementById('feedback').innerText = '';
-  const roundsDiv = document.getElementById('rounds');
-  const vDiv = document.getElementById('vowels');
-  roundsDiv.innerHTML = '';
-  vDiv.innerHTML = '';
-  
-  currentRound = [];
-
-  // Ensure one vowel from each category
-  const frontVowels = vowels.filter(v=>v.type==='front');
-  const backVowels = vowels.filter(v=>v.type==='back');
-  const centralVowels = vowels.filter(v=>v.type==='central');
-
-  currentRound.push(frontVowels[Math.floor(Math.random()*frontVowels.length)]);
-  currentRound.push(backVowels[Math.floor(Math.random()*backVowels.length)]);
-  currentRound.push(centralVowels[Math.floor(Math.random()*centralVowels.length)]);
-
-  // Add more random vowels for variety
-  while(currentRound.length < 6){
-    const candidate = vowels[Math.floor(Math.random()*vowels.length)];
-    if(!currentRound.includes(candidate)) currentRound.push(candidate);
-  }
-
-  // Create drop zones
-  currentRound.forEach((v, index)=>{
-    const dz = document.createElement('div');
-    dz.className = 'dropzone';
-    dz.id = 'dropzone-' + index;
-    dz.setAttribute('ondragover','allowDrop(event)');
-    dz.setAttribute('ondrop','drop(event,' + index + ')');
-    dz.innerText = getCategoryLabel(v.type);
-    
-    // Background colors
-    if(v.type === 'front') dz.style.backgroundColor = '#E0F8FF';
-    if(v.type === 'back') dz.style.backgroundColor = '#FFF0F0';
-    if(v.type === 'central') dz.style.backgroundColor = '#E0FFE0';
-    
-    roundsDiv.appendChild(dz);
-  });
-
-  // Shuffle and display draggable vowels
-  const shuffled = currentRound.sort(()=>0.5-Math.random());
-  shuffled.forEach(v=>{
-    let span = document.createElement("span");
-    span.innerText = v.letter;
-    span.className = `vowel ${v.type}`;
-    span.draggable = true;
-    span.id = 'vowel-' + v.letter + '-' + Math.floor(Math.random()*1000);
-    span.ondragstart = drag;
-    vDiv.appendChild(span);
-  });
-}
 
 function allowDrop(ev){ ev.preventDefault(); }
 function drag(ev){ ev.dataTransfer.setData("text", ev.target.id); }
-function drop(ev,index){
+
+function drop(ev,category){
   ev.preventDefault();
   const data = ev.dataTransfer.getData("text");
   const dragged = document.getElementById(data);
-  const dz = document.getElementById('dropzone-' + index);
-  const correct = currentRound[index];
+  if(!dragged) return;
 
-  if(dragged.innerText.startsWith(correct.letter.split(' ')[0])){
-    dz.classList.add('correct');
-    dz.classList.remove('wrong');
-    dz.innerText = dragged.innerText;
+  if(dragged.dataset.type === category){
+    dragged.parentNode.removeChild(dragged);
     document.getElementById('feedback').innerText = "✅ Correct!";
     score++;
-    // Remove the dragged vowel from the draggable area
-    dragged.parentNode.removeChild(dragged);
   } else {
-    dz.classList.add('wrong');
-    dz.classList.remove('correct');
-    document.getElementById('feedback').innerText = `❌ Wrong! Correct: ${correct.letter}`;
+    document.getElementById('feedback').innerText = "❌ Wrong! Try again.";
   }
-
   document.getElementById('score').innerText = score;
 }
 
-function clearDrop(){
-  document.querySelectorAll('.dropzone').forEach((dz,index)=>{
-    dz.innerText = getCategoryLabel(currentRound[index].type);
-    dz.classList.remove('correct','wrong');
+function createVowels(){
+  const container = document.getElementById('vowels');
+  container.innerHTML = '';
+  vowels.forEach(v=>{
+    const span = document.createElement('span');
+    span.innerText = v.letter;
+    span.className = 'vowel';
+    span.draggable = true;
+    span.id = 'vowel-' + Math.floor(Math.random()*1000);
+    span.dataset.type = v.type;
+    span.ondragstart = drag;
+    container.appendChild(span);
   });
-  document.getElementById('feedback').innerText = '';
 }
 
-nextRound();
+function startGame(){
+  score = 0;
+  document.getElementById('score').innerText = score;
+  document.getElementById('feedback').innerText = '';
+  createVowels();
+}
+
+startGame();
 </script>
 </body>
 </html>
