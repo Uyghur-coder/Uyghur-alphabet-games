@@ -88,9 +88,9 @@ button { font-size: 18px; margin: 10px; padding: 8px 16px; }
 <div class="section-label">Front Vowels</div>
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
-  <tr class="front"><td>ә / e</td><td>[æ] / [e]</td><td>ئەت (et)</td><td>meat</td></tr>
-  <tr class="front"><td>i / ئى</td><td>[i]</td><td>كىشى (kishi)</td><td>nest</td></tr>
-  <tr class="front"><td>é / ئې</td><td>[eː]</td><td>ئېلىپبە (élipbe)</td><td>take</td></tr>
+  <tr class="front"><td>ә / e</td><td>[æ] / [e]</td><td>ئەمگەك (emgek)</td><td>labor</td></tr>
+  <tr class="front"><td>i / ئى</td><td>[i]</td><td>كىشى (kishi)</td><td>person</td></tr>
+  <tr class="front"><td>é / ئې</td><td>[eː]</td><td>ئېلىپبە (élipbe)</td><td>alphabet</td></tr>
   <tr class="front"><td>ö / ئۆ</td><td>[ø]</td><td>ئۆي (öy)</td><td>house</td></tr>
   <tr class="front"><td>ü / ئۈ</td><td>[y]</td><td>ئۈزۈم (üzüm)</td><td>grape</td></tr>
 </table>
@@ -99,9 +99,8 @@ button { font-size: 18px; margin: 10px; padding: 8px 16px; }
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
   <tr class="back"><td>a / ئا</td><td>[ɑ]</td><td>ئاۋاز (awaz)</td><td>voice</td></tr>
-  <tr class="back"><td>o / ئو</td><td>[o]</td><td>ئورمان (orman)</td><td>past</td></tr>
-  <tr class="back"><td>u / ئۇ</td><td>[u]</td><td>ئۇچ (uch)</td><td>fly</td></tr>
-  <tr class="back"><td>ï / ئى</td><td>[u]</td><td>قىش (qish)</td><td>fly</td></tr>
+  <tr class="back"><td>o / ئو</td><td>[o]</td><td>ئورمان (orman)</td><td>forest</td></tr>
+  <tr class="back"><td>u / ئۇ</td><td>[u]</td><td>ئۇچۇر (uchur)</td><td>information</td></tr>
   <tr class="back"><td>å / ئا</td><td>[ɒ]</td><td>–</td><td>low a (dialectal)</td></tr>
 </table>
 
@@ -206,19 +205,22 @@ function drop(ev,index){
   const data = ev.dataTransfer.getData("text");
   const dragged = document.getElementById(data);
   const dz = document.getElementById('dropzone-' + index);
-  dz.innerText = dragged.innerText;
-
   const correct = currentRound[index];
+
   if(dragged.innerText.startsWith(correct.letter.split(' ')[0])){
     dz.classList.add('correct');
     dz.classList.remove('wrong');
+    dz.innerText = dragged.innerText;
     document.getElementById('feedback').innerText = "✅ Correct!";
     score++;
+    // Remove the dragged vowel from the draggable area
+    dragged.parentNode.removeChild(dragged);
   } else {
     dz.classList.add('wrong');
     dz.classList.remove('correct');
     document.getElementById('feedback').innerText = `❌ Wrong! Correct: ${correct.letter}`;
   }
+
   document.getElementById('score').innerText = score;
 }
 
