@@ -1,171 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ug" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Uyghur Vowel Harmony Quiz</title>
+<title>Uyghur Vowel Harmony Game</title>
 <style>
-/* Load ALKATIP Yazma font from GitHub Pages */
-@font-face {
-  font-family: 'AlkatipYazma';
-  src: url('https://Uyghur-coder.github.io/Uyghur-alphabet-games/fonts/ALKATIPYazma.ttf') format('truetype');
-}
-
-body {
-  font-family: 'AlkatipYazma', Arial, sans-serif;
-  text-align: center;
-  margin: 30px;
-}
-
-h1 { margin-bottom: 20px; }
-
-#vowel {
-  font-size: 2.5em;
-  margin: 20px;
-}
-
-.options {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-button {
-  padding: 15px 25px;
-  font-size: 1.2em;
-  border-radius: 8px;
-  border: 1px solid #aaa;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-button:hover { background-color: #f0f0f0; }
-
-#feedback {
-  margin-top: 20px;
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-#score {
-  margin-top: 20px;
-  font-size: 1.2em;
-  color: navy;
-}
-
-.controls {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-#end-screen {
-  margin-top: 30px;
-  font-size: 1.3em;
-  font-weight: bold;
-  color: darkred;
-}
-
-.uyghur {
-  direction: rtl;
-  font-size: 1.5em;
-}
+  body { font-family: sans-serif; text-align: center; margin: 30px; }
+  h1 { margin-bottom: 10px; }
+  table { margin: 0 auto 20px auto; border-collapse: collapse; }
+  th, td { border: 1px solid #888; padding: 6px 12px; font-size: 18px; }
+  .vowel { display: inline-block; margin: 10px; padding: 10px 20px; border-radius: 8px; cursor: grab; font-size: 18px; color: white; }
+  .front { background-color: #1E90FF; }  /* Blue */
+  .back { background-color: #FF4500; }   /* Red */
+  .central { background-color: #32CD32; } /* Green */
+  .dropzone { display: inline-block; margin: 10px; padding: 20px; border: 2px dashed #888; border-radius: 8px; width: 220px; height: 60px; vertical-align: middle; font-size: 16px; line-height: 20px; }
+  #feedback { font-weight:bold; margin-top: 20px; }
+  button { font-size: 18px; margin: 10px; padding: 8px 16px; }
 </style>
 </head>
 <body>
 
-<h1>Uyghur Vowel Harmony Quiz</h1>
+<h1>Uyghur Vowel Harmony Game 🎵</h1>
 
-<div id="vowel"></div>
-<div class="options">
-  <button onclick="checkAnswer('Front')">Front</button>
-  <button onclick="checkAnswer('Back')">Back</button>
-  <button onclick="checkAnswer('Neutral')">Neutral</button>
-</div>
-<div id="feedback"></div>
-<div id="score"></div>
-<div id="end-screen"></div>
+<h2>Uyghur Vowel Reference</h2>
+<table>
+  <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
+  <tr class="front"><td>ә / e</td><td>[æ] / [e]</td><td>ئەتى (eti)</td><td>meat</td></tr>
+  <tr class="front"><td>i / ئى</td><td>[i]</td><td>ئىن (in)</td><td>nest</td></tr>
+  <tr class="front"><td>é / ئې</td><td>[eː]</td><td>ئېلىپ (elip)</td><td>take</td></tr>
+  <tr class="front"><td>ö / ئۆ</td><td>[ø]</td><td>ئۆي (öy)</td><td>house</td></tr>
+  <tr class="front"><td>ü / ئۈ</td><td>[y]</td><td>ئۈزۈم (üzüm)</td><td>grape</td></tr>
+  <tr class="back"><td>a / ئا</td><td>[ɑ]</td><td>ئاۋاز (awaz)</td><td>voice</td></tr>
+  <tr class="back"><td>o / ئو</td><td>[o]</td><td>ئۆتكەن (otkän)</td><td>past</td></tr>
+  <tr class="back"><td>u / ئۇ</td><td>[u]</td><td>ئۇچ (uch)</td><td>fly</td></tr>
+  <tr class="back"><td>å / ئا</td><td>[ɒ]</td><td>–</td><td>low a (dialectal)</td></tr>
+  <tr class="central"><td>ï / ئى</td><td>[ɨ]</td><td>ئىچ (ich)</td><td>inside</td></tr>
+  <tr class="central"><td>e / ئە</td><td>[ə]</td><td>ئەتى (eti)</td><td>meat</td></tr>
+</table>
 
-<div class="controls">
-  <button onclick="nextVowel()">Next</button>
-  <button onclick="clearScore()">Clear Score</button>
-  <button onclick="newRound()">New Round</button>
-</div>
+<p>Drag the correct vowels to match the English sounds!</p>
+<div id="rounds"></div>
+<div id="vowels"></div>
+<p id="feedback"></p>
+<p>Score: <span id="score">0</span></p>
+<button onclick="clearDrop()">Clear</button>
+<button onclick="nextRound()">Next Round</button>
 
 <script>
 const vowels = [
-  { vowel: "ә", type: "Front" },
-  { vowel: "i", type: "Front" },
-  { vowel: "é", type: "Front" },
-  { vowel: "ö", type: "Front" },
-  { vowel: "ü", type: "Front" },
-  { vowel: "a", type: "Back" },
-  { vowel: "o", type: "Back" },
-  { vowel: "u", type: "Back" },
-  { vowel: "ï", type: "Neutral" },
-  { vowel: "e", type: "Neutral" }
+  {letter:'ә / e', ipa:'[æ] / [e]', english:'meat', type:'front'},
+  {letter:'i / ئى', ipa:'[i]', english:'nest', type:'front'},
+  {letter:'é / ئې', ipa:'[eː]', english:'take', type:'front'},
+  {letter:'ö / ئۆ', ipa:'[ø]', english:'house', type:'front'},
+  {letter:'ü / ئۈ', ipa:'[y]', english:'grape', type:'front'},
+  {letter:'a / ئا', ipa:'[ɑ]', english:'voice', type:'back'},
+  {letter:'o / ئو', ipa:'[o]', english:'past', type:'back'},
+  {letter:'u / ئۇ', ipa:'[u]', english:'fly', type:'back'},
+  {letter:'å / ئا', ipa:'[ɒ]', english:'low a (dialectal)', type:'back'},
+  {letter:'ï / ئى', ipa:'[ɨ]', english:'inside', type:'central'},
+  {letter:'e / ئە', ipa:'[ə]', english:'meat', type:'central'}
 ];
 
-let used = [];
-let current;
 let score = 0;
-let total = 0;
-let roundLength = 10;
-let count = 0;
-let answered = false;
+let currentRound = [];
 
-function shuffle(array){ return array.sort(() => Math.random()-0.5); }
+function nextRound(){
+  document.getElementById('feedback').innerText = '';
+  const roundCount = 3; 
+  currentRound = [];
 
-function loadVowel(){
-  document.getElementById("feedback").textContent = "";
-  document.getElementById("end-screen").textContent = "";
-  answered = false;
-
-  if(count >= roundLength){
-    endRound();
-    return;
+  while(currentRound.length < roundCount){
+    const candidate = vowels[Math.floor(Math.random()*vowels.length)];
+    if(!currentRound.includes(candidate)) currentRound.push(candidate);
   }
 
-  if(used.length === vowels.length) used=[];
-  do {
-    current = vowels[Math.floor(Math.random()*vowels.length)];
-  } while(used.includes(current));
-  used.push(current);
+  const roundsDiv = document.getElementById('rounds');
+  roundsDiv.innerHTML = '';
+  currentRound.forEach((v, index)=>{
+    const dz = document.createElement('div');
+    dz.className = 'dropzone';
+    dz.id = 'dropzone-' + index;
+    dz.setAttribute('ondragover','allowDrop(event)');
+    dz.setAttribute('ondrop','drop(event,' + index + ')');
+    dz.innerText = `Drop for: ${v.english}`;
 
-  document.getElementById("vowel").textContent = current.vowel;
-  count++;
-  updateScore();
+    // Set background color for vowel harmony visualization
+    if(v.type === 'front') dz.style.backgroundColor = '#cce5ff';
+    if(v.type === 'back') dz.style.backgroundColor = '#ffcccc';
+    if(v.type === 'central') dz.style.backgroundColor = '#ccffcc';
+
+    roundsDiv.appendChild(dz);
+  });
+
+  let options = vowels.sort(()=>0.5-Math.random()).slice(0, 8);
+  currentRound.forEach(v=>{
+    if(!options.includes(v)) options[Math.floor(Math.random()*options.length)] = v;
+  });
+
+  const vDiv = document.getElementById('vowels');
+  vDiv.innerHTML = '';
+  options.forEach(v=>{
+    let span = document.createElement('span');
+    span.innerText = `${v.letter} ${v.ipa}`;
+    span.className = `vowel ${v.type}`;
+    span.draggable = true;
+    span.id = 'vowel-' + v.letter + '-' + Math.floor(Math.random()*1000);
+    span.ondragstart = drag;
+    vDiv.appendChild(span);
+  });
 }
 
-function checkAnswer(answer){
-  if(answered) return;
-  answered = true;
-  total++;
+function allowDrop(ev){ ev.preventDefault(); }
+function drag(ev){ ev.dataTransfer.setData("text", ev.target.id); }
+function drop(ev,index){
+  ev.preventDefault();
+  const data = ev.dataTransfer.getData("text");
+  const dragged = document.getElementById(data);
+  const dz = document.getElementById('dropzone-' + index);
+  dz.innerText = dragged.innerText;
 
-  if(answer === current.type){
+  const correct = currentRound[index];
+  if(dragged.innerText.startsWith(correct.letter.split(' ')[0])){
+    dz.style.borderColor = 'green';
+    document.getElementById('feedback').innerText = "✅ Correct!";
     score++;
-    document.getElementById("feedback").textContent = "✅ Correct!";
-    document.getElementById("feedback").style.color = "green";
   } else {
-    document.getElementById("feedback").textContent = `❌ Wrong! Correct: ${current.type}`;
-    document.getElementById("feedback").style.color = "red";
+    dz.style.borderColor = 'red';
+    document.getElementById('feedback').innerText = `❌ Wrong! Correct: ${correct.letter} ${correct.ipa}`;
   }
-  updateScore();
+  document.getElementById('score').innerText = score;
 }
 
-function updateScore(){ document.getElementById("score").textContent = `Score: ${score} / ${total}`; }
-function nextVowel(){ loadVowel(); }
-function clearScore(){ score=0; total=0; count=0; updateScore(); }
-function newRound(){ score=0; total=0; count=0; used=[]; updateScore(); loadVowel(); }
-function endRound(){
-  document.getElementById("vowel").textContent="";
-  document.getElementById("feedback").textContent="";
-  document.getElementById("end-screen").textContent=`🎉 Round Over! Final Score: ${score} / ${roundLength}`;
+function clearDrop(){
+  document.querySelectorAll('.dropzone').forEach((dz,index)=>{
+    dz.innerText = `Drop for: ${currentRound[index].english}`;
+    // Reset border
+    dz.style.borderColor = '#888';
+  });
+  document.getElementById('feedback').innerText = '';
 }
 
-loadVowel();
+nextRound();
 </script>
 
 </body>
