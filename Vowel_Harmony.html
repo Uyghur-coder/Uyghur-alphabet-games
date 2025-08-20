@@ -14,22 +14,31 @@
 
 body { font-family: 'ALKATIPAsliya', sans-serif; text-align: center; margin: 30px; }
 h1 { margin-bottom: 10px; }
-table { margin: 0 auto 20px auto; border-collapse: collapse; }
+
+/* Reference tables */
+table { margin: 0 auto 20px auto; border-collapse: collapse; font-family: 'ALKATIPAsliya'; }
 th, td { border: 1px solid #888; padding: 6px 12px; font-size: 18px; }
 
-/* Color-coded rows for vowel groups */
-.front { background-color: #E0F0FF; }   /* Light blue */
-.back { background-color: #FFE0E5; }    /* Light pink */
-.central { background-color: #E0FFE0; } /* Light green */
+/* Lighter colors for vowel groups */
+.front { background-color: #F0F8FF; }   /* Very light blue */
+.back { background-color: #FFF0F0; }    /* Very light pink */
+.central { background-color: #F0FFF0; } /* Very light green */
 
-/* Drop zone and draggable styles */
-.vowel { display: inline-block; margin: 10px; padding: 10px 20px; border-radius: 8px; cursor: grab; font-size: 18px; color: white; font-family: 'ALKATIPAsliya'; }
+/* Section labels */
+.section-label { 
+  font-weight: bold; 
+  font-size: 20px; 
+  margin-top: 20px; 
+  margin-bottom: 5px; 
+  text-decoration: underline; 
+  color: #333;
+}
+
+/* Draggable vowels and drop zones */
+.vowel { display: inline-block; margin: 10px; padding: 10px 20px; border-radius: 8px; cursor: grab; font-size: 20px; color: white; font-family: 'ALKATIPAsliya'; }
 .dropzone { display: inline-block; margin: 10px; padding: 20px; border: 2px dashed #888; border-radius: 8px; width: 220px; height: 60px; vertical-align: middle; font-size: 16px; line-height: 20px; font-family: 'ALKATIPAsliya'; }
 #feedback { font-weight:bold; margin-top: 20px; }
 button { font-size: 18px; margin: 10px; padding: 8px 16px; }
-
-/* Section labels */
-.section-label { font-weight: bold; font-size: 20px; margin-top: 20px; margin-bottom: 5px; text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -38,7 +47,7 @@ button { font-size: 18px; margin: 10px; padding: 8px 16px; }
 
 <h2>Uyghur Vowel Reference</h2>
 
-<div class="section-label">Front Vowels</div>
+<div class="section-label">Front Vowels (tongue towards the front of the mouth)</div>
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
   <tr class="front"><td>ә / e</td><td>[æ] / [e]</td><td>ئەتى (eti)</td><td>meat</td></tr>
@@ -48,7 +57,7 @@ button { font-size: 18px; margin: 10px; padding: 8px 16px; }
   <tr class="front"><td>ü / ئۈ</td><td>[y]</td><td>ئۈزۈم (üzüm)</td><td>grape</td></tr>
 </table>
 
-<div class="section-label">Back Vowels</div>
+<div class="section-label">Back Vowels (tongue towards the back of the mouth)</div>
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
   <tr class="back"><td>a / ئا</td><td>[ɑ]</td><td>ئاۋاز (awaz)</td><td>voice</td></tr>
@@ -57,7 +66,7 @@ button { font-size: 18px; margin: 10px; padding: 8px 16px; }
   <tr class="back"><td>å / ئا</td><td>[ɒ]</td><td>–</td><td>low a (dialectal)</td></tr>
 </table>
 
-<div class="section-label">Neutral / Central Vowels</div>
+<div class="section-label">Neutral / Central Vowels (tongue in a central position)</div>
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
   <tr class="central"><td>ï / ئى</td><td>[ɨ]</td><td>ئىچ (ich)</td><td>inside</td></tr>
@@ -111,8 +120,8 @@ function nextRound(){
     dz.innerText = `Drop for: ${v.english}`;
 
     // lighter background for vowel type
-    if(v.type === 'front') dz.style.backgroundColor = '#E0F0FF';
-    if(v.type === 'back') dz.style.backgroundColor = '#FFE0E5';
+    if(v.type === 'front') dz.style.backgroundColor = '#E0F8FF';
+    if(v.type === 'back') dz.style.backgroundColor = '#FFF0F0';
     if(v.type === 'central') dz.style.backgroundColor = '#E0FFE0';
 
     roundsDiv.appendChild(dz);
