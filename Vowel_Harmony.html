@@ -8,8 +8,6 @@
 @font-face {
   font-family: 'ALKATIPAsliya';
   src: url('https://Uyghur-coder.github.io/Uyghur-alphabet-games/fonts/ALKATIPAsliya.TTF') format('truetype');
-  font-weight: normal;
-  font-style: normal;
 }
 
 body { font-family: 'ALKATIPAsliya', sans-serif; text-align: center; margin: 30px; }
@@ -90,7 +88,7 @@ button { font-size: 18px; margin: 10px; padding: 8px 16px; }
 <div class="section-label">Front Vowels</div>
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
-  <tr class="front"><td>ә / e</td><td>[æ] / [e]</td><td>ئەتى (eti)</td><td>meat</td></tr>
+  <tr class="front"><td>ә / e</td><td>[æ] / [e]</td><td>ئەت (et)</td><td>meat</td></tr>
   <tr class="front"><td>i / ئى</td><td>[i]</td><td>كىشى (kishi)</td><td>nest</td></tr>
   <tr class="front"><td>é / ئې</td><td>[eː]</td><td>ئېلىپبە (élipbe)</td><td>take</td></tr>
   <tr class="front"><td>ö / ئۆ</td><td>[ø]</td><td>ئۆي (öy)</td><td>house</td></tr>
@@ -132,7 +130,7 @@ const vowels = [
   {letter:'o / ئو', type:'back'},
   {letter:'u / ئۇ', type:'back'},
   {letter:'å / ئا', type:'back'},
-  {letter:'ï / ئى', type:'central'},
+  {letter:'ï / ئى', type:'central'}
 ];
 
 let score = 0;
@@ -149,40 +147,48 @@ function getCategoryLabel(type){
 
 function nextRound(){
   document.getElementById('feedback').innerText = '';
-  const roundCount = 3;
+  const roundsDiv = document.getElementById('rounds');
+  const vDiv = document.getElementById('vowels');
+  roundsDiv.innerHTML = '';
+  vDiv.innerHTML = '';
+  
   currentRound = [];
 
-  while(currentRound.length < roundCount){
+  // Ensure one vowel from each category
+  const frontVowels = vowels.filter(v=>v.type==='front');
+  const backVowels = vowels.filter(v=>v.type==='back');
+  const centralVowels = vowels.filter(v=>v.type==='central');
+
+  currentRound.push(frontVowels[Math.floor(Math.random()*frontVowels.length)]);
+  currentRound.push(backVowels[Math.floor(Math.random()*backVowels.length)]);
+  currentRound.push(centralVowels[Math.floor(Math.random()*centralVowels.length)]);
+
+  // Add more random vowels for variety
+  while(currentRound.length < 6){
     const candidate = vowels[Math.floor(Math.random()*vowels.length)];
     if(!currentRound.includes(candidate)) currentRound.push(candidate);
   }
 
-  const roundsDiv = document.getElementById('rounds');
-  roundsDiv.innerHTML = '';
+  // Create drop zones
   currentRound.forEach((v, index)=>{
     const dz = document.createElement('div');
     dz.className = 'dropzone';
     dz.id = 'dropzone-' + index;
     dz.setAttribute('ondragover','allowDrop(event)');
     dz.setAttribute('ondrop','drop(event,' + index + ')');
-
     dz.innerText = getCategoryLabel(v.type);
-
+    
+    // Background colors
     if(v.type === 'front') dz.style.backgroundColor = '#E0F8FF';
     if(v.type === 'back') dz.style.backgroundColor = '#FFF0F0';
     if(v.type === 'central') dz.style.backgroundColor = '#E0FFE0';
-
+    
     roundsDiv.appendChild(dz);
   });
 
-  let options = vowels.sort(()=>0.5-Math.random()).slice(0, 8);
-  currentRound.forEach(v=>{
-    if(!options.includes(v)) options[Math.floor(Math.random()*options.length)] = v;
-  });
-
-  const vDiv = document.getElementById('vowels');
-  vDiv.innerHTML = '';
-  options.forEach(v=>{
+  // Shuffle and display draggable vowels
+  const shuffled = currentRound.sort(()=>0.5-Math.random());
+  shuffled.forEach(v=>{
     let span = document.createElement("span");
     span.innerText = v.letter;
     span.className = `vowel ${v.type}`;
