@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <title>Uyghur Vowel Harmony Quiz</title>
 <style>
-/* Load ALKATIP Yazma font */
+/* Load ALKATIP Yazma font from GitHub Pages */
 @font-face {
   font-family: 'AlkatipYazma';
-  src: url('fonts/ALKATIPYazma.ttf') format('truetype');
+  src: url('https://Uyghur-coder.github.io/Uyghur-alphabet-games/fonts/ALKATIPYazma.ttf') format('truetype');
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'AlkatipYazma', Arial, sans-serif;
   text-align: center;
   margin: 30px;
 }
@@ -21,7 +21,6 @@ h1 { margin-bottom: 20px; }
 #vowel {
   font-size: 2.5em;
   margin: 20px;
-  font-family: 'AlkatipYazma', Arial, sans-serif;
 }
 
 .options {
@@ -38,7 +37,6 @@ button {
   border: 1px solid #aaa;
   cursor: pointer;
   transition: 0.2s;
-  font-family: 'AlkatipYazma', Arial, sans-serif; /* All buttons in Uyghur font */
 }
 
 button:hover { background-color: #f0f0f0; }
@@ -47,7 +45,6 @@ button:hover { background-color: #f0f0f0; }
   margin-top: 20px;
   font-size: 1.2em;
   font-weight: bold;
-  font-family: 'AlkatipYazma', Arial, sans-serif;
 }
 
 #score {
@@ -69,7 +66,11 @@ button:hover { background-color: #f0f0f0; }
   font-size: 1.3em;
   font-weight: bold;
   color: darkred;
-  font-family: 'AlkatipYazma', Arial, sans-serif;
+}
+
+.uyghur {
+  direction: rtl;
+  font-size: 1.5em;
 }
 </style>
 </head>
