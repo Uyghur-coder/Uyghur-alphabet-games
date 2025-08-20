@@ -1,6 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style>
+  /* Increase default font for the whole page */
+  body {
+    font-size: 20px; /* You can adjust this number */
+    line-height: 1.6;
+  }
+
+  /* Questions text */
+  .question, h1, h2 {
+    font-size: 24px;  /* Larger for headings and questions */
+    font-weight: bold;
+  }
+
+  /* Answer options (buttons, inputs, or labels) */
+  .option, button, input[type="radio"], input[type="checkbox"], label {
+    font-size: 20px; /* Makes choices easier to read */
+    padding: 10px 15px;
+  }
+
+  /* Feedback or score display */
+  #feedback, #score {
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  /* Optional: increase spacing for better readability */
+  .question, .option, button {
+    margin: 10px 0;
+  }
+</style>
 <meta charset="UTF-8">
 <title>Uyghur Pronouns Quiz</title>
 <style>
@@ -217,3 +247,4 @@ loadQuestion();
 
 </body>
 </html>
+
