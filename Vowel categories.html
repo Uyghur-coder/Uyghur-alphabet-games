@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur Vowel Harmony Quiz</title>
+<style>
+@font-face {
+  font-family: "UKIJTuzK";
+  src: url("fonts/UKIJTuzK.ttf") format("truetype");
+}
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 30px;
+}
+h1 { margin-bottom: 20px; }
+#vowel { font-size: 2.5em; margin: 20px; font-family: "UKIJTuzK", Arial, sans-serif; }
+.options {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+button {
+  padding: 15px 25px;
+  font-size: 1.2em;
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  cursor: pointer;
+  transition: 0.2s;
+}
+button:hover { background-color: #f0f0f0; }
+#feedback { margin-top: 20px; font-size: 1.2em; font-weight: bold; }
+#score { margin-top: 20px; font-size: 1.2em; color: navy; }
+.controls { margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+#end-screen { margin-top: 30px; font-size: 1.3em; font-weight: bold; color: darkred; }
+</style>
+</head>
+<body>
+
+<h1>Uyghur Vowel Harmony Quiz</h1>
+
+<div id="vowel"></div>
+<div class="options">
+  <button onclick="checkAnswer('Front')">Front</button>
+  <button onclick="checkAnswer('Back')">Back</button>
+  <button onclick="checkAnswer('Neutral')">Neutral</button>
+</div>
+<div id="feedback"></div>
+<div id="score"></div>
+<div id="end-screen"></div>
+
+<div class="controls">
+  <button onclick="nextVowel()">Next</button>
+  <button onclick="clearScore()">Clear Score</button>
+  <button onclick="newRound()">New Round</button>
+</div>
+
+<script>
+const vowels = [
+  { vowel: "ә", type: "Front" },
+  { vowel: "i", type: "Front" },
+  { vowel: "é", type: "Front" },
+  { vowel: "ö", type: "Front" },
+  { vowel: "ü", type: "Front" },
+  { vowel: "a", type: "Back" },
+  { vowel: "o", type: "Back" },
+  { vowel: "u", type: "Back" },
+  { vowel: "ï", type: "Neutral" },
+  { vowel: "e", type: "Neutral" }
+];
+
+let used = [];
+let current;
+let score = 0;
+let total = 0;
+let roundLength = 10;
+let count = 0;
+let answered = false;
+
+function shuffle(array){ return array.sort(() => Math.random()-0.5); }
+
+function loadVowel(){
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("end-screen").textContent = "";
+  answered = false;
+
+  if(count >= roundLength){
+    endRound();
+    return;
+  }
+
+  if(used.length === vowels.length) used=[];
+  do {
+    current = vowels[Math.floor(Math.random()*vowels.length)];
+  } while(used.includes(current));
+  used.push(current);
+
+  document.getElementById("vowel").textContent = current.vowel;
+  count++;
+  updateScore();
+}
+
+function checkAnswer(answer){
+  if(answered) return;
+  answered = true;
+  total++;
+
+  if(answer === current.type){
+    score++;
+    document.getElementById("feedback").textContent = "✅ Correct!";
+    document.getElementById("feedback").style.color = "green";
+  } else {
+    document.getElementById("feedback").textContent = `❌ Wrong! Correct: ${current.type}`;
+    document.getElementById("feedback").style.color = "red";
+  }
+  updateScore();
+}
+
+function updateScore(){ document.getElementById("score").textContent = `Score: ${score} / ${total}`; }
+function nextVowel(){ loadVowel(); }
+function clearScore(){ score=0; total=0; count=0; updateScore(); }
+function newRound(){ score=0; total=0; count=0; used=[]; updateScore(); loadVowel(); }
+function endRound(){
+  document.getElementById("vowel").textContent="";
+  document.getElementById("feedback").textContent="";
+  document.getElementById("end-screen").textContent=`🎉 Round Over! Final Score: ${score} / ${roundLength}`;
+}
+
+loadVowel();
+</script>
+
+</body>
+</html>
