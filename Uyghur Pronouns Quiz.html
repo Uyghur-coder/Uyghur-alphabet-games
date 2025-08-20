@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>English–Uyghur Pronoun Quiz</title>
+  <style>
+    @font-face {
+      font-family: 'AlkatipYazma';
+      src: url('fonts/ALKATIPYazma.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 30px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    #question {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+    button, select {
+      padding: 10px 20px;
+      font-size: 1.1em;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover, select:hover {
+      background-color: #f0f0f0;
+    }
+    .uyghur {
+      font-family: 'AlkatipYazma', 'Arial', sans-serif;
+      direction: rtl;
+      font-size: 1.4em;
+    }
+    #feedback {
+      margin-top: 20px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    #score {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: navy;
+    }
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    #end-screen {
+      margin-top: 30px;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: darkred;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>English ↔ Uyghur Pronoun Quiz</h1>
+
+  <div>
+    <label for="roundLength">Choose Round Length: </label>
+    <select id="roundLength" onchange="setRoundLength()">
+      <option value="5">5</option>
+      <option value="10" selected>10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+    </select> questions
+  </div>
+
+  <div id="question"></div>
+  <div class="options" id="options"></div>
+  <div id="feedback"></div>
+  <div id="score"></div>
+  <div id="end-screen"></div>
+
+  <div class="controls">
+    <button onclick="nextQuestion()">Next</button>
+    <button onclick="clearScore()">Clear Score</button>
+    <button onclick="newRound()">New Round</button>
+  </div>
+
+  <script>
+    const questions = [
+      { english: "I", uyghur: "مەن" },
+      { english: "You (informal)", uyghur: "سەن" },
+      { english: "You (formal)", uyghur: "سىز" },
+      { english: "He / She / It", uyghur: "ئۇ" },
+      { english: "We", uyghur: "بىز" },
+      { english: "You (plural, informal)", uyghur: "سىلەر" },
+      { english: "You (plural, formal)", uyghur: "سىزلەر" },
+      { english: "They", uyghur: "ئۇلار" }
+    ];
+
+    let currentQuestion;
+    let usedQuestions = [];
+    let score = 0;
+    let total = 0;
+    let answered = false;
+    let roundLength = 10;
+    let questionCount = 0;
+    let direction = "en-to-ug";
+
+    function setRoundLength() {
+      roundLength = parseInt(document.getElementById("roundLength").value);
+      newRound();
+    }
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function loadQuestion() {
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("end-screen").textContent = "";
+      answered = false;
+
+      if (questionCount >= roundLength) {
+        endRound();
+        return;
+      }
+
+      if (usedQuestions.length === questions.length) {
+        usedQuestions = [];
+      }
+      do {
+        currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+      } while (usedQuestions.includes(currentQuestion));
+      usedQuestions.push(currentQuestion);
+
+      direction = Math.random() < 0.5 ? "en-to-ug" : "ug-to-en";
+
+      if (direction === "en-to-ug") {
+        document.getElementById("question").innerHTML =
+          "Q" + (questionCount + 1) + "/" + roundLength + 
+          ": Select the Uyghur for → <span class='eng'>" + currentQuestion.english + "</span>";
+
+        let options = [currentQuestion.uyghur];
+        while (options.length < 4) {
+          let randomOption = questions[Math.floor(Math.random() * questions.length)].uyghur;
+          if (!options.includes(randomOption)) options.push(randomOption);
+        }
+        options = shuffle(options);
+        renderOptions(options, true);
+      } else {
+        document.getElementById("question").innerHTML =
+          "Q" + (questionCount + 1) + "/" + roundLength + 
+          ": Select the English for → <span class='uyghur'>" + currentQuestion.uyghur + "</span>";
+
+        let options = [currentQuestion.english];
+        while (options.length < 4) {
+          let randomOption = questions[Math.floor(Math.random() * questions.length)].english;
+          if (!options.includes(randomOption)) options.push(randomOption);
+        }
+        options = shuffle(options);
+        renderOptions(options, false);
+      }
+
+      updateScore();
+    }
+
+    function renderOptions(options, uyghurMode) {
+      const container = document.getElementById("options");
+      container.innerHTML = "";
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        if (uyghurMode) btn.classList.add("uyghur");
+        btn.onclick = () => checkAnswer(opt);
+        container.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(answer) {
+      if (answered) return;
+      answered = true;
+      total++;
+      questionCount++;
+
+      let correctAnswer = direction === "en-to-ug" ? currentQuestion.uyghur : currentQuestion.english;
+
+      if (answer === correctAnswer) {
+        score++;
+        document.getElementById("feedback").textContent = "✅ Correct!";
+        document.getElementById("feedback").style.color = "green";
+      } else {
+        document.getElementById("feedback").textContent = "❌ Wrong! Correct answer: " + correctAnswer;
+        document.getElementById("feedback").style.color = "red";
+      }
+
+      updateScore();
+    }
+
+    function updateScore() {
+      document.getElementById("score").textContent = `Score: ${score} / ${total}`;
+    }
+
+    function nextQuestion() {
+      loadQuestion();
+    }
+
+    function clearScore() {
+      score = 0;
+      total = 0;
+      questionCount = 0;
+      updateScore();
+    }
+
+    function newRound() {
+      score = 0;
+      total = 0;
+      usedQuestions = [];
+      questionCount = 0;
+      updateScore();
+      loadQuestion();
+    }
+
+    function endRound() {
+      document.getElementById("question").textContent = "";
+      document.getElementById("options").innerHTML = "";
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("end-screen").textContent = 
+        `🎉 Round Over! Final Score: ${score} / ${roundLength}`;
+    }
+
+    loadQuestion();
+  </script>
+
+</body>
+</html>
