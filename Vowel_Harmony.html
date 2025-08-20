@@ -4,17 +4,24 @@
 <meta charset="UTF-8">
 <title>Uyghur Vowel Harmony Game</title>
 <style>
-  body { font-family: sans-serif; text-align: center; margin: 30px; }
-  h1 { margin-bottom: 10px; }
-  table { margin: 0 auto 20px auto; border-collapse: collapse; }
-  th, td { border: 1px solid #888; padding: 6px 12px; font-size: 18px; }
-  .vowel { display: inline-block; margin: 10px; padding: 10px 20px; border-radius: 8px; cursor: grab; font-size: 18px; color: white; }
-  .front { background-color: #1E90FF; }  /* Blue */
-  .back { background-color: #FF4500; }   /* Red */
-  .central { background-color: #32CD32; } /* Green */
-  .dropzone { display: inline-block; margin: 10px; padding: 20px; border: 2px dashed #888; border-radius: 8px; width: 220px; height: 60px; vertical-align: middle; font-size: 16px; line-height: 20px; }
-  #feedback { font-weight:bold; margin-top: 20px; }
-  button { font-size: 18px; margin: 10px; padding: 8px 16px; }
+body { font-family: sans-serif; text-align: center; margin: 30px; }
+h1 { margin-bottom: 10px; }
+table { margin: 0 auto 20px auto; border-collapse: collapse; }
+th, td { border: 1px solid #888; padding: 6px 12px; font-size: 18px; }
+
+/* Color-coded rows for vowel groups */
+.front { background-color: #E0F0FF; }   /* Light blue */
+.back { background-color: #FFE0E5; }    /* Light pink */
+.central { background-color: #E0FFE0; } /* Light green */
+
+/* Drop zone and draggable styles */
+.vowel { display: inline-block; margin: 10px; padding: 10px 20px; border-radius: 8px; cursor: grab; font-size: 18px; color: white; }
+.dropzone { display: inline-block; margin: 10px; padding: 20px; border: 2px dashed #888; border-radius: 8px; width: 220px; height: 60px; vertical-align: middle; font-size: 16px; line-height: 20px; }
+#feedback { font-weight:bold; margin-top: 20px; }
+button { font-size: 18px; margin: 10px; padding: 8px 16px; }
+
+/* Section labels */
+.section-label { font-weight: bold; font-size: 20px; margin-top: 20px; margin-bottom: 5px; text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -22,6 +29,8 @@
 <h1>Uyghur Vowel Harmony Game 🎵</h1>
 
 <h2>Uyghur Vowel Reference</h2>
+
+<div class="section-label">Front Vowels</div>
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
   <tr class="front"><td>ә / e</td><td>[æ] / [e]</td><td>ئەتى (eti)</td><td>meat</td></tr>
@@ -29,10 +38,20 @@
   <tr class="front"><td>é / ئې</td><td>[eː]</td><td>ئېلىپ (elip)</td><td>take</td></tr>
   <tr class="front"><td>ö / ئۆ</td><td>[ø]</td><td>ئۆي (öy)</td><td>house</td></tr>
   <tr class="front"><td>ü / ئۈ</td><td>[y]</td><td>ئۈزۈم (üzüm)</td><td>grape</td></tr>
+</table>
+
+<div class="section-label">Back Vowels</div>
+<table>
+  <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
   <tr class="back"><td>a / ئا</td><td>[ɑ]</td><td>ئاۋاز (awaz)</td><td>voice</td></tr>
   <tr class="back"><td>o / ئو</td><td>[o]</td><td>ئۆتكەن (otkän)</td><td>past</td></tr>
   <tr class="back"><td>u / ئۇ</td><td>[u]</td><td>ئۇچ (uch)</td><td>fly</td></tr>
   <tr class="back"><td>å / ئا</td><td>[ɒ]</td><td>–</td><td>low a (dialectal)</td></tr>
+</table>
+
+<div class="section-label">Neutral / Central Vowels</div>
+<table>
+  <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
   <tr class="central"><td>ï / ئى</td><td>[ɨ]</td><td>ئىچ (ich)</td><td>inside</td></tr>
   <tr class="central"><td>e / ئە</td><td>[ə]</td><td>ئەتى (eti)</td><td>meat</td></tr>
 </table>
@@ -83,10 +102,10 @@ function nextRound(){
     dz.setAttribute('ondrop','drop(event,' + index + ')');
     dz.innerText = `Drop for: ${v.english}`;
 
-    // Set background color for vowel harmony visualization
-    if(v.type === 'front') dz.style.backgroundColor = '#cce5ff';
-    if(v.type === 'back') dz.style.backgroundColor = '#ffcccc';
-    if(v.type === 'central') dz.style.backgroundColor = '#ccffcc';
+    // lighter background for vowel type
+    if(v.type === 'front') dz.style.backgroundColor = '#E0F0FF';
+    if(v.type === 'back') dz.style.backgroundColor = '#FFE0E5';
+    if(v.type === 'central') dz.style.backgroundColor = '#E0FFE0';
 
     roundsDiv.appendChild(dz);
   });
@@ -133,7 +152,6 @@ function drop(ev,index){
 function clearDrop(){
   document.querySelectorAll('.dropzone').forEach((dz,index)=>{
     dz.innerText = `Drop for: ${currentRound[index].english}`;
-    // Reset border
     dz.style.borderColor = '#888';
   });
   document.getElementById('feedback').innerText = '';
