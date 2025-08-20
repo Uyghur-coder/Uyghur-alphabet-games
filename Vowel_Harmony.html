@@ -4,23 +4,33 @@
 <meta charset="UTF-8">
 <title>Uyghur Vowel Harmony Quiz</title>
 <style>
+/* Load ALKATIP Yazma font */
 @font-face {
-  font-family: "UKIJTuzK";
-  src: url("fonts/UKIJTuzK.ttf") format("truetype");
+  font-family: 'AlkatipYazma';
+  src: url('fonts/ALKATIPYazma.ttf') format('truetype');
 }
+
 body {
   font-family: Arial, sans-serif;
   text-align: center;
   margin: 30px;
 }
+
 h1 { margin-bottom: 20px; }
-#vowel { font-size: 2.5em; margin: 20px; font-family: "UKIJTuzK", Arial, sans-serif; }
+
+#vowel {
+  font-size: 2.5em;
+  margin: 20px;
+  font-family: 'AlkatipYazma', Arial, sans-serif;
+}
+
 .options {
   display: flex;
   justify-content: center;
   gap: 20px;
   flex-wrap: wrap;
 }
+
 button {
   padding: 15px 25px;
   font-size: 1.2em;
@@ -28,12 +38,39 @@ button {
   border: 1px solid #aaa;
   cursor: pointer;
   transition: 0.2s;
+  font-family: 'AlkatipYazma', Arial, sans-serif; /* All buttons in Uyghur font */
 }
+
 button:hover { background-color: #f0f0f0; }
-#feedback { margin-top: 20px; font-size: 1.2em; font-weight: bold; }
-#score { margin-top: 20px; font-size: 1.2em; color: navy; }
-.controls { margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-#end-screen { margin-top: 30px; font-size: 1.3em; font-weight: bold; color: darkred; }
+
+#feedback {
+  margin-top: 20px;
+  font-size: 1.2em;
+  font-weight: bold;
+  font-family: 'AlkatipYazma', Arial, sans-serif;
+}
+
+#score {
+  margin-top: 20px;
+  font-size: 1.2em;
+  color: navy;
+}
+
+.controls {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+#end-screen {
+  margin-top: 30px;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: darkred;
+  font-family: 'AlkatipYazma', Arial, sans-serif;
+}
 </style>
 </head>
 <body>
