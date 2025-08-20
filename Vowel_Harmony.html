@@ -44,7 +44,7 @@ th, td { border: 1px solid #888; padding: 6px 12px; font-size: 18px; }
   font-size: 26px;
   font-weight: bold;
   color: #222;
-  background-color: #6699FF;
+  background-color: #FFFACD; /* light yellow */
   box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
   font-family: 'ALKATIPAsliya';
   transition: 0.2s;
@@ -52,8 +52,8 @@ th, td { border: 1px solid #888; padding: 6px 12px; font-size: 18px; }
 
 .vowel:hover {
   transform: scale(1.1);
-  background-color: #3366CC;
-  color: #fff;
+  background-color: #FFE680;
+  color: #222;
 }
 
 /* Drop zones */
@@ -90,7 +90,7 @@ button { font-size: 18px; margin: 10px; padding: 8px 16px; }
 <div class="section-label">Front Vowels</div>
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
-  <tr class="front"><td>ә / e</td><td>[æ] / [e]</td><td>ئەت (eti)</td><td>meat</td></tr>
+  <tr class="front"><td>ә / e</td><td>[æ] / [e]</td><td>ئەتى (eti)</td><td>meat</td></tr>
   <tr class="front"><td>i / ئى</td><td>[i]</td><td>ئىن (in)</td><td>nest</td></tr>
   <tr class="front"><td>é / ئې</td><td>[eː]</td><td>ئېلىپ (elip)</td><td>take</td></tr>
   <tr class="front"><td>ö / ئۆ</td><td>[ø]</td><td>ئۆي (öy)</td><td>house</td></tr>
@@ -110,7 +110,7 @@ button { font-size: 18px; margin: 10px; padding: 8px 16px; }
 <table>
   <tr><th>Vowel</th><th>IPA</th><th>Example</th><th>Meaning</th></tr>
   <tr class="central"><td>ï / ئى</td><td>[ɨ]</td><td>ئىچ (ich)</td><td>inside</td></tr>
-  <tr class="central"><td>e / ئە</td><td>[ə]</td><td>ئەت (eti)</td><td>meat</td></tr>
+  <tr class="central"><td>e / ئە</td><td>[ə]</td><td>ئەتى (eti)</td><td>meat</td></tr>
 </table>
 
 <p>Drag the vowels to the correct category!</p>
@@ -139,6 +139,15 @@ const vowels = [
 let score = 0;
 let currentRound = [];
 
+function getCategoryLabel(type){
+  switch(type){
+    case 'front': return 'Front';
+    case 'back': return 'Back';
+    case 'central': return 'Neutral';
+    default: return '';
+  }
+}
+
 function nextRound(){
   document.getElementById('feedback').innerText = '';
   const roundCount = 3;
@@ -158,10 +167,8 @@ function nextRound(){
     dz.setAttribute('ondragover','allowDrop(event)');
     dz.setAttribute('ondrop','drop(event,' + index + ')');
 
-    // Drop zone label = vowel category
-    dz.innerText = v.type.charAt(0).toUpperCase() + v.type.slice(1);
+    dz.innerText = getCategoryLabel(v.type);
 
-    // background by type
     if(v.type === 'front') dz.style.backgroundColor = '#E0F8FF';
     if(v.type === 'back') dz.style.backgroundColor = '#FFF0F0';
     if(v.type === 'central') dz.style.backgroundColor = '#E0FFE0';
@@ -169,7 +176,6 @@ function nextRound(){
     roundsDiv.appendChild(dz);
   });
 
-  // draggable options
   let options = vowels.sort(()=>0.5-Math.random()).slice(0, 8);
   currentRound.forEach(v=>{
     if(!options.includes(v)) options[Math.floor(Math.random()*options.length)] = v;
@@ -213,7 +219,7 @@ function drop(ev,index){
 
 function clearDrop(){
   document.querySelectorAll('.dropzone').forEach((dz,index)=>{
-    dz.innerText = currentRound[index].type.charAt(0).toUpperCase() + currentRound[index].type.slice(1);
+    dz.innerText = getCategoryLabel(currentRound[index].type);
     dz.classList.remove('correct','wrong');
   });
   document.getElementById('feedback').innerText = '';
