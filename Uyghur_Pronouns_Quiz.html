@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>English ↔ Uyghur Pronoun Quiz</title>
+<title>Uyghur Pronouns Quiz</title>
 <style>
-/* Load ALKATIP Yazma font */
+/* Load ALKATIP Yazma font from GitHub Pages */
 @font-face {
   font-family: 'AlkatipYazma';
-  src: url('fonts/ALKATIPYazma.ttf') format('truetype');
+  src: url('https://Uyghur-coder.github.io/Uyghur-alphabet-games/fonts/ALKATIPYazma.ttf') format('truetype');
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'AlkatipYazma', Arial, sans-serif;
   text-align: center;
   margin: 30px;
 }
@@ -21,7 +21,6 @@ h1 { margin-bottom: 20px; }
 #question {
   font-size: 1.5em;
   margin-bottom: 20px;
-  font-family: 'AlkatipYazma', Arial, sans-serif;
 }
 
 .options {
@@ -38,7 +37,6 @@ h1 { margin-bottom: 20px; }
   border: 1px solid #aaa;
   cursor: pointer;
   transition: 0.2s;
-  font-family: 'AlkatipYazma', Arial, sans-serif; /* Buttons use Uyghur font */
 }
 
 button:hover { background-color: #f0f0f0; }
@@ -47,7 +45,6 @@ button:hover { background-color: #f0f0f0; }
   margin-top: 20px;
   font-size: 1.2em;
   font-weight: bold;
-  font-family: 'AlkatipYazma', Arial, sans-serif;
 }
 
 #score {
@@ -69,11 +66,9 @@ button:hover { background-color: #f0f0f0; }
   font-size: 1.3em;
   font-weight: bold;
   color: darkred;
-  font-family: 'AlkatipYazma', Arial, sans-serif;
 }
 
 .uyghur {
-  font-family: 'AlkatipYazma', Arial, sans-serif;
   direction: rtl;
   font-size: 1.4em;
 }
@@ -138,10 +133,7 @@ function loadQuestion() {
   document.getElementById("end-screen").textContent = "";
   answered = false;
 
-  if(questionCount >= roundLength) {
-    endRound();
-    return;
-  }
+  if(questionCount >= roundLength) { endRound(); return; }
 
   if(usedQuestions.length === questions.length) usedQuestions = [];
   do {
