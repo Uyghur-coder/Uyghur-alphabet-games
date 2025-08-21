@@ -5,11 +5,11 @@
 <title>Uyghur Vowel Harmony Game</title>
 <style>
 @font-face {
-  font-family: 'ALKATIPAsliya';
-  src: url('https://Uyghur-coder.github.io/Uyghur-alphabet-games/fonts/ALKATIPAsliya.TTF') format('truetype');
+  font-family: 'ALKATIPYazma';
+  src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
 }
 
-body { font-family: 'ALKATIPAsliya', sans-serif; text-align: center; margin: 30px; }
+body { font-family: 'ALKATIPYazma', sans-serif; text-align: center; margin: 30px; }
 
 h1, h2 { margin-bottom: 15px; }
 
@@ -25,7 +25,6 @@ h1, h2 { margin-bottom: 15px; }
   color: #222;
   background-color: #FFFACD; /* light yellow */
   box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-  font-family: 'ALKATIPAsliya';
   transition: 0.2s;
 }
 .vowel:hover { transform: scale(1.1); background-color: #FFE680; }
@@ -34,7 +33,7 @@ h1, h2 { margin-bottom: 15px; }
 .dropzone {
   display: inline-block;
   margin: 10px;
-  padding: 25px;
+  padding: 15px;
   border: 2px dashed #888;
   border-radius: 8px;
   width: 250px;
@@ -42,24 +41,34 @@ h1, h2 { margin-bottom: 15px; }
   vertical-align: top;
   font-size: 22px;
   font-weight: bold;
-  line-height: 30px;
-  font-family: 'ALKATIPAsliya';
   background-color: #F8F8F8;
   transition: 0.2s;
 }
-.dropzone.correct { border-color: green; background-color: #D0FFD0; }
-.dropzone.wrong { border-color: red; background-color: #FFD0D0; }
+.dropzone.complete {
+  box-shadow: 0 0 15px 3px #6FCF97;
+  border-color: green;
+}
 
-#feedback { font-weight:bold; margin-top: 20px; font-size: 20px; }
-button { font-size: 18px; margin: 10px; padding: 8px 16px; }
+/* Comma-separated vowels in dropzone */
+.dropzone span.vowels {
+  display: block;
+  margin-top: 5px;
+  font-size: 22px;
+  max-height: 80px;
+  overflow-y: auto;
+  word-wrap: break-word;
+  padding-right: 5px;
+}
 
 /* Reference tables */
 table { margin: 15px auto; border-collapse: collapse; width: 80%; font-size: 18px; }
 th, td { border: 1px solid #888; padding: 8px; }
 .front { background-color: #D0E7FF; }   /* light blue */
-.back { background-color: #FFD0D0; }    /* light pink */
+.back { background-color: #D0FFD0; }    /* light green */
 .central { background-color: #EDEDED; } /* light gray */
-.section-label { font-weight: bold; margin-top: 20px; font-size: 20px; }
+
+#feedback { font-weight:bold; margin-top: 20px; font-size: 20px; }
+button { font-size: 18px; margin: 10px; padding: 8px 16px; }
 </style>
 </head>
 <body>
@@ -106,6 +115,7 @@ th, td { border: 1px solid #888; padding: 8px; }
 <p id="feedback"></p>
 <p>Score: <span id="score">0</span></p>
 <button onclick="startGame()">New Round</button>
+<button onclick="clearRound()">Clear Round</button>
 
 <script>
 const vowels = [
@@ -123,29 +133,84 @@ const vowels = [
 
 let score = 0;
 
+// Shuffle helper
+function shuffleArray(array){
+  for(let i = array.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 function allowDrop(ev){ ev.preventDefault(); }
 function drag(ev){ ev.dataTransfer.setData("text", ev.target.id); }
 
-function drop(ev,category){
+function drop(ev, category){
   ev.preventDefault();
   const data = ev.dataTransfer.getData("text");
   const dragged = document.getElementById(data);
   if(!dragged) return;
 
+  const zone = document.getElementById(category + 'Zone');
+
   if(dragged.dataset.type === category){
-    dragged.parentNode.removeChild(dragged);
+    // Create span if not exists
+    let vowelsSpan = zone.querySelector('span.vowels');
+    if(!vowelsSpan){
+      vowelsSpan = document.createElement('span');
+      vowelsSpan.className = 'vowels';
+      vowelsSpan.style.display = 'block';
+      vowelsSpan.style.marginTop = '5px';
+      vowelsSpan.style.fontSize = '22px';
+      vowelsSpan.style.maxHeight = '80px';
+      vowelsSpan.style.overflowY = 'auto';
+      zone.appendChild(vowelsSpan);
+    }
+
+    // Add vowel, comma-separated
+    if(zone.dataset.vowels){
+      zone.dataset.vowels += ', ' + dragged.innerText;
+    } else {
+      zone.dataset.vowels = dragged.innerText;
+    }
+    vowelsSpan.innerText = zone.dataset.vowels;
+
+    // Lock the vowel
+    dragged.draggable = false;
+    dragged.style.cursor = "default";
+
     document.getElementById('feedback').innerText = "✅ Correct!";
     score++;
   } else {
+    // Bounce back animation
+    dragged.style.transition = "transform 0.3s";
+    dragged.style.transform = "translateX(15px)";
+    setTimeout(()=>{ dragged.style.transform = "translateX(-15px)"; },150);
+    setTimeout(()=>{ dragged.style.transform = "translateX(0)"; },300);
     document.getElementById('feedback').innerText = "❌ Wrong! Try again.";
   }
+
   document.getElementById('score').innerText = score;
+
+  // Highlight drop zone if all vowels of this type are placed
+  const vowelsOfType = vowels.filter(v => v.type === category).length;
+  const placedInZone = zone.dataset.vowels ? zone.dataset.vowels.split(',').length : 0;
+  if(placedInZone === vowelsOfType){
+    zone.classList.add('complete');
+  }
+
+  // Congratulatory message if all vowels placed
+  if(score === vowels.length){
+    document.getElementById('feedback').innerText = "🎉 Congratulations! All vowels placed correctly! 🎉";
+  }
 }
 
 function createVowels(){
   const container = document.getElementById('vowels');
   container.innerHTML = '';
-  vowels.forEach(v=>{
+
+  const shuffledVowels = shuffleArray([...vowels]);
+  shuffledVowels.forEach(v=>{
     const span = document.createElement('span');
     span.innerText = v.letter;
     span.className = 'vowel';
@@ -161,6 +226,27 @@ function startGame(){
   score = 0;
   document.getElementById('score').innerText = score;
   document.getElementById('feedback').innerText = '';
+
+  ['frontZone','backZone','neutralZone'].forEach(id=>{
+    const zone = document.getElementById(id);
+    zone.dataset.vowels = '';
+    zone.innerHTML = id.replace('Zone',''); // keep label
+    zone.classList.remove('complete');       // remove glow
+  });
+
+  createVowels();
+}
+
+function clearRound(){
+  document.getElementById('feedback').innerText = '';
+
+  ['frontZone','backZone','neutralZone'].forEach(id=>{
+    const zone = document.getElementById(id);
+    zone.dataset.vowels = '';
+    zone.innerHTML = id.replace('Zone',''); // keep label
+    zone.classList.remove('complete');       // remove glow
+  });
+
   createVowels();
 }
 
