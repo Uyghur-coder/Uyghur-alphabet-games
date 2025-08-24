@@ -10,10 +10,7 @@
     font-family: 'AlkatipYazma';
     src: url('https://Uyghur-coder.github.io/Uyghur-alphabet-games/fonts/ALKATIPYazma.ttf') format('truetype');
   }
-  .uyghur { 
-    font-family: 'AlkatipYazma', sans-serif; 
-    font-size: 2rem; 
-  }
+  .uyghur { font-family: 'AlkatipYazma', sans-serif; font-size: 2rem; }
   .slot, .option {
     border: 2px dashed #ccc;
     min-height: 3rem;
@@ -24,25 +21,12 @@
     border-radius: 0.5rem;
     transition: all 0.2s;
   }
-  .option.selected {
-    border-color: #2563eb;
-    background-color: #dbeafe;
-    color: #1d4ed8;
-    font-weight: bold;
-  }
+  .option.selected { border-color: #2563eb; background-color: #dbeafe; color: #1d4ed8; font-weight: bold; }
   .slot.locked { color: #16a34a; font-weight: bold; }
   .shake { animation: shake 0.4s; }
-  @keyframes shake {
-    0%,100%{ transform: translateX(0); }
-    20%,60%{ transform: translateX(-6px); }
-    40%,80%{ transform: translateX(6px); }
-  }
+  @keyframes shake {0%,100%{ transform: translateX(0); } 20%,60%{ transform: translateX(-6px); } 40%,80%{ transform: translateX(6px); }}
   .glow { animation: pulseGlow 1.5s infinite; }
-  @keyframes pulseGlow {
-    0% { text-shadow: 0 0 5px orange, 0 0 10px gold; }
-    50% { text-shadow: 0 0 15px red, 0 0 30px gold; }
-    100% { text-shadow: 0 0 5px orange, 0 0 10px gold; }
-  }
+  @keyframes pulseGlow {0% { text-shadow: 0 0 5px orange,0 0 10px gold; } 50% { text-shadow: 0 0 15px red,0 0 30px gold; } 100% { text-shadow: 0 0 5px orange,0 0 10px gold; }}
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-6">
@@ -54,8 +38,7 @@
   <p id="streak" class="text-lg font-semibold text-orange-600 mb-4">Streak: 0 🔥</p>
 
   <div id="gameBox" class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-2xl text-center">
-    <p class="mb-4">Click a letter form, then click the correct slot (<b>initial</b>, <b>medial</b>, <b>final</b>).</p>
-
+    <p class="mb-4">Drag a letter form to the correct slot (<b>initial</b>, <b>medial</b>, <b>final</b>).</p>
     <div id="question" class="mb-6">
       <span id="letter" class="uyghur text-5xl"></span>
       <span id="latin" class="ml-4 text-xl text-gray-600"></span>
@@ -83,7 +66,6 @@
       <button onclick="newQuestion()" class="bg-gray-500 text-white px-6 py-2 rounded-xl shadow hover:bg-gray-600">New Round</button>
       <button onclick="clearSlots()" class="bg-yellow-500 text-white px-6 py-2 rounded-xl shadow hover:bg-yellow-600">Clear</button>
     </div>
-
     <p id="feedback" class="mt-4 font-semibold"></p>
   </div>
 
@@ -123,10 +105,9 @@
       { isolated: ['ئى','ى'], latin: 'i', initial: ['ئىـ','ىـ'], medial: ['ـئىـ','ـىـ'], final: ['ـى'] }
     ];
 
-    let current, selectedOption=null;
-    let correctRounds=0, totalRounds=0, streak=0;
+    let current, correctRounds=0, totalRounds=0, streak=0;
 
-    function shuffle(array){ for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [array[i],array[j]]=[array[j],array[i]];} return array; }
+    function shuffle(array){ for(let i=array.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [array[i],array[j]]=[array[j],array[i]];} return array; }
 
     function newQuestion(){
       current = letters[Math.floor(Math.random()*letters.length)];
@@ -139,18 +120,15 @@
       optionsDiv.innerHTML='';
 
       const allForms = ['initial','medial','final'].flatMap(pos=>current[pos]);
-      let distractors = letters
-        .flatMap(l=>['initial','medial','final'].flatMap(pos=>l[pos]))
-        .filter(f=>f && !allForms.includes(f));
-      
-      let optionsList = allForms.concat(distractors.slice(0,6));
-      optionsList = shuffle(optionsList);
+      let distractors = letters.flatMap(l=>['initial','medial','final'].flatMap(pos=>l[pos])).filter(f=>f && !allForms.includes(f));
+      let optionsList = shuffle(allForms.concat(distractors.slice(0,6)));
 
-      optionsList.forEach(f=>{
-        const btn=document.createElement("div");
-        btn.textContent=f;
-        btn.className="option uyghur px-4 py-2 border rounded-lg bg-gray-100";
-        btn.onclick=()=>selectOption(btn);
+      optionsList.forEach(letter=>{
+        const btn = document.createElement("div");
+        btn.textContent = letter;
+        btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
+        btn.setAttribute("draggable", true);
+        btn.addEventListener("dragstart", e => e.dataTransfer.setData("text/plain", letter));
         optionsDiv.appendChild(btn);
       });
 
@@ -163,80 +141,72 @@
     }
 
     function clearSlots(){
-      document.querySelectorAll('.slot').forEach(s=>{s.textContent=''; s.className='slot';});
-      document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
-      selectedOption=null;
+      document.querySelectorAll('.slot').forEach(s=>s.textContent='');
+      document.getElementById("options").querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
     }
 
-    function selectOption(btn){
-      document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
-      btn.classList.add('selected');
-      selectedOption=btn;
-    }
+    // Make slots droppable
+    document.querySelectorAll(".slot").forEach(slot=>{
+      slot.addEventListener("dragover", e=>e.preventDefault());
+      slot.addEventListener("drop", e=>{
+        e.preventDefault();
+        const letter = e.dataTransfer.getData("text/plain");
+        let existing = slot.textContent.split(",").map(s=>s.trim()).filter(s=>s);
+        if(!existing.includes(letter)) existing.push(letter);
+        slot.textContent = existing.join(",");
+        slot.classList.add("filled");
 
-    // Slot click handler: add or remove letters
-    document.querySelectorAll('.slot').forEach(slot=>{
-      slot.addEventListener('click',()=>{
-        const optionsDiv = document.getElementById('options');
-        if(selectedOption){
-          let existing = slot.textContent.split(',').map(s=>s.trim()).filter(s=>s);
-          if(!existing.includes(selectedOption.textContent)){
-            existing.push(selectedOption.textContent);
-          }
-          slot.textContent = existing.join(',');
-          slot.classList.add('filled');
-          selectedOption.classList.remove('selected');
-          selectedOption.remove();
-          selectedOption=null;
-        } else if(slot.textContent.trim()!==''){
-          const lettersInSlot = slot.textContent.split(',').map(s=>s.trim());
-          lettersInSlot.forEach(letter=>{
-            const btn = document.createElement('div');
-            btn.textContent = letter;
-            btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
-            btn.onclick = () => selectOption(btn);
-            optionsDiv.appendChild(btn);
-          });
-          slot.textContent='';
-          slot.className='slot';
-        }
+        // Remove from options
+        document.querySelectorAll(".option").forEach(o=>{ if(o.textContent===letter) o.remove(); });
       });
     });
 
-    function checkAnswer() {
-      let allCorrect = true;
-      const optionsDiv = document.getElementById("options");
+    // Drag letters back to options
+    const optionsDiv = document.getElementById("options");
+    optionsDiv.addEventListener("dragover", e=>e.preventDefault());
+    optionsDiv.addEventListener("drop", e=>{
+      e.preventDefault();
+      const letter = e.dataTransfer.getData("text/plain");
+      const btn = document.createElement("div");
+      btn.textContent = letter;
+      btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
+      btn.setAttribute("draggable", true);
+      btn.addEventListener("dragstart", e => e.dataTransfer.setData("text/plain", letter));
+      optionsDiv.appendChild(btn);
+    });
 
-      ['initial','medial','final'].forEach(pos => {
-        const slot = document.getElementById(pos+'Slot');
+    function checkAnswer(){
+      let allCorrect = true;
+      ['initial','medial','final'].forEach(pos=>{
+        const slot=document.getElementById(pos+'Slot');
         if(slot.parentElement.style.display==='none') return;
 
         const placed = slot.textContent.split(',').map(s=>s.trim()).filter(s=>s);
         const correct = current[pos];
 
-        let wrongLetters = [];
-        let correctInSlot = [];
-
-        placed.forEach(letter => {
+        let wrongLetters = [], correctInSlot=[];
+        placed.forEach(letter=>{
           if(correct.includes(letter)) correctInSlot.push(letter);
           else wrongLetters.push(letter);
         });
 
-        slot.textContent = correctInSlot.join(',');
-        if(correctInSlot.length === correct.length && wrongLetters.length===0){
+        slot.textContent=correctInSlot.join(',');
+        if(correctInSlot.length===correct.length && wrongLetters.length===0){
           slot.classList.add("correct","locked");
-        } else if(wrongLetters.length>0){
-          slot.classList.add("partial","shake","wrong");
+        } else {
+          slot.classList.add("shake","wrong");
           setTimeout(()=>slot.classList.remove("shake","wrong"),500);
-          allCorrect = false;
+          allCorrect=false;
         }
 
+        // Return wrong letters to options
         wrongLetters.forEach(letter=>{
           if(!Array.from(optionsDiv.children).some(o=>o.textContent===letter)){
-            const btn = document.createElement("div");
-            btn.textContent = letter;
-            btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
-            btn.onclick = () => selectOption(btn);
+            const btn=document.createElement("div");
+            btn.textContent=letter;
+            btn.className="option uyghur px-4 py-2 border rounded-lg bg-gray-100";
+            btn.setAttribute("draggable", true);
+            btn.addEventListener("dragstart", e=>e.dataTransfer.setData("text/plain", letter));
             optionsDiv.appendChild(btn);
           }
         });
@@ -246,15 +216,14 @@
       if(allCorrect){
         correctRounds++;
         streak++;
-        feedback.textContent = "✅ Correct!";
-        feedback.className = "mt-4 font-semibold text-green-600";
+        feedback.textContent="✅ Correct!";
+        feedback.className="mt-4 font-semibold text-green-600";
         setTimeout(newQuestion,1500);
       } else {
-        streak = 0;
-        feedback.textContent = "❌ Some letters are wrong, try again!";
-        feedback.className = "mt-4 font-semibold text-red-600";
+        streak=0;
+        feedback.textContent="❌ Some letters are wrong, try again!";
+        feedback.className="mt-4 font-semibold text-red-600";
       }
-
       totalRounds++;
       updateScore();
     }
@@ -266,9 +235,9 @@
       bar.style.width = progress+"%";
       bar.className = progress>=80?"h-4 rounded-full bg-green-500":progress>=50?"h-4 rounded-full bg-yellow-500":"h-4 rounded-full bg-red-500";
 
-      const streakEl = document.getElementById("streak");
+      const streakEl=document.getElementById("streak");
       if(streak>0){ streakEl.textContent=`Streak: ${streak} 🔥`; streakEl.classList.add("glow"); }
-      else { streakEl.textContent="Streak: 0"; streakEl.classList.remove("glow"); }
+      else{ streakEl.textContent="Streak: 0"; streakEl.classList.remove("glow"); }
     }
 
     newQuestion();
