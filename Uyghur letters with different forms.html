@@ -6,10 +6,13 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @font-face {
-      font-family: 'UyghurFont';
-      src: url('fonts/UKIJTuz.ttf') format('truetype');
-    }
-    .uyghur { font-family: 'UyghurFont', sans-serif; font-size: 2rem; }
+  font-family: 'AlkatipYazma';
+  src: url('https://Uyghur-coder.github.io/Uyghur-alphabet-games/fonts/ALKATIPYazma.ttf') format('truetype');
+}
+.uyghur { 
+  font-family: 'AlkatipYazma', sans-serif; 
+  font-size: 2rem; 
+}
     .slot, .option {
       border: 2px dashed #ccc;
       min-height: 3rem;
@@ -20,14 +23,41 @@
       border-radius: 0.5rem;
       transition: all 0.2s;
     }
-    .slot.selected, .option.selected {
+    .option.selected {
       border-color: #2563eb;
       background-color: #dbeafe;
+      color: #1d4ed8;
+      font-weight: bold;
+    }
+    .slot.locked { color: #16a34a; font-weight: bold; }
+    .shake { animation: shake 0.4s; }
+    @keyframes shake {
+      0%,100%{ transform: translateX(0); }
+      20%,60%{ transform: translateX(-6px); }
+      40%,80%{ transform: translateX(6px); }
+    }
+    .glow { animation: pulseGlow 1.5s infinite; }
+    @keyframes pulseGlow {
+      0% { text-shadow: 0 0 5px orange, 0 0 10px gold; }
+      50% { text-shadow: 0 0 15px red, 0 0 30px gold; }
+      100% { text-shadow: 0 0 5px orange, 0 0 10px gold; }
+    }
+    .bounce-fade { animation: bounceFade 0.8s ease forwards; }
+    @keyframes bounceFade {
+      0% { transform: scale(0.5); opacity: 0; }
+      50% { transform: scale(1.2); opacity: 1; }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-6">
-  <h1 class="text-2xl font-bold mb-6">Uyghur Alphabet Forms Game</h1>
+  <h1 class="text-2xl font-bold mb-2">Uyghur Alphabet Forms Game</h1>
+  <p id="score" class="text-lg font-semibold mb-2">Score: 0 / 0</p>
+  <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+    <div id="progressBar" class="h-4 rounded-full bg-green-500" style="width:0%"></div>
+  </div>
+  <p id="streak" class="text-lg font-semibold text-orange-600 mb-4">Streak: 0 🔥</p>
 
   <div id="gameBox" class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-2xl text-center">
     <p class="mb-4">Click a letter form, then click the correct slot (<b>initial</b>, <b>medial</b>, <b>final</b>).</p>
@@ -61,6 +91,7 @@
     </div>
 
     <p id="feedback" class="mt-4 font-semibold"></p>
+    <p id="milestone" class="text-xl font-bold text-purple-600 mt-2"></p>
   </div>
 
   <script>
@@ -99,97 +130,136 @@
       { isolated: ['ئى','ى'], latin: 'i', initial: ['ئىـ','ىـ'], medial: ['ـئىـ','ـىـ'], final: ['ـى'] }
     ];
 
-    let current;
-    let selectedOption = null;
+    let current, selectedOption=null;
+    let correctRounds=0, totalRounds=0, streak=0;
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
+    function shuffle(array){ for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [array[i],array[j]]=[array[j],array[i]];} return array; }
 
-    function newQuestion() {
-      current = letters[Math.floor(Math.random() * letters.length)];
+    function newQuestion(){
+      current = letters[Math.floor(Math.random()*letters.length)];
       document.getElementById("letter").textContent = current.isolated[0];
       document.getElementById("latin").textContent = `(${current.latin})`;
       clearSlots();
-      document.getElementById("feedback").textContent = '';
+      document.getElementById("feedback").textContent='';
+      document.getElementById("milestone").textContent='';
 
       const optionsDiv = document.getElementById("options");
-      optionsDiv.innerHTML = '';
+      optionsDiv.innerHTML='';
 
-      // Combine grouped forms for each slot
-      const allForms = ['initial','medial','final'].flatMap(pos => current[pos].length ? [current[pos].join(',')] : []);
-
-      // Add distractors
-      let distractors = letters.flatMap(l => ['initial','medial','final'].flatMap(pos => l[pos]))
-                               .filter(f => f && !allForms.includes(f));
+      const allForms = ['initial','medial','final'].flatMap(pos=>current[pos]);
+      let distractors = letters.flatMap(l=>['initial','medial','final'].flatMap(pos=>l[pos])).filter(f=>f&&!allForms.includes(f));
       shuffle(distractors);
-      const optionsList = shuffle(allForms.concat(distractors.slice(0,8)));
+      const optionsList = allForms.concat(distractors.slice(0,6));
 
-      optionsList.forEach(f => {
-        const btn = document.createElement("div");
-        btn.textContent = f;
-        btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
-        btn.onclick = () => selectOption(btn, f);
+      optionsList.forEach(f=>{
+        const btn=document.createElement("div");
+        btn.textContent=f;
+        btn.className="option uyghur px-4 py-2 border rounded-lg bg-gray-100";
+        btn.onclick=()=>selectOption(btn);
         optionsDiv.appendChild(btn);
       });
 
-      // Show/hide slots depending on existence
-      ['initial','medial','final'].forEach(pos => {
-        const slot = document.getElementById(pos+'Slot');
-        slot.parentElement.style.display = current[pos].length ? 'block' : 'none';
+      ['initial','medial','final'].forEach(pos=>{
+        const slot=document.getElementById(pos+'Slot');
+        slot.parentElement.style.display=current[pos].length?'block':'none';
       });
+
+      updateScore();
     }
 
-    function clearSlots() {
-      document.querySelectorAll('.slot').forEach(s => s.textContent = '');
-      document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-      selectedOption = null;
+    function clearSlots(){
+      document.querySelectorAll('.slot').forEach(s=>{s.textContent=''; s.classList.remove('locked','correct','shake','wrong','filled','partial');});
+      document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+      selectedOption=null;
     }
 
-    function selectOption(btn, form) {
-      document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    function selectOption(btn){
+      document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
       btn.classList.add('selected');
-      selectedOption = { text: form, element: btn };
+      selectedOption=btn;
     }
 
-    document.querySelectorAll('.slot').forEach(slot => {
-      slot.addEventListener('click', () => {
-        if (selectedOption) {
-          slot.textContent = selectedOption.text;
-          slot.classList.remove('selected');
-          selectedOption.element.remove();
-          selectedOption = null;
+    document.querySelectorAll('.slot').forEach(slot=>{
+      slot.addEventListener('click',()=>{
+        if(selectedOption){
+          // Add selected letter without removing other correct letters
+          let existing = slot.textContent.split(',').map(s=>s.trim()).filter(s=>s);
+          if(!existing.includes(selectedOption.textContent)){
+            existing.push(selectedOption.textContent);
+          }
+          slot.textContent = existing.join(',');
+          slot.classList.add('filled');
+          selectedOption.classList.remove('selected');
+          selectedOption.remove();
+          selectedOption=null;
         }
       });
     });
 
     function checkAnswer() {
-      const slots = ['initial','medial','final'];
       let allCorrect = true;
+      const optionsDiv = document.getElementById("options");
 
-      slots.forEach(pos => {
+      ['initial','medial','final'].forEach(pos => {
         const slot = document.getElementById(pos+'Slot');
-        if (slot.parentElement.style.display === 'none') return;
-        const values = slot.textContent.split(',').map(s => s.trim());
-        const correctValues = current[pos];
-        if (values.length !== correctValues.length || !values.every(v => correctValues.includes(v))) {
-          allCorrect = false;
+        if(slot.parentElement.style.display==='none') return;
+
+        const placed = slot.textContent.split(',').map(s=>s.trim()).filter(s=>s);
+        const correct = current[pos];
+
+        let correctInSlot = [];
+        let wrongLetters = [];
+
+        placed.forEach(letter => {
+          if(correct.includes(letter)) correctInSlot.push(letter);
+          else { wrongLetters.push(letter); allCorrect=false; }
+        });
+
+        // Merge with all correct letters
+        slot.textContent = [...new Set([...correctInSlot, ...correct])].join(',');
+        if(correctInSlot.length === correct.length) slot.classList.add("correct","locked");
+        else if(correctInSlot.length > 0){
+          slot.classList.add("partial","shake","wrong");
+          setTimeout(()=>slot.classList.remove("shake","wrong"),500);
         }
+
+        // Return wrong letters to options list
+        wrongLetters.forEach(letter=>{
+          const btn = document.createElement("div");
+          btn.textContent = letter;
+          btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
+          btn.onclick = () => selectOption(btn);
+          optionsDiv.appendChild(btn);
+        });
       });
 
       const feedback = document.getElementById("feedback");
-      if (allCorrect) {
+      if(allCorrect){
+        correctRounds++;
+        streak++;
         feedback.textContent = "✅ Correct!";
         feedback.className = "mt-4 font-semibold text-green-600";
-        setTimeout(newQuestion, 1500);
+        setTimeout(newQuestion,1500);
       } else {
-        feedback.textContent = "❌ Try again.";
+        streak = 0;
+        feedback.textContent = "❌ Some letters are wrong, try again!";
         feedback.className = "mt-4 font-semibold text-red-600";
       }
+
+      totalRounds++;
+      updateScore();
+    }
+
+    function updateScore(){
+      document.getElementById("score").textContent=`Score: ${correctRounds} / ${totalRounds}`;
+      const progress = totalRounds>0?Math.round((correctRounds/totalRounds)*100):0;
+      const bar = document.getElementById("progressBar");
+      bar.style.width = progress+"%";
+      bar.className = progress>=80?"h-4 rounded-full bg-green-500":progress>=50?"h-4 rounded-full bg-yellow-500":"h-4 rounded-full bg-red-500";
+
+      const streakEl = document.getElementById("streak");
+      if(streak>0){ streakEl.textContent=`Streak: ${streak} 🔥`; streakEl.classList.add("glow"); }
+      else { streakEl.textContent="Streak: 0"; streakEl.classList.remove("glow"); }
     }
 
     newQuestion();
