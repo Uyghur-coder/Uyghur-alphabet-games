@@ -144,7 +144,7 @@
         .filter(f=>f && !allForms.includes(f));
       
       let optionsList = allForms.concat(distractors.slice(0,6));
-      optionsList = shuffle(optionsList); // <-- Randomized here
+      optionsList = shuffle(optionsList);
 
       optionsList.forEach(f=>{
         const btn=document.createElement("div");
@@ -163,7 +163,7 @@
     }
 
     function clearSlots(){
-      document.querySelectorAll('.slot').forEach(s=>{s.textContent=''; s.classList.remove('locked','correct','shake','wrong','filled','partial');});
+      document.querySelectorAll('.slot').forEach(s=>{s.textContent=''; s.className='slot';});
       document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
       selectedOption=null;
     }
@@ -174,8 +174,10 @@
       selectedOption=btn;
     }
 
+    // Slot click handler: add or remove letters
     document.querySelectorAll('.slot').forEach(slot=>{
       slot.addEventListener('click',()=>{
+        const optionsDiv = document.getElementById('options');
         if(selectedOption){
           let existing = slot.textContent.split(',').map(s=>s.trim()).filter(s=>s);
           if(!existing.includes(selectedOption.textContent)){
@@ -186,6 +188,17 @@
           selectedOption.classList.remove('selected');
           selectedOption.remove();
           selectedOption=null;
+        } else if(slot.textContent.trim()!==''){
+          const lettersInSlot = slot.textContent.split(',').map(s=>s.trim());
+          lettersInSlot.forEach(letter=>{
+            const btn = document.createElement('div');
+            btn.textContent = letter;
+            btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
+            btn.onclick = () => selectOption(btn);
+            optionsDiv.appendChild(btn);
+          });
+          slot.textContent='';
+          slot.className='slot';
         }
       });
     });
