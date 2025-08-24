@@ -139,9 +139,12 @@
       optionsDiv.innerHTML='';
 
       const allForms = ['initial','medial','final'].flatMap(pos=>current[pos]);
-      let distractors = letters.flatMap(l=>['initial','medial','final'].flatMap(pos=>l[pos])).filter(f=>f&&!allForms.includes(f));
-      shuffle(distractors);
-      const optionsList = allForms.concat(distractors.slice(0,6));
+      let distractors = letters
+        .flatMap(l=>['initial','medial','final'].flatMap(pos=>l[pos]))
+        .filter(f=>f && !allForms.includes(f));
+      
+      let optionsList = allForms.concat(distractors.slice(0,6));
+      optionsList = shuffle(optionsList); // <-- Randomized here
 
       optionsList.forEach(f=>{
         const btn=document.createElement("div");
@@ -206,7 +209,6 @@
           else wrongLetters.push(letter);
         });
 
-        // Keep correct letters in slot, return wrong letters to options
         slot.textContent = correctInSlot.join(',');
         if(correctInSlot.length === correct.length && wrongLetters.length===0){
           slot.classList.add("correct","locked");
@@ -216,7 +218,6 @@
           allCorrect = false;
         }
 
-        // Return wrong letters to options list
         wrongLetters.forEach(letter=>{
           if(!Array.from(optionsDiv.children).some(o=>o.textContent===letter)){
             const btn = document.createElement("div");
