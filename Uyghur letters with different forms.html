@@ -4,51 +4,45 @@
   <meta charset="UTF-8">
   <title>Uyghur Letter Forms Game</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Load Alkatip Yazma font -->
   <style>
-    @font-face {
-  font-family: 'AlkatipYazma';
-  src: url('https://Uyghur-coder.github.io/Uyghur-alphabet-games/fonts/ALKATIPYazma.ttf') format('truetype');
-}
-.uyghur { 
-  font-family: 'AlkatipYazma', sans-serif; 
-  font-size: 2rem; 
-}
-    .slot, .option {
-      border: 2px dashed #ccc;
-      min-height: 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border-radius: 0.5rem;
-      transition: all 0.2s;
-    }
-    .option.selected {
-      border-color: #2563eb;
-      background-color: #dbeafe;
-      color: #1d4ed8;
-      font-weight: bold;
-    }
-    .slot.locked { color: #16a34a; font-weight: bold; }
-    .shake { animation: shake 0.4s; }
-    @keyframes shake {
-      0%,100%{ transform: translateX(0); }
-      20%,60%{ transform: translateX(-6px); }
-      40%,80%{ transform: translateX(6px); }
-    }
-    .glow { animation: pulseGlow 1.5s infinite; }
-    @keyframes pulseGlow {
-      0% { text-shadow: 0 0 5px orange, 0 0 10px gold; }
-      50% { text-shadow: 0 0 15px red, 0 0 30px gold; }
-      100% { text-shadow: 0 0 5px orange, 0 0 10px gold; }
-    }
-    .bounce-fade { animation: bounceFade 0.8s ease forwards; }
-    @keyframes bounceFade {
-      0% { transform: scale(0.5); opacity: 0; }
-      50% { transform: scale(1.2); opacity: 1; }
-      70% { transform: scale(0.9); }
-      100% { transform: scale(1); opacity: 1; }
-    }
+  @font-face {
+    font-family: 'AlkatipYazma';
+    src: url('https://Uyghur-coder.github.io/Uyghur-alphabet-games/fonts/ALKATIPYazma.ttf') format('truetype');
+  }
+  .uyghur { 
+    font-family: 'AlkatipYazma', sans-serif; 
+    font-size: 2rem; 
+  }
+  .slot, .option {
+    border: 2px dashed #ccc;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+  }
+  .option.selected {
+    border-color: #2563eb;
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    font-weight: bold;
+  }
+  .slot.locked { color: #16a34a; font-weight: bold; }
+  .shake { animation: shake 0.4s; }
+  @keyframes shake {
+    0%,100%{ transform: translateX(0); }
+    20%,60%{ transform: translateX(-6px); }
+    40%,80%{ transform: translateX(6px); }
+  }
+  .glow { animation: pulseGlow 1.5s infinite; }
+  @keyframes pulseGlow {
+    0% { text-shadow: 0 0 5px orange, 0 0 10px gold; }
+    50% { text-shadow: 0 0 15px red, 0 0 30px gold; }
+    100% { text-shadow: 0 0 5px orange, 0 0 10px gold; }
+  }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-6">
@@ -91,7 +85,6 @@
     </div>
 
     <p id="feedback" class="mt-4 font-semibold"></p>
-    <p id="milestone" class="text-xl font-bold text-purple-600 mt-2"></p>
   </div>
 
   <script>
@@ -141,7 +134,6 @@
       document.getElementById("latin").textContent = `(${current.latin})`;
       clearSlots();
       document.getElementById("feedback").textContent='';
-      document.getElementById("milestone").textContent='';
 
       const optionsDiv = document.getElementById("options");
       optionsDiv.innerHTML='';
@@ -182,7 +174,6 @@
     document.querySelectorAll('.slot').forEach(slot=>{
       slot.addEventListener('click',()=>{
         if(selectedOption){
-          // Add selected letter without removing other correct letters
           let existing = slot.textContent.split(',').map(s=>s.trim()).filter(s=>s);
           if(!existing.includes(selectedOption.textContent)){
             existing.push(selectedOption.textContent);
@@ -207,29 +198,33 @@
         const placed = slot.textContent.split(',').map(s=>s.trim()).filter(s=>s);
         const correct = current[pos];
 
-        let correctInSlot = [];
         let wrongLetters = [];
+        let correctInSlot = [];
 
         placed.forEach(letter => {
           if(correct.includes(letter)) correctInSlot.push(letter);
-          else { wrongLetters.push(letter); allCorrect=false; }
+          else wrongLetters.push(letter);
         });
 
-        // Merge with all correct letters
-        slot.textContent = [...new Set([...correctInSlot, ...correct])].join(',');
-        if(correctInSlot.length === correct.length) slot.classList.add("correct","locked");
-        else if(correctInSlot.length > 0){
+        // Keep correct letters in slot, return wrong letters to options
+        slot.textContent = correctInSlot.join(',');
+        if(correctInSlot.length === correct.length && wrongLetters.length===0){
+          slot.classList.add("correct","locked");
+        } else if(wrongLetters.length>0){
           slot.classList.add("partial","shake","wrong");
           setTimeout(()=>slot.classList.remove("shake","wrong"),500);
+          allCorrect = false;
         }
 
         // Return wrong letters to options list
         wrongLetters.forEach(letter=>{
-          const btn = document.createElement("div");
-          btn.textContent = letter;
-          btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
-          btn.onclick = () => selectOption(btn);
-          optionsDiv.appendChild(btn);
+          if(!Array.from(optionsDiv.children).some(o=>o.textContent===letter)){
+            const btn = document.createElement("div");
+            btn.textContent = letter;
+            btn.className = "option uyghur px-4 py-2 border rounded-lg bg-gray-100";
+            btn.onclick = () => selectOption(btn);
+            optionsDiv.appendChild(btn);
+          }
         });
       });
 
