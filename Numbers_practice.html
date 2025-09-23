@@ -57,11 +57,11 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 1.2rem; /* larger Uyghur text */
+  font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
   border-radius: 8px;
-  background-color: #f5f5f5;      /* lighter grey */
+  background-color: #f5f5f5;
   color: #2065d1;
   border: 2px solid #b0b0b0;
   box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
@@ -109,35 +109,28 @@ button.reshuffle-btn, button.toggle-mode-btn {
 <nav>
   <button onclick="showSection('1-10')">1–10</button>
   <button onclick="showSection('11-20')">11–20</button>
-  <button onclick="showSection('20-100')">20–100</button>
+  <button onclick="showSection('30-100')">30–100</button>
   <button onclick="showSection('1000+')">1000+</button>
 </nav>
 
 <div id="1-10" class="game-section active"></div>
 <div id="11-20" class="game-section"></div>
-<div id="20-100" class="game-section"></div>
+<div id="30-100" class="game-section"></div>
 <div id="1000+" class="game-section"></div>
 
 <script>
 const ranges = {
   '1-10': [
-    {num:1,name:'بىر'}, {num:2,name:'ئىككى'}, {num:3,name:'ئۈچ'}, {num:4,name:'تۆت'}, {num:5,name:'بەش'},
+    {num:1,name:'بىر'}, {num:2,name:'ئىككى'}, {num:3,name:'ئۇچ'}, {num:4,name:'تۆت'}, {num:5,name:'بەش'},
     {num:6,name:'ئالتە'}, {num:7,name:'يەتتە'}, {num:8,name:'سەككىز'}, {num:9,name:'توققۇز'}, {num:10,name:'ئون'}
   ],
   '11-20': [
     {num:11,name:'ئون بىر'}, {num:12,name:'ئون ئىككى'}, {num:13,name:'ئون ئۈچ'}, {num:14,name:'ئون تۆت'}, {num:15,name:'ئون بەش'},
     {num:16,name:'ئون ئالتە'}, {num:17,name:'ئون يەتتە'}, {num:18,name:'ئون سەككىز'}, {num:19,name:'ئون توققۇز'}, {num:20,name:'يىگىرمە'}
   ],
-  '20-100': [
-    {num:20,name:'يىگىرمە'},
-    {num:30,name:'ئوتتۇز'},
-    {num:40,name:'قىرىق'},
-    {num:50,name:'ئەللىك'},
-    {num:60,name:'ئاتمىش'},
-    {num:70,name:'يەتمىش'},
-    {num:80,name:'سەكسەن'},
-    {num:90,name:'توقسان'},
-    {num:100,name:'يۈز'}
+  '30-100': [
+    {num:30,name:'ئوتتۇز'}, {num:40,name:'قىرىق'}, {num:50,name:'ئەللىك'}, {num:60,name:'ئاتمىش'},
+    {num:70,name:'يەتمىش'}, {num:80,name:'سەكسەن'}, {num:90,name:'توقسان'}, {num:100,name:'يۈز'}
   ],
   '1000+': [
     {num:1000,name:'مىڭ'}, {num:10000,name:'ئون مىڭ'}, {num:100000,name:'يۈز مىڭ'}, {num:1000000,name:'مىليون'}
@@ -149,12 +142,14 @@ function showSection(id){document.querySelectorAll('.game-section').forEach(s=>s
 
 Object.keys(ranges).forEach(rangeId=>{
   const container=document.getElementById(rangeId);
-  container.innerHTML=`<h2>Uyghur Numbers ${rangeId}</h2>
-  <div class="cards-container row"></div>
-  <div class="targets-container row"></div>
-  <div class="message"></div>
-  <button class="reshuffle-btn">Restart / Reshuffle</button>
-  <button class="toggle-mode-btn">Switch to Click & Click Mode</button>`;
+  container.innerHTML=`
+    <h2>Uyghur Numbers ${rangeId}</h2>
+    <div class="cards-container row"></div>
+    <div class="targets-container row"></div>
+    <div class="message"></div>
+    <button class="reshuffle-btn">Restart / Reshuffle</button>
+    <button class="toggle-mode-btn">Switch to Click & Click Mode</button>
+  `;
 
   const cardsContainer=container.querySelector('.cards-container');
   const targetsContainer=container.querySelector('.targets-container');
@@ -191,7 +186,7 @@ Object.keys(ranges).forEach(rangeId=>{
   function handleCardClickClickMode(card){if(!isClickMode)return; if(selectedCard===card){card.style.borderColor='#b0b0b0'; selectedCard=null;} else{if(selectedCard)selectedCard.style.borderColor='#b0b0b0'; selectedCard=card; card.style.borderColor='#2065d1';}}
   function handleTargetClickClickMode(target){if(!isClickMode||!selectedCard)return; processDrop(selectedCard.dataset.num,target); selectedCard.style.borderColor='#b0b0b0'; selectedCard=null;}
   function handleDragStart(e){if(isClickMode)return; this.style.opacity='0.5'; e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',this.dataset.num);}
-  function handleDragEnd(){if(isClickMode)return; this.style.opacity='1'; container.querySelectorAll('.target').forEach(t=>t.classList.remove('over'));}
+  function handleDragEnd(){if(isClickMode)return; container.querySelectorAll('.target').forEach(t=>t.classList.remove('over'));}
   function handleDragOver(e){if(!isClickMode){e.preventDefault(); e.dataTransfer.dropEffect='move';}}
   function handleDragEnter(e){if(!isClickMode){e.preventDefault(); this.classList.add('over');}}
   function handleDragLeave(){if(!isClickMode)this.classList.remove('over');}
