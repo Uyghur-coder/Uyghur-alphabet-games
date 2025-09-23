@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uyghur Numbers — Canvas Game</title>
+<style>
+@font-face {
+  font-family: 'AlkatipYazma';
+  src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
+  font-display: swap;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f6fbff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+h1 { color: #2065d1; text-align: center; margin: 10px 0; font-size: 1.5rem; }
+
+.uyghur { font-family: 'AlkatipYazma', sans-serif; font-size: 1.2rem; color: #2065d1; }
+
+.row { display: flex; gap: 8px; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
+
+.card, .target {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 700;
+  background-color: #fff9cc;
+  color: #2065d1;
+  border: 2px solid #e0c97f;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+
+.card:active { transform: scale(0.97); }
+.target.over { outline: 3px solid #f1c40f; box-shadow: 2px 2px 6px rgba(0,0,0,0.25); }
+.target.matched { background-color: #9fd99f !important; color: #fff !important; border-color: #6aa66a; pointer-events: none; }
+.hidden { visibility: hidden; }
+
+#message { margin-top: 8px; color: #6b7280; font-size: 1rem; text-align:center; }
+
+button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#reshuffle-btn { background-color: #2065d1; color: #fff; }
+#reshuffle-btn:hover { background-color: #1a4fb8; }
+#toggle-mode-btn { background-color: #f1c40f; color: #000; }
+#toggle-mode-btn:hover { background-color: #d4ac0d; }
+</style>
+</head>
+<body>
+
+<h1>Match the Number with Its Uyghur Name</h1>
+
+<div id="cards-container"></div>
+<div id="targets-container"></div>
+<div id="message"></div>
+<button id="reshuffle-btn">Restart / Reshuffle</button>
+<button id="toggle-mode-btn">Switch to Click & Click Mode</button>
+
+<script>
+const items = [
+  {num:1, name:'بىر'}, {num:2, name:'ئىككى'}, {num:3, name:'ئۈچ'},
+  {num:4, name:'تۆت'}, {num:5, name:'بەش'}, {num:6, name:'ئالتە'},
+  {num:7, name:'يەتتە'}, {num:8, name:'سەككىز'}, {num:9, name:'توققۇز'}, {num:10, name:'ئون'}
+];
+
+const cardsContainer = document.getElementById('cards-container');
+const targetsContainer = document.getElementById('targets-container');
+const messageEl = document.getElementById('message');
+const reshuffleBtn = document.getElementById('reshuffle-btn');
+const toggleModeBtn = document.getElementById('toggle-mode-btn');
+
+let isClickMode = false;
+let selectedCard = null;
+
+function shuffle(array){
+  for(let i=array.length-1; i>0; i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i], array[j]]=[array[j], array[i]];
+  }
+  return array;
+}
+
+function processDrop(draggedNum, target){
+  if(!target || target.dataset.matched==='true') return;
+  if(String(draggedNum) === String(target.dataset.num)){
+    const card = document.querySelector(`.card[data-num="${draggedNum}"]`);
+    if(card) card.classList.add('hidden');
+    target.dataset.matched = 'true';
+    target.classList.add('matched');
+    target.style.backgroundColor = '#9fd99f';
+    target.style.color = '#fff';
+    target.innerHTML = `<div>${draggedNum}</div><div class="uyghur">${items.find(i=>i.num==draggedNum).name}</div>`;
+    checkIfDone();
+  } else {
+    const original = target.dataset.originalHtml || target.innerHTML;
+    target.style.backgroundColor = '#d14b4b';
+    target.style.color = '#fff';
+    setTimeout(()=>{ target.style.backgroundColor='#fff9cc'; target.style.color='#2065d1'; target.innerHTML=original; }, 600);
+  }
+}
+
+function checkIfDone(){
+  if(document.querySelectorAll('.target.matched').length===items.length){
+    messageEl.textContent='Congratulations! All matches complete ✅';
+    messageEl.style.color='#9fd99f';
+  }
+}
+
+// Toggle mode
+toggleModeBtn.addEventListener('click', ()=>{
+  isClickMode = !isClickMode;
+  selectedCard=null;
+  toggleModeBtn.textContent = isClickMode ? "Switch to Drag & Drop Mode" : "Switch to Click & Click Mode";
+});
+
+// Click & Click mode handlers
+function handleCardClickClickMode(card){
+  if(!isClickMode) return;
+  if(selectedCard===card){ card.style.borderColor='#e0c97f'; selectedCard=null; } 
+  else { if(selectedCard) selectedCard.style.borderColor='#e0c97f'; selectedCard=card; card.style.borderColor='#2065d1'; }
+}
+function handleTargetClickClickMode(target){
+  if(!isClickMode || !selectedCard) return;
+  processDrop(selectedCard.dataset.num,target);
+  selectedCard.style.borderColor='#e0c97f';
+  selectedCard=null;
+}
+
+// Drag & Drop handlers
+function handleDragStart(e){ if(isClickMode) return; this.style.opacity='0.5'; e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',this.dataset.num); }
+function handleDragEnd(){ if(isClickMode) return; this.style.opacity='1'; document.querySelectorAll('.target').forEach(t=>t.classList.remove('over')); }
+function handleDragOver(e){ if(!isClickMode){ e.preventDefault(); e.dataTransfer.dropEffect='move'; } }
+function handleDragEnter(e){ if(!isClickMode){ e.preventDefault(); this.classList.add('over'); } }
+function handleDragLeave(){ if(!isClickMode) this.classList.remove('over'); }
+function handleDropEvent(e){ if(!isClickMode){ e.preventDefault(); e.stopPropagation(); this.classList.remove('over'); processDrop(e.dataTransfer.getData('text/plain'),this); } }
+
+// Touch support
+function makeTouchable(card){
+  card.addEventListener('touchstart',function(e){
+    if(isClickMode) return;
+    e.preventDefault();
+    const touch=e.touches[0], draggedNum=this.dataset.num;
+    const clone=this.cloneNode(true);
+    clone.style.position='fixed';
+    clone.style.left=(touch.clientX-this.offsetWidth/2)+'px';
+    clone.style.top=(touch.clientY-this.offsetHeight/2)+'px';
+    clone.style.zIndex=9999; clone.style.opacity=0.9; clone.style.pointerEvents='none';
+    document.body.appendChild(clone);
+    function touchMove(ev){ ev.preventDefault(); const t=ev.touches[0]; clone.style.left=(t.clientX-clone.offsetWidth/2)+'px'; clone.style.top=(t.clientY-clone.offsetHeight/2)+'px'; }
+    function touchEnd(ev){ ev.preventDefault(); document.removeEventListener('touchmove',touchMove); document.removeEventListener('touchend',touchEnd); const end=ev.changedTouches[0]; const el=document.elementFromPoint(end.clientX,end.clientY); const target=el?el.closest('.target'):null; processDrop(draggedNum,target); if(clone && clone.parentNode) clone.parentNode.removeChild(clone); }
+    document.addEventListener('touchmove',touchMove,{passive:false});
+    document.addEventListener('touchend',touchEnd,{passive:false});
+  },{passive:false});
+}
+
+// Initialize game
+function init(){
+  const shuffledCards=shuffle(items.slice());
+  const shuffledTargets=shuffle(items.slice());
+  cardsContainer.innerHTML=''; targetsContainer.innerHTML=''; messageEl.textContent='Drag the number to the correct Uyghur name'; selectedCard=null;
+
+  const rowCards1=document.createElement('div'); rowCards1.className='row';
+  const rowCards2=document.createElement('div'); rowCards2.className='row';
+  const rowTargets1=document.createElement('div'); rowTargets1.className='row';
+  const rowTargets2=document.createElement('div'); rowTargets2.className='row';
+
+  shuffledCards.forEach(item=>{
+    const card=document.createElement('div'); card.className='card'; card.dataset.num=item.num; card.textContent=item.num;
+    card.setAttribute('draggable','true'); card.addEventListener('dragstart',handleDragStart);
+    card.addEventListener('dragend',handleDragEnd); card.addEventListener('click',()=>handleCardClickClickMode(card)); makeTouchable(card);
+    if(item.num<=5) rowCards1.appendChild(card); else rowCards2.appendChild(card);
+  });
+
+  shuffledTargets.forEach(item=>{
+    const target=document.createElement('div'); target.className='target'; target.dataset.num=item.num;
+    const span=document.createElement('span'); span.className='uyghur'; span.textContent=item.name; target.appendChild(span);
+    target.dataset.originalHtml=target.innerHTML;
+    target.addEventListener('dragenter',handleDragEnter);
+    target.addEventListener('dragover',handleDragOver);
+    target.addEventListener('dragleave',handleDragLeave);
+    target.addEventListener('drop',handleDropEvent);
+    target.addEventListener('click',()=>handleTargetClickClickMode(target));
+    if(item.num<=5) rowTargets1.appendChild(target); else rowTargets2.appendChild(target);
+  });
+
+  cardsContainer.appendChild(rowCards1); cardsContainer.appendChild(rowCards2);
+  targetsContainer.appendChild(rowTargets1); targetsContainer.appendChild(rowTargets2);
+}
+
+reshuffleBtn.addEventListener('click', init);
+init();
+</script>
+</body>
+</html>
