@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Uyghur Numbers Game - Bigger Font & Lighter Tiles</title>
+<title>Uyghur Numbers Practice</title>
 <style>
 @font-face {
   font-family: 'AlkatipYazma';
@@ -43,21 +43,21 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
 
 .row {
   display: grid;
-  grid-template-columns: repeat(4, 90px);
+  grid-template-columns: repeat(5, 85px); /* 5 tiles per row */
   gap: 10px;
   margin-bottom: 15px;
   justify-content: center;
 }
 
 .card, .target {
-  width: 90px;
-  height: 90px;
+  width: 85px;
+  height: 85px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.2rem; /* larger Uyghur text */
   font-weight: 700;
   cursor: pointer;
   border-radius: 8px;
@@ -86,7 +86,7 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
 
 .uyghur {
   font-family:'AlkatipYazma',sans-serif;
-  font-size: 1.2rem; /* larger Uyghur text */
+  font-size: 1.2rem;
   color: #2065d1;
   white-space: nowrap;
   overflow: hidden;
@@ -104,7 +104,7 @@ button.reshuffle-btn, button.toggle-mode-btn {
 </head>
 <body>
 
-<header>Uyghur Numbers Game</header>
+<header>Uyghur Numbers Practice</header>
 
 <nav>
   <button onclick="showSection('1-10')">1–10</button>
@@ -119,10 +119,9 @@ button.reshuffle-btn, button.toggle-mode-btn {
 <div id="1000+" class="game-section"></div>
 
 <script>
-// Number data
 const ranges = {
   '1-10': [
-    {num:1,name:'بىر'}, {num:2,name:'ئىككى'}, {num:3,name:'ئۇچ'}, {num:4,name:'تۆت'}, {num:5,name:'بەش'},
+    {num:1,name:'بىر'}, {num:2,name:'ئىككى'}, {num:3,name:'ئۈچ'}, {num:4,name:'تۆت'}, {num:5,name:'بەش'},
     {num:6,name:'ئالتە'}, {num:7,name:'يەتتە'}, {num:8,name:'سەككىز'}, {num:9,name:'توققۇز'}, {num:10,name:'ئون'}
   ],
   '11-20': [
@@ -135,7 +134,7 @@ const ranges = {
     {num:40,name:'قىرىق'},
     {num:50,name:'ئەللىك'},
     {num:60,name:'ئاتمىش'},
-    {num:70,name:'يەتمىش'},  // corrected
+    {num:70,name:'يەتمىش'},
     {num:80,name:'سەكسەن'},
     {num:90,name:'توقسان'},
     {num:100,name:'يۈز'}
@@ -148,7 +147,6 @@ const ranges = {
 function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
 function showSection(id){document.querySelectorAll('.game-section').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active');}
 
-// Initialize sections
 Object.keys(ranges).forEach(rangeId=>{
   const container=document.getElementById(rangeId);
   container.innerHTML=`<h2>Uyghur Numbers ${rangeId}</h2>
