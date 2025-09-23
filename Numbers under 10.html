@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Uyghur Numbers — Canvas Game</title>
+<title>Uyghur Numbers 1–10 — Drag & Drop / Click & Click</title>
 <style>
 @font-face {
   font-family: 'AlkatipYazma';
@@ -21,7 +21,6 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
   overflow: hidden;
 }
 
@@ -75,7 +74,7 @@ button {
 </head>
 <body>
 
-<h1>Match the Number with Its Uyghur Name</h1>
+<h1>Match the Number with Its Uyghur Name (1–10)</h1>
 
 <div id="cards-container"></div>
 <div id="targets-container"></div>
@@ -100,29 +99,29 @@ let isClickMode = false;
 let selectedCard = null;
 
 function shuffle(array){
-  for(let i=array.length-1; i>0; i--){
+  for(let i=array.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
-    [array[i], array[j]]=[array[j], array[i]];
+    [array[i],array[j]]=[array[j],array[i]];
   }
   return array;
 }
 
-function processDrop(draggedNum, target){
+function processDrop(draggedNum,target){
   if(!target || target.dataset.matched==='true') return;
   if(String(draggedNum) === String(target.dataset.num)){
-    const card = document.querySelector(`.card[data-num="${draggedNum}"]`);
+    const card=document.querySelector(`.card[data-num="${draggedNum}"]`);
     if(card) card.classList.add('hidden');
-    target.dataset.matched = 'true';
+    target.dataset.matched='true';
     target.classList.add('matched');
-    target.style.backgroundColor = '#9fd99f';
-    target.style.color = '#fff';
-    target.innerHTML = `<div>${draggedNum}</div><div class="uyghur">${items.find(i=>i.num==draggedNum).name}</div>`;
+    target.style.backgroundColor='#9fd99f';
+    target.style.color='#fff';
+    target.innerHTML=`<div>${draggedNum}</div><div class="uyghur">${items.find(i=>i.num==draggedNum).name}</div>`;
     checkIfDone();
   } else {
-    const original = target.dataset.originalHtml || target.innerHTML;
-    target.style.backgroundColor = '#d14b4b';
-    target.style.color = '#fff';
-    setTimeout(()=>{ target.style.backgroundColor='#fff9cc'; target.style.color='#2065d1'; target.innerHTML=original; }, 600);
+    const original=target.dataset.originalHtml||target.innerHTML;
+    target.style.backgroundColor='#d14b4b';
+    target.style.color='#fff';
+    setTimeout(()=>{target.style.backgroundColor='#fff9cc'; target.style.color='#2065d1'; target.innerHTML=original;},600);
   }
 }
 
@@ -133,19 +132,18 @@ function checkIfDone(){
   }
 }
 
-// Toggle mode
 toggleModeBtn.addEventListener('click', ()=>{
   isClickMode = !isClickMode;
   selectedCard=null;
   toggleModeBtn.textContent = isClickMode ? "Switch to Drag & Drop Mode" : "Switch to Click & Click Mode";
 });
 
-// Click & Click mode handlers
 function handleCardClickClickMode(card){
   if(!isClickMode) return;
   if(selectedCard===card){ card.style.borderColor='#e0c97f'; selectedCard=null; } 
   else { if(selectedCard) selectedCard.style.borderColor='#e0c97f'; selectedCard=card; card.style.borderColor='#2065d1'; }
 }
+
 function handleTargetClickClickMode(target){
   if(!isClickMode || !selectedCard) return;
   processDrop(selectedCard.dataset.num,target);
@@ -153,7 +151,6 @@ function handleTargetClickClickMode(target){
   selectedCard=null;
 }
 
-// Drag & Drop handlers
 function handleDragStart(e){ if(isClickMode) return; this.style.opacity='0.5'; e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',this.dataset.num); }
 function handleDragEnd(){ if(isClickMode) return; this.style.opacity='1'; document.querySelectorAll('.target').forEach(t=>t.classList.remove('over')); }
 function handleDragOver(e){ if(!isClickMode){ e.preventDefault(); e.dataTransfer.dropEffect='move'; } }
@@ -161,17 +158,14 @@ function handleDragEnter(e){ if(!isClickMode){ e.preventDefault(); this.classLis
 function handleDragLeave(){ if(!isClickMode) this.classList.remove('over'); }
 function handleDropEvent(e){ if(!isClickMode){ e.preventDefault(); e.stopPropagation(); this.classList.remove('over'); processDrop(e.dataTransfer.getData('text/plain'),this); } }
 
-// Touch support
 function makeTouchable(card){
   card.addEventListener('touchstart',function(e){
     if(isClickMode) return;
     e.preventDefault();
     const touch=e.touches[0], draggedNum=this.dataset.num;
     const clone=this.cloneNode(true);
-    clone.style.position='fixed';
-    clone.style.left=(touch.clientX-this.offsetWidth/2)+'px';
-    clone.style.top=(touch.clientY-this.offsetHeight/2)+'px';
-    clone.style.zIndex=9999; clone.style.opacity=0.9; clone.style.pointerEvents='none';
+    clone.style.position='fixed'; clone.style.left=(touch.clientX-this.offsetWidth/2)+'px';
+    clone.style.top=(touch.clientY-this.offsetHeight/2)+'px'; clone.style.zIndex=9999; clone.style.opacity=0.9; clone.style.pointerEvents='none';
     document.body.appendChild(clone);
     function touchMove(ev){ ev.preventDefault(); const t=ev.touches[0]; clone.style.left=(t.clientX-clone.offsetWidth/2)+'px'; clone.style.top=(t.clientY-clone.offsetHeight/2)+'px'; }
     function touchEnd(ev){ ev.preventDefault(); document.removeEventListener('touchmove',touchMove); document.removeEventListener('touchend',touchEnd); const end=ev.changedTouches[0]; const el=document.elementFromPoint(end.clientX,end.clientY); const target=el?el.closest('.target'):null; processDrop(draggedNum,target); if(clone && clone.parentNode) clone.parentNode.removeChild(clone); }
@@ -180,7 +174,6 @@ function makeTouchable(card){
   },{passive:false});
 }
 
-// Initialize game
 function init(){
   const shuffledCards=shuffle(items.slice());
   const shuffledTargets=shuffle(items.slice());
