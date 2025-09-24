@@ -37,14 +37,14 @@ header {
 h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
 .row {
   display: grid;
-  grid-template-columns: repeat(5, 130px);
+  grid-template-columns: repeat(5, 140px);
   gap: 12px;
   margin-bottom: 15px;
   justify-content: center;
 }
 .card, .target {
-  width: 130px; 
-  height: 70px;
+  width: 140px; 
+  height: 80px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -54,28 +54,24 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
   font-weight: normal;
   cursor: pointer;
   border-radius: 8px;
+  background-color: #f5f5f5;
+  color: #000;
   border: 2px solid #b0b0b0;
   box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
   overflow: hidden;
   white-space: nowrap;
 }
-.card {
-  background-color: #cce5ff; /* light blue */
-  color: #000;
-}
-.target {
-  background-color: #d4edda; /* light green */
-  color: #000;
-}
+.card.number-tile { background-color: #d0e7ff; } 
+.card.uyghur-tile { background-color: #fff0d0; }
 .card:active { transform: scale(0.97); }
 .target.over { 
   outline: 3px solid #f1c40f; 
   box-shadow: 2px 2px 6px rgba(0,0,0,0.25); 
 }
 .target.matched { 
-  background-color: #6aa66a !important;
-  color: #fff !important;
-  border-color: #3e8e41;
+  background-color: #b0d9b0 !important;
+  color: #000 !important;
+  border-color: #6aa66a;
   pointer-events: none;
 }
 .card.hidden { transition: opacity 0.5s ease; opacity: 0; }
@@ -85,15 +81,7 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
   font-size: 1.4rem;
   color: #000;
 }
-.reset-btn {
-  margin-bottom: 12px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  background: #2065d1;
-  color: #fff;
-  cursor: pointer;
-}
+.reset-btn { margin-top: 8px; padding: 6px 12px; border:none; border-radius:6px; background:#2065d1; color:#fff; cursor:pointer; }
 .reset-btn:hover { background:#1a4fb8; }
 </style>
 </head>
@@ -113,9 +101,7 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
 <div id="ordinal-game" class="game-section"></div>
 
 <script>
-function formatNumber(num){
-    return num.toLocaleString('en-US');
-}
+function formatNumber(num){ return num.toLocaleString('en-US'); }
 
 const cardinalRanges = {
   '1-10': [
@@ -131,31 +117,32 @@ const cardinalRanges = {
     {num:70,name:'يەتمىش'}, {num:80,name:'سەكسەن'}, {num:90,name:'توقسان'}, {num:100,name:'يۈز'}
   ],
   '1000+': [
-    {num:1000,name:'مىڭ'}, 
-    {num:10000,name:'ئون مىڭ'}, 
-    {num:100000,name:'يۈز مىڭ'}, 
-    {num:1000000,name:'مىليون'}
+    {num:1000,name:'مىڭ'}, {num:10000,name:'ئون مىڭ'}, {num:100000,name:'يۈز مىڭ'}, {num:1000000,name:'مىليون'}
   ]
 };
 
 const ordinalRanges = {
   '1-10': [
-    {en:"1st",ug:"بىرىنچى",id:"first"}, {en:"2nd",ug:"ئىككىنچى",id:"second"}, {en:"3rd",ug:"ئۈچىنچى",id:"third"},
+    {en:"1st",ug:"بىرىنچى",id:"first"}, {en:"2nd",ug:"ئىككىنچى",id:"second"}, {en:"3rd",ug:"ئۈچۈنچى",id:"third"},
     {en:"4th",ug:"تۆتىنچى",id:"fourth"}, {en:"5th",ug:"بەشىنچى",id:"fifth"}, {en:"6th",ug:"ئالتىنچى",id:"sixth"},
     {en:"7th",ug:"يەتتىنچى",id:"seventh"}, {en:"8th",ug:"سەككىزىنچى",id:"eighth"}, {en:"9th",ug:"توققۇزىنچى",id:"ninth"},
     {en:"10th",ug:"ئونىنچى",id:"tenth"}
   ],
   '11-20': [
-    {en:"11th",ug:"ئون بىرىنچى",id:"eleventh"}, {en:"12th",ug:"ئون ئىككىنچى",id:"twelfth"}, {en:"13th",ug:"ئون ئۈچىنچى",id:"thirteenth"},
+    {en:"11th",ug:"ئون بىرىنچى",id:"eleventh"}, {en:"12th",ug:"ئون ئىككىنچى",id:"twelfth"}, {en:"13th",ug:"ئون ئۈچۈنچى",id:"thirteenth"},
     {en:"14th",ug:"ئون تۆتىنچى",id:"fourteenth"}, {en:"15th",ug:"ئون بەشىنچى",id:"fifteenth"}, {en:"16th",ug:"ئون ئالتىنچى",id:"sixteenth"},
     {en:"17th",ug:"ئون يەتتىنچى",id:"seventeenth"}, {en:"18th",ug:"ئون سەككىزىنچى",id:"eighteenth"}, {en:"19th",ug:"ئون توققۇزىنچى",id:"nineteenth"},
     {en:"20th",ug:"يىگىرمىنچى",id:"twentieth"}
   ],
+  '30-90': [
+    {en:"30th",ug:"ئوتتۇزىنچى",id:"thirtieth"}, {en:"40th",ug:"قىرىقىنچى",id:"fortieth"},
+    {en:"50th",ug:"ئەللىكىنچى",id:"fiftieth"}, {en:"60th",ug:"ئاتمىشىنچى",id:"sixtieth"},
+    {en:"70th",ug:"يەتمىشىنچى",id:"seventieth"}, {en:"80th",ug:"سەكسىنىنچى",id:"eightieth"},
+    {en:"90th",ug:"توقسىنىنچى",id:"ninetieth"}
+  ],
   '100-1000000': [
-    {en:"100th",ug:"يۈزىنچى",id:"hundredth"}, 
-    {en:"1000th",ug:"مىڭىنچى",id:"thousandth"},
-    {en:"10000th",ug:"ئون مىڭىنچى",id:"tenthousandth"}, 
-    {en:"100000th",ug:"يۈز مىڭىنچى",id:"hundredthousandth"},
+    {en:"100th",ug:"يۈزىنچى",id:"hundredth"}, {en:"1000th",ug:"مىڭىنچى",id:"thousandth"},
+    {en:"10000th",ug:"ئون مىڭىنچى",id:"tenthousandth"}, {en:"100000th",ug:"يۈز مىڭىنچى",id:"hundredthousandth"},
     {en:"1000000th",ug:"مىلىيونىنچى",id:"millionth"}
   ]
 };
@@ -186,12 +173,12 @@ function showMainTab(type) {
         document.querySelector('.main-tabs button:nth-child(1)').classList.add('active');
         document.getElementById('cardinal-subtabs').style.display = 'flex';
         buildSubtabs('cardinal', cardinalRanges, document.getElementById('cardinal-subtabs'));
-        showSubtab('cardinal', "1-10");
+        showSubtab('cardinal', Object.keys(cardinalRanges)[0]);
     } else {
         document.querySelector('.main-tabs button:nth-child(2)').classList.add('active');
         document.getElementById('ordinal-subtabs').style.display = 'flex';
         buildSubtabs('ordinal', ordinalRanges, document.getElementById('ordinal-subtabs'));
-        showSubtab('ordinal', "1-10");
+        showSubtab('ordinal', Object.keys(ordinalRanges)[0]);
     }
 }
 
@@ -206,16 +193,16 @@ function showSubtab(type,range){
 
 function buildGame(type,range,container){
     container.innerHTML=`<h2>${type==='cardinal'?'Cardinal':'Ordinal'} Numbers ${range}</h2>
-    <button class="reset-btn" onclick="buildGame('${type}','${range}',this.parentElement)">Reset</button>
     <div class="cards-container row"></div>
-    <div class="targets-container row"></div>`;
+    <div class="targets-container row"></div>
+    <button class="reset-btn" onclick="buildGame('${type}','${range}',document.getElementById('${type}-game'))">Reset</button>`;
+    
     const items=type==='cardinal'?shuffle(cardinalRanges[range].slice()):shuffle(ordinalRanges[range].slice());
     const cardsContainer=container.querySelector('.cards-container');
     const targetsContainer=container.querySelector('.targets-container');
-    const shuffledCards=shuffle(items.slice()); const shuffledTargets=shuffle(items.slice());
 
-    shuffledCards.forEach(item=>{
-        const card=document.createElement('div'); card.className='card';
+    items.forEach(item=>{
+        const card=document.createElement('div'); card.className='card ' + (type==='cardinal'?'number-tile':'number-tile');
         if(type==='cardinal'){ card.dataset.num=item.num; card.textContent=formatNumber(item.num);}
         else{ card.dataset.id=item.id; card.textContent=item.en;}
         card.setAttribute('draggable','true');
@@ -225,7 +212,7 @@ function buildGame(type,range,container){
         cardsContainer.appendChild(card);
     });
 
-    shuffledTargets.forEach(item=>{
+    items.forEach(item=>{
         const target=document.createElement('div'); target.className='target';
         if(type==='cardinal'){ target.dataset.num=item.num; target.innerHTML=`<span class="uyghur">${item.name}</span>`;}
         else{ target.dataset.id=item.id; target.innerHTML=`<span class="uyghur">${item.ug}</span>`;}
@@ -246,7 +233,6 @@ function buildGame(type,range,container){
                 target.classList.add('matched');
             }
         });
-
         targetsContainer.appendChild(target);
     });
 }
