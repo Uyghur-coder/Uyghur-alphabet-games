@@ -10,7 +10,6 @@
   src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
   font-display: swap;
 }
-
 body {
   font-family: Inter, sans-serif;
   background: #fffef5;
@@ -20,28 +19,22 @@ body {
   margin: 0;
   padding: 20px;
 }
-
 header {
   background:#2065d1; color:#fff;
   width:100%; text-align:center;
   padding:12px 0; font-size:1.5rem; margin-bottom:12px;
 }
-
 .main-tabs, .sub-tabs {
   display: flex; justify-content: center; flex-wrap: wrap; margin-bottom:10px;
 }
-
 .main-tabs button, .sub-tabs button {
   margin: 4px; padding: 8px 14px; border: none; border-radius: 6px;
   background: #2065d1; color:#fff; cursor:pointer; transition:0.2s;
 }
 .main-tabs button.active, .sub-tabs button.active { background:#1a4fb8; }
-
 .game-section { display:none; flex-direction:column; align-items:center; width:100%; max-width:1200px;}
 .game-section.active { display:flex; }
-
 h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
-
 .row {
   display: grid;
   grid-template-columns: repeat(5, 130px);
@@ -49,7 +42,6 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
   margin-bottom: 15px;
   justify-content: center;
 }
-
 .card, .target {
   width: 130px; 
   height: 70px;
@@ -63,32 +55,29 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
   cursor: pointer;
   border-radius: 8px;
   background-color: #f5f5f5;
-  color: #2065d1;
+  color: #000;
   border: 2px solid #b0b0b0;
   box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
   overflow: hidden;
   white-space: nowrap;
 }
-
 .card:active { transform: scale(0.97); }
-
 .target.over { 
   outline: 3px solid #f1c40f; 
   box-shadow: 2px 2px 6px rgba(0,0,0,0.25); 
 }
 .target.matched { 
-  background-color: #9fd99f !important; 
-  color: #fff !important; 
-  border-color: #6aa66a; 
-  pointer-events: none; 
+  background-color: #b0d9b0 !important;
+  color: #000 !important;
+  border-color: #6aa66a;
+  pointer-events: none;
 }
-
+.card.hidden { transition: opacity 0.5s ease; opacity: 0; }
 .hidden { visibility:hidden; }
-
 .uyghur {
   font-family:'AlkatipYazma',sans-serif;
   font-size: 1.4rem;
-  color: #2065d1;
+  color: #000;
 }
 </style>
 </head>
@@ -108,7 +97,10 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
 <div id="ordinal-game" class="game-section"></div>
 
 <script>
-// Cardinal numbers
+function formatNumber(num){
+    return num.toLocaleString('en-US');
+}
+
 const cardinalRanges = {
   '1-10': [
     {num:1,name:'بىر'}, {num:2,name:'ئىككى'}, {num:3,name:'ئۈچ'}, {num:4,name:'تۆت'}, {num:5,name:'بەش'},
@@ -123,11 +115,13 @@ const cardinalRanges = {
     {num:70,name:'يەتمىش'}, {num:80,name:'سەكسەن'}, {num:90,name:'توقسان'}, {num:100,name:'يۈز'}
   ],
   '1000+': [
-    {num:1000,name:'مىڭ'}, {num:10000,name:'ئون مىڭ'}, {num:100000,name:'يۈز مىڭ'}, {num:1000000,name:'مىليون'}
+    {num:1000,name:'مىڭ'}, 
+    {num:10000,name:'ئون مىڭ'}, 
+    {num:100000,name:'يۈز مىڭ'}, 
+    {num:1000000,name:'مىليون'}
   ]
 };
 
-// Ordinal numbers
 const ordinalRanges = {
   '1-10': [
     {en:"1st",ug:"بىرىنچى",id:"first"}, {en:"2nd",ug:"ئىككىنچى",id:"second"}, {en:"3rd",ug:"ئۈچۈنچى",id:"third"},
@@ -142,111 +136,107 @@ const ordinalRanges = {
     {en:"20th",ug:"يىگىرمىنچى",id:"twentieth"}
   ],
   '100-1000000': [
-    {en:"100th",ug:"يۈزىنچى",id:"hundredth"}, {en:"1000th",ug:"مىڭىنچى",id:"thousandth"},
-    {en:"10000th",ug:"ئون مىڭىنچى",id:"tenthousandth"}, {en:"100000th",ug:"يۈز مىڭىنچى",id:"hundredthousandth"},
+    {en:"100th",ug:"يۈزىنچى",id:"hundredth"}, 
+    {en:"1000th",ug:"مىڭىنچى",id:"thousandth"},
+    {en:"10000th",ug:"ئون مىڭىنچى",id:"tenthousandth"}, 
+    {en:"100000th",ug:"يۈز مىڭىنچى",id:"hundredthousandth"},
     {en:"1000000th",ug:"مىلىيونىنچى",id:"millionth"}
   ]
 };
 
-// Shuffle
 function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
 
-// Tabs logic
-function showMainTab(type){
-  document.querySelectorAll('.main-tabs button').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.sub-tabs').forEach(s=>s.style.display='none');
-  document.querySelectorAll('.game-section').forEach(s=>s.classList.remove('active'));
-  if(type==='cardinal'){
-    document.querySelector('.main-tabs button:nth-child(1)').classList.add('active');
-    document.getElementById('cardinal-subtabs').style.display='flex';
-    showSubtab('cardinal','1-10');
-  } else {
-    document.querySelector('.main-tabs button:nth-child(2)').classList.add('active');
-    document.getElementById('ordinal-subtabs').style.display='flex';
-    showSubtab('ordinal','1-10');
-  }
+function buildSubtabs(type, ranges, subtabContainer) {
+    subtabContainer.innerHTML = '';
+    let keys = Object.keys(ranges);
+    keys.sort((a, b) => {
+        if (a === "1000+") return 1;
+        if (b === "1000+") return -1;
+        return a.localeCompare(b, undefined, { numeric: true });
+    });
+    keys.forEach(range => {
+        const btn = document.createElement('button');
+        btn.textContent = range;
+        btn.addEventListener('click', () => showSubtab(type, range));
+        subtabContainer.appendChild(btn);
+    });
 }
 
-function buildSubtabs(type,ranges,subtabContainer){
-  subtabContainer.innerHTML='';
-  Object.keys(ranges).forEach((range,i)=>{
-    const btn=document.createElement('button'); btn.textContent=range; 
-    if(i===0) btn.classList.add('active');
-    btn.addEventListener('click',()=> showSubtab(type,range));
-    subtabContainer.appendChild(btn);
-  });
+function showMainTab(type) {
+    document.querySelectorAll('.main-tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.sub-tabs').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.game-section').forEach(s => s.classList.remove('active'));
+    if (type === 'cardinal') {
+        document.querySelector('.main-tabs button:nth-child(1)').classList.add('active');
+        document.getElementById('cardinal-subtabs').style.display = 'flex';
+        buildSubtabs('cardinal', cardinalRanges, document.getElementById('cardinal-subtabs'));
+        showSubtab('cardinal', "1000+" in cardinalRanges ? "1000+" : Object.keys(cardinalRanges)[0]);
+    } else {
+        document.querySelector('.main-tabs button:nth-child(2)').classList.add('active');
+        document.getElementById('ordinal-subtabs').style.display = 'flex';
+        buildSubtabs('ordinal', ordinalRanges, document.getElementById('ordinal-subtabs'));
+        showSubtab('ordinal', Object.keys(ordinalRanges)[0]);
+    }
 }
 
 function showSubtab(type,range){
-  const subtabContainer=document.getElementById(type+'-subtabs');
-  subtabContainer.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-  [...subtabContainer.children].forEach(b=>{ if(b.textContent===range) b.classList.add('active'); });
-  const gameContainer=document.getElementById(type+'-game');
-  gameContainer.classList.add('active');
-  buildGame(type,range,gameContainer);
+    const subtabContainer=document.getElementById(type+'-subtabs');
+    subtabContainer.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    [...subtabContainer.children].forEach(b=>{ if(b.textContent===range) b.classList.add('active'); });
+    const gameContainer=document.getElementById(type+'-game');
+    gameContainer.classList.add('active');
+    buildGame(type,range,gameContainer);
 }
 
 function buildGame(type,range,container){
-  container.innerHTML=`
-    <h2>${type==='cardinal'?'Cardinal':'Ordinal'} Numbers ${range}</h2>
-    <div class="scoreboard"><span id="score-${type}-${range}">Score: 0 / ${(type==='cardinal'?cardinalRanges[range]:ordinalRanges[range]).length}</span>
-      <button class="reshuffle-btn">Restart</button></div>
+    container.innerHTML=`<h2>${type==='cardinal'?'Cardinal':'Ordinal'} Numbers ${range}</h2>
     <div class="cards-container row"></div>
-    <div class="targets-container row"></div>
-    <div class="message">Drag numbers to the correct Uyghur names</div>
-  `;
-  const items=type==='cardinal'?shuffle(cardinalRanges[range].slice()):shuffle(ordinalRanges[range].slice());
-  const cardsContainer=container.querySelector('.cards-container');
-  const targetsContainer=container.querySelector('.targets-container');
-  const scoreEl=container.querySelector(`#score-${type}-${range}`);
-  const reshuffleBtn=container.querySelector('.reshuffle-btn');
-
-  let score=0;
-
-  function processDrop(num,target){
-    if(!target || target.dataset.matched==='true') return;
-    if(type==='cardinal' && Number(num)===Number(target.dataset.num) ||
-       type==='ordinal' && num===target.dataset.id){
-      const card=document.querySelector(`.card[data-num="${num}"], .card[data-id="${num}"]`);
-      if(card) card.classList.add('hidden');
-      target.dataset.matched='true'; target.classList.add('matched'); score++; scoreEl.textContent=`Score: ${score} / ${items.length}`;
-      if(type==='cardinal') target.innerHTML=`<div>${num}</div><div class="uyghur">${items.find(i=>i.num==num).name}</div>`;
-      else target.innerHTML=`<div>${items.find(i=>i.id==num).en}</div><div class="uyghur">${items.find(i=>i.id==num).ug}</div>`;
-    } else { target.style.backgroundColor='#d14b4b'; setTimeout(()=>target.style.backgroundColor='#f5f5f5',500);}
-  }
-
-  function init(){
-    score=0;
-    scoreEl.textContent=`Score: 0 / ${items.length}`;
-    cardsContainer.innerHTML=''; targetsContainer.innerHTML='';
+    <div class="targets-container row"></div>`;
+    const items=type==='cardinal'?shuffle(cardinalRanges[range].slice()):shuffle(ordinalRanges[range].slice());
+    const cardsContainer=container.querySelector('.cards-container');
+    const targetsContainer=container.querySelector('.targets-container');
     const shuffledCards=shuffle(items.slice()); const shuffledTargets=shuffle(items.slice());
 
     shuffledCards.forEach(item=>{
-      const card=document.createElement('div'); card.className='card';
-      if(type==='cardinal'){ card.dataset.num=item.num; card.textContent=item.num;}
-      else{ card.dataset.id=item.id; card.textContent=item.en;}
-      card.setAttribute('draggable','true');
-      card.addEventListener('dragstart',e=>{ e.dataTransfer.setData('text/plain', type==='cardinal'?item.num:item.id); });
-      cardsContainer.appendChild(card);
+        const card=document.createElement('div'); card.className='card';
+        if(type==='cardinal'){ card.dataset.num=item.num; card.textContent=formatNumber(item.num);}
+        else{ card.dataset.id=item.id; card.textContent=item.en;}
+        card.setAttribute('draggable','true');
+        card.addEventListener('dragstart',e=>{
+            e.dataTransfer.setData('text/plain', type==='cardinal'?item.num:item.id);
+        });
+        cardsContainer.appendChild(card);
     });
 
     shuffledTargets.forEach(item=>{
-      const target=document.createElement('div'); target.className='target';
-      if(type==='cardinal'){ target.dataset.num=item.num; target.innerHTML=`<span class="uyghur">${item.name}</span>`;}
-      else{ target.dataset.id=item.id; target.innerHTML=`<span class="uyghur">${item.ug}</span>`;}
-      target.addEventListener('dragover',e=>{ e.preventDefault(); });
-      target.addEventListener('drop',e=>{ e.preventDefault(); processDrop(e.dataTransfer.getData('text/plain'), target); });
-      targetsContainer.appendChild(target);
-    });
-  }
+        const target=document.createElement('div'); target.className='target';
+        if(type==='cardinal'){ target.dataset.num=item.num; target.innerHTML=`<span class="uyghur">${item.name}</span>`;}
+        else{ target.dataset.id=item.id; target.innerHTML=`<span class="uyghur">${item.ug}</span>`;}
+        
+        target.addEventListener('dragover',e=>{ e.preventDefault(); target.classList.add('over'); });
+        target.addEventListener('dragleave',e=>{ target.classList.remove('over'); });
+        target.addEventListener('drop',e=>{
+            e.preventDefault();
+            target.classList.remove('over');
+            const draggedId = e.dataTransfer.getData('text/plain');
+            if(type==='cardinal' && Number(draggedId)===Number(target.dataset.num)){
+                const card=document.querySelector(`.card[data-num="${draggedId}"]`);
+                if(card) card.classList.add('hidden');
+                target.classList.add('matched');
+            } else if(type==='ordinal' && draggedId===target.dataset.id){
+                const card=document.querySelector(`.card[data-id="${draggedId}"]`);
+                if(card) card.classList.add('hidden');
+                target.classList.add('matched');
+            }
+        });
 
-  reshuffleBtn.addEventListener('click',init);
-  init();
+        targetsContainer.appendChild(target);
+    });
 }
 
 buildSubtabs('cardinal',cardinalRanges,document.getElementById('cardinal-subtabs'));
 buildSubtabs('ordinal',ordinalRanges,document.getElementById('ordinal-subtabs'));
-showSubtab('cardinal','1-10');
+showMainTab('cardinal');
 </script>
 </body>
 </html>
