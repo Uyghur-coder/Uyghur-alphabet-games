@@ -27,14 +27,15 @@ header {
   padding:12px 0; font-size:1.5rem; margin-bottom:12px;
 }
 
-nav {
-  margin-bottom:12px; text-align:center;
+.main-tabs, .sub-tabs {
+  display: flex; justify-content: center; flex-wrap: wrap; margin-bottom:10px;
 }
-nav button {
-  margin: 4px; padding: 6px 12px; border: none; border-radius: 6px;
+
+.main-tabs button, .sub-tabs button {
+  margin: 4px; padding: 8px 14px; border: none; border-radius: 6px;
   background: #2065d1; color:#fff; cursor:pointer; transition:0.2s;
 }
-nav button:hover { background:#1a4fb8; }
+.main-tabs button.active, .sub-tabs button.active { background:#1a4fb8; }
 
 .game-section { display:none; flex-direction:column; align-items:center; width:100%; max-width:1200px;}
 .game-section.active { display:flex; }
@@ -43,22 +44,22 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
 
 .row {
   display: grid;
-  grid-template-columns: repeat(5, 85px); /* 5 tiles per row */
-  gap: 10px;
+  grid-template-columns: repeat(5, 130px);
+  gap: 12px;
   margin-bottom: 15px;
   justify-content: center;
 }
 
 .card, .target {
-  width: 85px;
-  height: 85px;
+  width: 130px; 
+  height: 70px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: normal;
   cursor: pointer;
   border-radius: 8px;
   background-color: #f5f5f5;
@@ -86,42 +87,31 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
 
 .uyghur {
   font-family:'AlkatipYazma',sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: #2065d1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-
-#message { margin-top:8px; font-size:1rem; text-align:center; color:#6b7280; }
-
-button.reshuffle-btn, button.toggle-mode-btn {
-  margin-top:10px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; transition:0.2s;
-}
-.reshuffle-btn { background-color:#2065d1; color:#fff; } .reshuffle-btn:hover{background-color:#1a4fb8;}
-.toggle-mode-btn { background-color:#f1c40f; color:#000; } .toggle-mode-btn:hover{background-color:#d4ac0d;}
 </style>
 </head>
 <body>
 
 <header>Uyghur Numbers Practice</header>
 
-<nav>
-  <button onclick="showSection('1-10')">1–10</button>
-  <button onclick="showSection('11-20')">11–20</button>
-  <button onclick="showSection('30-100')">30–100</button>
-  <button onclick="showSection('1000+')">1000+</button>
-</nav>
+<div class="main-tabs">
+  <button class="active" onclick="showMainTab('cardinal')">Cardinal Numbers</button>
+  <button onclick="showMainTab('ordinal')">Ordinal Numbers</button>
+</div>
 
-<div id="1-10" class="game-section active"></div>
-<div id="11-20" class="game-section"></div>
-<div id="30-100" class="game-section"></div>
-<div id="1000+" class="game-section"></div>
+<div id="cardinal-subtabs" class="sub-tabs"></div>
+<div id="ordinal-subtabs" class="sub-tabs" style="display:none;"></div>
+
+<div id="cardinal-game" class="game-section active"></div>
+<div id="ordinal-game" class="game-section"></div>
 
 <script>
-const ranges = {
+// Cardinal numbers
+const cardinalRanges = {
   '1-10': [
-    {num:1,name:'بىر'}, {num:2,name:'ئىككى'}, {num:3,name:'ئۇچ'}, {num:4,name:'تۆت'}, {num:5,name:'بەش'},
+    {num:1,name:'بىر'}, {num:2,name:'ئىككى'}, {num:3,name:'ئۈچ'}, {num:4,name:'تۆت'}, {num:5,name:'بەش'},
     {num:6,name:'ئالتە'}, {num:7,name:'يەتتە'}, {num:8,name:'سەككىز'}, {num:9,name:'توققۇز'}, {num:10,name:'ئون'}
   ],
   '11-20': [
@@ -137,88 +127,126 @@ const ranges = {
   ]
 };
 
-function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
-function showSection(id){document.querySelectorAll('.game-section').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active');}
+// Ordinal numbers
+const ordinalRanges = {
+  '1-10': [
+    {en:"1st",ug:"بىرىنچى",id:"first"}, {en:"2nd",ug:"ئىككىنچى",id:"second"}, {en:"3rd",ug:"ئۈچۈنچى",id:"third"},
+    {en:"4th",ug:"تۆتىنچى",id:"fourth"}, {en:"5th",ug:"بەشىنچى",id:"fifth"}, {en:"6th",ug:"ئالتىنچى",id:"sixth"},
+    {en:"7th",ug:"يەتتىنچى",id:"seventh"}, {en:"8th",ug:"سەككىزىنچى",id:"eighth"}, {en:"9th",ug:"توققۇزىنچى",id:"ninth"},
+    {en:"10th",ug:"ئونىنچى",id:"tenth"}
+  ],
+  '11-20': [
+    {en:"11th",ug:"ئون بىرىنچى",id:"eleventh"}, {en:"12th",ug:"ئون ئىككىنچى",id:"twelfth"}, {en:"13th",ug:"ئون ئۈچۈنچى",id:"thirteenth"},
+    {en:"14th",ug:"ئون تۆتىنچى",id:"fourteenth"}, {en:"15th",ug:"ئون بەشىنچى",id:"fifteenth"}, {en:"16th",ug:"ئون ئالتىنچى",id:"sixteenth"},
+    {en:"17th",ug:"ئون يەتتىنچى",id:"seventeenth"}, {en:"18th",ug:"ئون سەككىزىنچى",id:"eighteenth"}, {en:"19th",ug:"ئون توققۇزىنچى",id:"nineteenth"},
+    {en:"20th",ug:"يىگىرمىنچى",id:"twentieth"}
+  ],
+  '100-1000000': [
+    {en:"100th",ug:"يۈزىنچى",id:"hundredth"}, {en:"1000th",ug:"مىڭىنچى",id:"thousandth"},
+    {en:"10000th",ug:"ئون مىڭىنچى",id:"tenthousandth"}, {en:"100000th",ug:"يۈز مىڭىنچى",id:"hundredthousandth"},
+    {en:"1000000th",ug:"مىلىيونىنچى",id:"millionth"}
+  ]
+};
 
-Object.keys(ranges).forEach(rangeId=>{
-  const container=document.getElementById(rangeId);
+// Shuffle
+function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
+
+// Tabs logic
+function showMainTab(type){
+  document.querySelectorAll('.main-tabs button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sub-tabs').forEach(s=>s.style.display='none');
+  document.querySelectorAll('.game-section').forEach(s=>s.classList.remove('active'));
+  if(type==='cardinal'){
+    document.querySelector('.main-tabs button:nth-child(1)').classList.add('active');
+    document.getElementById('cardinal-subtabs').style.display='flex';
+    showSubtab('cardinal','1-10');
+  } else {
+    document.querySelector('.main-tabs button:nth-child(2)').classList.add('active');
+    document.getElementById('ordinal-subtabs').style.display='flex';
+    showSubtab('ordinal','1-10');
+  }
+}
+
+function buildSubtabs(type,ranges,subtabContainer){
+  subtabContainer.innerHTML='';
+  Object.keys(ranges).forEach((range,i)=>{
+    const btn=document.createElement('button'); btn.textContent=range; 
+    if(i===0) btn.classList.add('active');
+    btn.addEventListener('click',()=> showSubtab(type,range));
+    subtabContainer.appendChild(btn);
+  });
+}
+
+function showSubtab(type,range){
+  const subtabContainer=document.getElementById(type+'-subtabs');
+  subtabContainer.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+  [...subtabContainer.children].forEach(b=>{ if(b.textContent===range) b.classList.add('active'); });
+  const gameContainer=document.getElementById(type+'-game');
+  gameContainer.classList.add('active');
+  buildGame(type,range,gameContainer);
+}
+
+function buildGame(type,range,container){
   container.innerHTML=`
-    <h2>Uyghur Numbers ${rangeId}</h2>
+    <h2>${type==='cardinal'?'Cardinal':'Ordinal'} Numbers ${range}</h2>
+    <div class="scoreboard"><span id="score-${type}-${range}">Score: 0 / ${(type==='cardinal'?cardinalRanges[range]:ordinalRanges[range]).length}</span>
+      <button class="reshuffle-btn">Restart</button></div>
     <div class="cards-container row"></div>
     <div class="targets-container row"></div>
-    <div class="message"></div>
-    <button class="reshuffle-btn">Restart / Reshuffle</button>
-    <button class="toggle-mode-btn">Switch to Click & Click Mode</button>
+    <div class="message">Drag numbers to the correct Uyghur names</div>
   `;
-
+  const items=type==='cardinal'?shuffle(cardinalRanges[range].slice()):shuffle(ordinalRanges[range].slice());
   const cardsContainer=container.querySelector('.cards-container');
   const targetsContainer=container.querySelector('.targets-container');
-  const messageEl=container.querySelector('.message');
+  const scoreEl=container.querySelector(`#score-${type}-${range}`);
   const reshuffleBtn=container.querySelector('.reshuffle-btn');
-  const toggleModeBtn=container.querySelector('.toggle-mode-btn');
 
-  let isClickMode=false, selectedCard=null;
-  let items=ranges[rangeId];
+  let score=0;
 
-  function processDrop(draggedNum,target){
-    if(!target||target.dataset.matched==='true') return;
-    if(String(draggedNum)===String(target.dataset.num)){
-      const card=document.querySelector(`.card[data-num="${draggedNum}"]`);
+  function processDrop(num,target){
+    if(!target || target.dataset.matched==='true') return;
+    if(type==='cardinal' && Number(num)===Number(target.dataset.num) ||
+       type==='ordinal' && num===target.dataset.id){
+      const card=document.querySelector(`.card[data-num="${num}"], .card[data-id="${num}"]`);
       if(card) card.classList.add('hidden');
-      target.dataset.matched='true';
-      target.classList.add('matched');
-      target.style.backgroundColor='#9fd99f';
-      target.style.color='#fff';
-      target.innerHTML=`<div>${draggedNum}</div><div class="uyghur">${items.find(i=>i.num==draggedNum).name}</div>`;
-      checkDone();
-    } else {
-      const orig=target.dataset.originalHtml||target.innerHTML;
-      target.style.backgroundColor='#d14b4b';
-      target.style.color='#fff';
-      setTimeout(()=>{target.style.backgroundColor='#f5f5f5'; target.style.color='#2065d1'; target.innerHTML=orig;},600);
-    }
+      target.dataset.matched='true'; target.classList.add('matched'); score++; scoreEl.textContent=`Score: ${score} / ${items.length}`;
+      if(type==='cardinal') target.innerHTML=`<div>${num}</div><div class="uyghur">${items.find(i=>i.num==num).name}</div>`;
+      else target.innerHTML=`<div>${items.find(i=>i.id==num).en}</div><div class="uyghur">${items.find(i=>i.id==num).ug}</div>`;
+    } else { target.style.backgroundColor='#d14b4b'; setTimeout(()=>target.style.backgroundColor='#f5f5f5',500);}
   }
 
-  function checkDone(){if(container.querySelectorAll('.target.matched').length===items.length){messageEl.textContent='Congratulations! All matches complete ✅'; messageEl.style.color='#9fd99f';}}
-
-  toggleModeBtn.addEventListener('click',()=>{isClickMode=!isClickMode; selectedCard=null; toggleModeBtn.textContent=isClickMode?"Switch to Drag & Drop Mode":"Switch to Click & Click Mode";});
-
-  function handleCardClickClickMode(card){if(!isClickMode)return; if(selectedCard===card){card.style.borderColor='#b0b0b0'; selectedCard=null;} else{if(selectedCard)selectedCard.style.borderColor='#b0b0b0'; selectedCard=card; card.style.borderColor='#2065d1';}}
-  function handleTargetClickClickMode(target){if(!isClickMode||!selectedCard)return; processDrop(selectedCard.dataset.num,target); selectedCard.style.borderColor='#b0b0b0'; selectedCard=null;}
-  function handleDragStart(e){if(isClickMode)return; this.style.opacity='0.5'; e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',this.dataset.num);}
-  function handleDragEnd(){if(isClickMode)return; container.querySelectorAll('.target').forEach(t=>t.classList.remove('over'));}
-  function handleDragOver(e){if(!isClickMode){e.preventDefault(); e.dataTransfer.dropEffect='move';}}
-  function handleDragEnter(e){if(!isClickMode){e.preventDefault(); this.classList.add('over');}}
-  function handleDragLeave(){if(!isClickMode)this.classList.remove('over');}
-  function handleDropEvent(e){if(!isClickMode){e.preventDefault(); e.stopPropagation(); this.classList.remove('over'); processDrop(e.dataTransfer.getData('text/plain'),this);}}
-  function makeTouchable(card){card.addEventListener('touchstart',function(e){if(isClickMode)return; e.preventDefault();},{passive:false}); }
-
   function init(){
-    const shuffledCards=shuffle(items.slice());
-    const shuffledTargets=shuffle(items.slice());
-    cardsContainer.innerHTML=''; targetsContainer.innerHTML=''; messageEl.textContent='Drag the number to the correct Uyghur name'; selectedCard=null;
+    score=0;
+    scoreEl.textContent=`Score: 0 / ${items.length}`;
+    cardsContainer.innerHTML=''; targetsContainer.innerHTML='';
+    const shuffledCards=shuffle(items.slice()); const shuffledTargets=shuffle(items.slice());
 
     shuffledCards.forEach(item=>{
-      const card=document.createElement('div'); card.className='card'; card.dataset.num=item.num; card.textContent=item.num; card.setAttribute('draggable','true');
-      card.addEventListener('dragstart',handleDragStart); card.addEventListener('dragend',handleDragEnd);
-      card.addEventListener('click',()=>handleCardClickClickMode(card)); makeTouchable(card);
+      const card=document.createElement('div'); card.className='card';
+      if(type==='cardinal'){ card.dataset.num=item.num; card.textContent=item.num;}
+      else{ card.dataset.id=item.id; card.textContent=item.en;}
+      card.setAttribute('draggable','true');
+      card.addEventListener('dragstart',e=>{ e.dataTransfer.setData('text/plain', type==='cardinal'?item.num:item.id); });
       cardsContainer.appendChild(card);
     });
 
     shuffledTargets.forEach(item=>{
-      const target=document.createElement('div'); target.className='target'; target.dataset.num=item.num;
-      const span=document.createElement('span'); span.className='uyghur'; span.textContent=item.name; target.appendChild(span);
-      target.dataset.originalHtml=target.innerHTML;
-      target.addEventListener('dragenter',handleDragEnter); target.addEventListener('dragover',handleDragOver);
-      target.addEventListener('dragleave',handleDragLeave); target.addEventListener('drop',handleDropEvent);
-      target.addEventListener('click',()=>handleTargetClickClickMode(target));
+      const target=document.createElement('div'); target.className='target';
+      if(type==='cardinal'){ target.dataset.num=item.num; target.innerHTML=`<span class="uyghur">${item.name}</span>`;}
+      else{ target.dataset.id=item.id; target.innerHTML=`<span class="uyghur">${item.ug}</span>`;}
+      target.addEventListener('dragover',e=>{ e.preventDefault(); });
+      target.addEventListener('drop',e=>{ e.preventDefault(); processDrop(e.dataTransfer.getData('text/plain'), target); });
       targetsContainer.appendChild(target);
     });
   }
 
   reshuffleBtn.addEventListener('click',init);
   init();
-});
+}
+
+buildSubtabs('cardinal',cardinalRanges,document.getElementById('cardinal-subtabs'));
+buildSubtabs('ordinal',ordinalRanges,document.getElementById('ordinal-subtabs'));
+showSubtab('cardinal','1-10');
 </script>
 </body>
 </html>
