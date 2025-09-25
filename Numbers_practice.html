@@ -37,14 +37,14 @@ header {
 h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
 .row {
   display: grid;
-  grid-template-columns: repeat(5, 140px);
+  grid-template-columns: repeat(5, 130px);
   gap: 12px;
   margin-bottom: 15px;
   justify-content: center;
 }
 .card, .target {
-  width: 140px; 
-  height: 80px;
+  width: 130px; 
+  height: 70px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -61,8 +61,6 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
   overflow: hidden;
   white-space: nowrap;
 }
-.card.number-tile { background-color: #d0e7ff; } 
-.card.uyghur-tile { background-color: #fff0d0; }
 .card:active { transform: scale(0.97); }
 .target.over { 
   outline: 3px solid #f1c40f; 
@@ -81,8 +79,6 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
   font-size: 1.4rem;
   color: #000;
 }
-.reset-btn { margin-top: 8px; padding: 6px 12px; border:none; border-radius:6px; background:#2065d1; color:#fff; cursor:pointer; }
-.reset-btn:hover { background:#1a4fb8; }
 </style>
 </head>
 <body>
@@ -101,7 +97,9 @@ h2 { color:#2065d1; text-align:center; margin-bottom:10px; }
 <div id="ordinal-game" class="game-section"></div>
 
 <script>
-function formatNumber(num){ return num.toLocaleString('en-US'); }
+function formatNumber(num){
+    return num.toLocaleString('en-US');
+}
 
 const cardinalRanges = {
   '1-10': [
@@ -117,7 +115,10 @@ const cardinalRanges = {
     {num:70,name:'يەتمىش'}, {num:80,name:'سەكسەن'}, {num:90,name:'توقسان'}, {num:100,name:'يۈز'}
   ],
   '1000+': [
-    {num:1000,name:'مىڭ'}, {num:10000,name:'ئون مىڭ'}, {num:100000,name:'يۈز مىڭ'}, {num:1000000,name:'مىليون'}
+    {num:1000,name:'مىڭ'}, 
+    {num:10000,name:'ئون مىڭ'}, 
+    {num:100000,name:'يۈز مىڭ'}, 
+    {num:1000000,name:'مىليون'}
   ]
 };
 
@@ -134,15 +135,16 @@ const ordinalRanges = {
     {en:"17th",ug:"ئون يەتتىنچى",id:"seventeenth"}, {en:"18th",ug:"ئون سەككىزىنچى",id:"eighteenth"}, {en:"19th",ug:"ئون توققۇزىنچى",id:"nineteenth"},
     {en:"20th",ug:"يىگىرمىنچى",id:"twentieth"}
   ],
-  '30-90': [
-    {en:"30th",ug:"ئوتتۇزىنچى",id:"thirtieth"}, {en:"40th",ug:"قىرىقىنچى",id:"fortieth"},
-    {en:"50th",ug:"ئەللىكىنچى",id:"fiftieth"}, {en:"60th",ug:"ئاتمىشىنچى",id:"sixtieth"},
-    {en:"70th",ug:"يەتمىشىنچى",id:"seventieth"}, {en:"80th",ug:"سەكسىنىنچى",id:"eightieth"},
-    {en:"90th",ug:"توقسىنىنچى",id:"ninetieth"}
+  '30-99': [
+    {en:"30th",ug:"ئوتتۇزىنچى",id:"thirtieth"}, {en:"40th",ug:"قىرىقىنچى",id:"fortieth"}, {en:"50th",ug:"ئەللىكىنچى",id:"fiftieth"},
+    {en:"60th",ug:"ئاتمىشىنچى",id:"sixtieth"}, {en:"70th",ug:"يەتمىشىنچى",id:"seventieth"}, {en:"80th",ug:"سەكسىنىنچى",id:"eightieth"},
+    {en:"90th",ug:"توقسانىنچى",id:"ninetieth"}
   ],
   '100-1000000': [
-    {en:"100th",ug:"يۈزىنچى",id:"hundredth"}, {en:"1000th",ug:"مىڭىنچى",id:"thousandth"},
-    {en:"10000th",ug:"ئون مىڭىنچى",id:"tenthousandth"}, {en:"100000th",ug:"يۈز مىڭىنچى",id:"hundredthousandth"},
+    {en:"100th",ug:"يۈزىنچى",id:"hundredth"}, 
+    {en:"1000th",ug:"مىڭىنچى",id:"thousandth"},
+    {en:"10000th",ug:"ئون مىڭىنچى",id:"tenthousandth"}, 
+    {en:"100000th",ug:"يۈز مىڭىنچى",id:"hundredthousandth"},
     {en:"1000000th",ug:"مىلىيونىنچى",id:"millionth"}
   ]
 };
@@ -153,8 +155,8 @@ function buildSubtabs(type, ranges, subtabContainer) {
     subtabContainer.innerHTML = '';
     let keys = Object.keys(ranges);
     keys.sort((a, b) => {
-        if (a === "1000+" || a === "100-1000000") return 1;
-        if (b === "1000+" || b === "100-1000000") return -1;
+        if (a === "1000+") return 1;
+        if (b === "1000+") return -1;
         return a.localeCompare(b, undefined, { numeric: true });
     });
     keys.forEach(range => {
@@ -194,17 +196,24 @@ function showSubtab(type,range){
 function buildGame(type,range,container){
     container.innerHTML=`<h2>${type==='cardinal'?'Cardinal':'Ordinal'} Numbers ${range}</h2>
     <div class="cards-container row"></div>
-    <div class="targets-container row"></div>
-    <button class="reset-btn" onclick="buildGame('${type}','${range}',document.getElementById('${type}-game'))">Reset</button>`;
-    
+    <div class="targets-container row"></div>`;
     const items=type==='cardinal'?shuffle(cardinalRanges[range].slice()):shuffle(ordinalRanges[range].slice());
     const cardsContainer=container.querySelector('.cards-container');
     const targetsContainer=container.querySelector('.targets-container');
+    const shuffledCards=shuffle(items.slice()); 
+    const shuffledTargets=shuffle(items.slice());
 
-    items.forEach(item=>{
-        const card=document.createElement('div'); card.className='card ' + (type==='cardinal'?'number-tile':'number-tile');
-        if(type==='cardinal'){ card.dataset.num=item.num; card.textContent=formatNumber(item.num);}
-        else{ card.dataset.id=item.id; card.textContent=item.en;}
+    shuffledCards.forEach(item=>{
+        const card=document.createElement('div'); 
+        card.className='card';
+        if(type==='cardinal'){ 
+            card.dataset.num=item.num; 
+            card.textContent=formatNumber(item.num);
+        }
+        else{ 
+            card.dataset.id=item.id; 
+            card.textContent=item.en;
+        }
         card.setAttribute('draggable','true');
         card.addEventListener('dragstart',e=>{
             e.dataTransfer.setData('text/plain', type==='cardinal'?item.num:item.id);
@@ -212,13 +221,20 @@ function buildGame(type,range,container){
         cardsContainer.appendChild(card);
     });
 
-    items.forEach(item=>{
-        const target=document.createElement('div'); target.className='target';
-        if(type==='cardinal'){ target.dataset.num=item.num; target.innerHTML=`<span class="uyghur">${item.name}</span>`;}
-        else{ target.dataset.id=item.id; target.innerHTML=`<span class="uyghur">${item.ug}</span>`;}
-        
+    shuffledTargets.forEach(item=>{
+        const target=document.createElement('div'); 
+        target.className='target';
+        if(type==='cardinal'){ 
+            target.dataset.num=item.num; 
+            target.innerHTML=`<span class="uyghur">${item.name}</span>`;
+        }
+        else{ 
+            target.dataset.id=item.id; 
+            target.innerHTML=`<span class="uyghur">${item.ug}</span>`;
+        }
+
         target.addEventListener('dragover',e=>{ e.preventDefault(); target.classList.add('over'); });
-        target.addEventListener('dragleave',e=>{ target.classList.remove('over'); });
+        target.addEventListener('dragleave',()=>{ target.classList.remove('over'); });
         target.addEventListener('drop',e=>{
             e.preventDefault();
             target.classList.remove('over');
