@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ug">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur Plural Suffix and Locative Case Ending</title>
+<style>
+/* Load font */
+@font-face {
+  font-family: 'AlkatipYazma';
+  src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* Apply font */
+body, button, p, h2, #question, #feedback, #score {
+  font-family: 'AlkatipYazma', sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* Page background */
+body {
+  margin: 30px;
+  background-color: #f0f8ff;
+}
+
+/* Card styling */
+.card {
+  border: 1px solid #ccc;
+  padding: 30px;
+  margin: 20px auto;
+  width: 450px;
+  border-radius: 12px;
+  background-color: #fff8dc;
+  box-shadow: 3px 3px 12px rgba(0,0,0,0.2);
+}
+
+/* Question styling */
+#question {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+/* Feedback styling */
+#feedback {
+  font-size: 24px;
+  margin-top: 15px;
+}
+
+/* Score styling */
+#score {
+  font-size: 22px;
+  margin-top: 10px;
+}
+
+/* Tile styling */
+button {
+  margin: 8px;
+  padding: 18px 25px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  cursor: pointer;
+  font-family: 'AlkatipYazma', sans-serif;
+  font-size: 24px;
+  min-width: 90px;
+  background-color: #87cefa;
+  color: #000;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+button:hover {
+  background-color: #00bfff;
+  color: #fff;
+}
+
+/* Correct / Wrong */
+.correct { background-color: #a8e6a1 !important; }
+.wrong { background-color: #f6a6a6 !important; }
+</style>
+</head>
+<body>
+
+<h2>Uyghur Suffix Game</h2>
+
+<div class="card">
+  <p id="question"></p>
+  <div id="options"></div>
+  <p id="feedback"></p>
+  <p id="score">Score: 0 / 0</p>
+</div>
+
+<button onclick="nextQuestion()">Next</button>
+<button id="modeBtn" onclick="toggleMode()">Plural / Locative</button>
+
+<script>
+// Word data with English meanings
+const data = [
+  { base: "ئىشىق", plural: "لار", locative: "تا", meaning: "love" },
+  { base: "ئىشىك", plural: "لەر", locative: "تە", meaning: "door" },
+  { base: "سومكا", plural: "لار", locative: "دا", meaning: "bag" },
+  { base: "خەرىتە", plural: "لەر", locative: "دە", meaning: "map" },
+  { base: "سافا", plural: "لار", locative: "دا", meaning: "sofa, couch" },
+  { base: "ۋاننا", plural: "لار", locative: "دا", meaning: "bathtub" },
+  { base: "بالكون", plural: "لار", locative: "دا", meaning: "balcony" },
+  { base: "ئوچاق", plural: "لار", locative: "تا", meaning: "stove" },
+  { base: "دەرىزە", plural: "لەر", locative: "دە", meaning: "window" },
+  { base: "سائەت", plural: "لەر", locative: "تە", meaning: "clock, watch" },
+  { base: "قەلەم", plural: "لەر", locative: "دە", meaning: "pen" },
+  { base: "قېرىنداش", plural: "لار", locative: "تا", meaning: "sibling" },
+  { base: "نان", plural: "لار", locative: "دا", meaning: "bread" },
+  { base: "نومۇر", plural: "لار", locative: "دا", meaning: "number" },
+  { base: "ئورۇندۇق", plural: "لار", locative: "تا", meaning: "chair" },
+  { base: "ئوقۇتقۇچى", plural: "لار", locative: "دا", meaning: "teacher" },
+  { base: "ئۆچۈرگۈچ", plural: "لەر", locative: "تە", meaning: "eraser" },
+  { base: "ئۈستەل", plural: "لەر", locative: "دە", meaning: "desk" },
+  { base: "باغ", plural: "لار", locative: "دا", meaning: "garden" },
+  { base: "لۇغەت", plural: "لەر", locative: "تە", meaning: "dictionary" },
+  { base: "ئادەم", plural: "لەر", locative: "دە", meaning: "human" },
+  { base: "ئائىلە", plural: "لەر", locative: "دە", meaning: "family" },
+  { base: "ئاي", plural: "لار", locative: "دا", meaning: "month" },
+  { base: "ئايال", plural: "لار", locative: "دا", meaning: "woman" },
+  { base: "بازار", plural: "لار", locative: "دا", meaning: "bazaar" },
+  { base: "خوتەن", plural: "لەر", locative: "دە", meaning: "Khotan" },
+  { base: "دەرس", plural: "لەر", locative: "تە", meaning: "lesson" },
+  { base: "سەن", plural: "لەر", locative: "دە", meaning: "you (informal)" },
+  { base: "سۇ", plural: "لار", locative: "دا", meaning: "water" },
+  { base: "تۇرپان", plural: "لار", locative: "دا", meaning: "Turpan" },
+  { base: "قەشقەر", plural: "لەر", locative: "دە", meaning: "Kashgar" },
+  { base: "كۈز", plural: "لەر", locative: "دە", meaning: "autumn" }
+];
+
+const pluralSuffixes = ["لار","لەر"];
+const locativeSuffixes = ["دا","دە","تا","تە"];
+
+let currentIndex = 0;
+let mode = "locative";
+let score = 0;
+let total = 0;
+
+// Shuffle helper
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// Generate options safely
+function getOptions(word) {
+  if (mode === "plural") {
+    let opts = [word.plural, ...pluralSuffixes.filter(s => s !== word.plural)];
+    shuffleArray(opts);
+    return opts.slice(0, 3);
+  } else {
+    let opts = [word.locative, ...locativeSuffixes.filter(s => s !== word.locative)];
+    shuffleArray(opts);
+    return opts.slice(0, 4);
+  }
+}
+
+// Load question
+function loadQuestion() {
+  const word = data[currentIndex];
+  document.getElementById("question").textContent =
+    mode === "locative"
+      ? `Choose the correct locative suffix for: ${word.base}___ (${word.meaning})`
+      : `Choose the correct plural suffix for: ${word.base}___ (${word.meaning})`;
+
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+  const opts = getOptions(word);
+  opts.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(opt, word);
+    optionsDiv.appendChild(btn);
+  });
+
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("modeBtn").textContent = "Plural / Locative";
+  document.getElementById("score").textContent = `Score: ${score} / ${total}`;
+}
+
+// Check answer
+function checkAnswer(selected, word) {
+  const correct = mode === "plural" ? word.plural : word.locative;
+  total++;
+  if (selected === correct) {
+    score++;
+    document.getElementById("feedback").textContent = `✅ Correct! ${word.base}${correct}`;
+  } else {
+    document.getElementById("feedback").textContent = `❌ Wrong! Correct answer: ${word.base}${correct}`;
+  }
+  document.getElementById("score").textContent = `Score: ${score} / ${total}`;
+}
+
+// Next question
+function nextQuestion() {
+  currentIndex = (currentIndex + 1) % data.length;
+  loadQuestion();
+}
+
+// Toggle mode
+function toggleMode() {
+  mode = mode === "locative" ? "plural" : "locative";
+  loadQuestion();
+}
+
+// Initial load
+loadQuestion();
+</script>
+
+</body>
+</html>
