@@ -9,19 +9,18 @@
   src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
 }
 
-body { font-family: 'ALKATIPYazma', sans-serif; text-align: center; margin: 30px; }
+body { font-family: 'ALKATIPYazma', sans-serif; text-align: center; margin: 30px; background-color:#f0f8ff; }
 
 h1, h2 { margin-bottom: 15px; font-weight: normal; }
 
 /* Draggable vowels */
 .vowel {
   display: inline-block;
-  margin: 10px;
-  padding: 15px 25px;
+  margin: 8px;
+  padding: 12px 20px;
   border-radius: 8px;
   cursor: grab;
-  font-size: 26px;
-  font-weight: normal;
+  font-size: 24px;
   color: #222;
   background-color: #FFFACD;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
@@ -29,18 +28,24 @@ h1, h2 { margin-bottom: 15px; font-weight: normal; }
 }
 .vowel:hover { transform: scale(1.1); background-color: #FFE680; }
 
+/* Drop labels */
+.drop-label {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
 /* Drop zones */
 .dropzone {
   display: inline-block;
-  margin: 10px;
-  padding: 15px;
+  margin: 0 10px 20px 10px;
+  padding: 5px;
   border: 2px dashed #888;
   border-radius: 8px;
-  width: 250px;
-  height: 120px;
+  width: 150px;
+  height: 80px;
   vertical-align: top;
   font-size: 20px;
-  font-weight: normal;
   color: #555;
   background-color: #F8F8F8;
   transition: 0.2s;
@@ -49,42 +54,40 @@ h1, h2 { margin-bottom: 15px; font-weight: normal; }
   box-shadow: 0 0 15px 3px #6FCF97;
   border-color: green;
 }
-
 .dropzone span.vowels {
   display: block;
   margin-top: 5px;
-  font-size: 22px;
-  font-weight: normal;
-  max-height: 80px;
+  font-size: 18px;
+  max-height: 60px;
   overflow-y: auto;
   word-wrap: break-word;
-  padding-right: 5px;
+  padding-right: 3px;
 }
 
-/* Reference tables */
-table { margin: 15px auto; border-collapse: collapse; width: 80%; font-size: 18px; }
-th, td { border: 1px solid #888; padding: 8px; font-weight: normal; }
-.front { background-color: #D0E7FF; }
-.back { background-color: #D0FFD0; }
-.central { background-color: #EDEDED; }
-
-#feedback { font-weight:bold; margin-top: 20px; font-size: 20px; }
-button { font-size: 18px; margin: 10px; padding: 8px 16px; }
+#feedback { font-weight:bold; margin-top: 20px; font-size: 20px; min-height:24px; }
+button { font-size: 16px; margin: 8px; padding: 6px 12px; cursor:pointer; }
 </style>
 </head>
 <body>
 
 <h1>Uyghur Vowel Harmony Game 🎵</h1>
-<p>Drag each vowel to the correct category: Front, Back, or Neutral</p>
-
-<!-- Reference tables omitted for brevity -->
+<p>Drag each vowel to the correct category</p>
 
 <div id="vowels"></div>
 
 <div>
-  <div id="frontZone" class="dropzone" ondrop="drop(event,'front')" ondragover="allowDrop(event)">Front</div>
-  <div id="backZone" class="dropzone" ondrop="drop(event,'back')" ondragover="allowDrop(event)">Back</div>
-  <div id="neutralZone" class="dropzone" ondrop="drop(event,'neutral')" ondragover="allowDrop(event)">Neutral</div>
+  <div style="display:inline-block; text-align:center;">
+    <div class="drop-label">Front</div>
+    <div id="frontZone" class="dropzone" ondrop="drop(event,'front')" ondragover="allowDrop(event)"></div>
+  </div>
+  <div style="display:inline-block; text-align:center;">
+    <div class="drop-label">Back</div>
+    <div id="backZone" class="dropzone" ondrop="drop(event,'back')" ondragover="allowDrop(event)"></div>
+  </div>
+  <div style="display:inline-block; text-align:center;">
+    <div class="drop-label">Neutral</div>
+    <div id="neutralZone" class="dropzone" ondrop="drop(event,'neutral')" ondragover="allowDrop(event)"></div>
+  </div>
 </div>
 
 <p id="feedback"></p>
@@ -130,12 +133,6 @@ function drop(ev, category){
     if(!vowelsSpan){
       vowelsSpan = document.createElement('span');
       vowelsSpan.className = 'vowels';
-      vowelsSpan.style.display = 'block';
-      vowelsSpan.style.marginTop = '5px';
-      vowelsSpan.style.fontSize = '22px';
-      vowelsSpan.style.fontWeight = 'normal';
-      vowelsSpan.style.maxHeight = '80px';
-      vowelsSpan.style.overflowY = 'auto';
       zone.appendChild(vowelsSpan);
     }
 
@@ -146,8 +143,7 @@ function drop(ev, category){
     }
     vowelsSpan.innerText = zone.dataset.vowels;
 
-    // Remove correctly placed vowel from the list
-    dragged.parentNode.removeChild(dragged);
+    dragged.remove();
 
     document.getElementById('feedback').innerText = "✅ Correct!";
     score++;
@@ -175,14 +171,13 @@ function drop(ev, category){
 function createVowels(){
   const container = document.getElementById('vowels');
   container.innerHTML = '';
-
-  const shuffledVowels = shuffleArray([...vowels]);
-  shuffledVowels.forEach(v=>{
+  const shuffled = shuffleArray([...vowels]);
+  shuffled.forEach(v=>{
     const span = document.createElement('span');
     span.innerText = v.letter;
     span.className = 'vowel';
     span.draggable = true;
-    span.id = 'vowel-' + Math.floor(Math.random()*1000);
+    span.id = 'vowel-' + Math.floor(Math.random()*10000);
     span.dataset.type = v.type;
     span.ondragstart = drag;
     container.appendChild(span);
@@ -193,27 +188,23 @@ function startGame(){
   score = 0;
   document.getElementById('score').innerText = score;
   document.getElementById('feedback').innerText = '';
-
   ['frontZone','backZone','neutralZone'].forEach(id=>{
     const zone = document.getElementById(id);
     zone.dataset.vowels = '';
-    zone.innerHTML = id.replace('Zone','');
+    zone.innerHTML = '';
     zone.classList.remove('complete');
   });
-
   createVowels();
 }
 
 function clearRound(){
   document.getElementById('feedback').innerText = '';
-
   ['frontZone','backZone','neutralZone'].forEach(id=>{
     const zone = document.getElementById(id);
     zone.dataset.vowels = '';
-    zone.innerHTML = id.replace('Zone','');
+    zone.innerHTML = '';
     zone.classList.remove('complete');
   });
-
   createVowels();
 }
 
