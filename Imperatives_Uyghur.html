@@ -31,10 +31,18 @@
     font-family: 'ALKATIPYazma', sans-serif;
     font-size: 26px;
     margin: 20px 0; 
-    background: #ffffff; 
-    padding: 10px; 
-    border-radius: 5px;
-    border: 2px solid #ccc;
+    background: linear-gradient(145deg, #bbdefb, #e3f2fd); /* light blue */
+    padding: 15px; 
+    border-radius: 10px;
+    border: 2px solid #64b5f6;
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.2), -4px -4px 10px rgba(255,255,255,0.7);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+
+  .verb-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 6px 6px 12px rgba(0,0,0,0.25), -6px -6px 12px rgba(255,255,255,0.8);
+    background: linear-gradient(145deg, #cce4fb, #e6f3fe);
   }
 
   .verb-latin {
@@ -49,7 +57,10 @@
     font-weight: bold; 
   }
 
-  .category-line { display: block; }
+  .category-line { 
+    display: block;
+    font-family: 'ALKATIPYazma', sans-serif;
+  }
 
   .choices { 
     display: flex; 
@@ -61,26 +72,27 @@
   .choice { 
     padding: 10px 20px; 
     cursor: pointer; 
-    border-radius: 5px; 
+    border-radius: 8px; 
     font-family: 'ALKATIPYazma', sans-serif;
     font-size: 22px;
     border: 2px solid #64b5f6;
-    background-color: #ffffff;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
     color: #1565c0;
-    transition: transform 0.2s, border 0.2s, background 0.2s;
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.2), -4px -4px 8px rgba(255,255,255,0.7);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
   }
 
   .choice:hover { 
-    transform: scale(1.05); 
-    border-color: #42a5f5; 
-    background-color: #e3f2fd; 
+    transform: translateY(-3px); 
+    box-shadow: 6px 6px 12px rgba(0,0,0,0.25), -6px -6px 12px rgba(255,255,255,0.8);
+    background: linear-gradient(145deg, #f9f9f9, #eaeaea);
   }
 
   .score-bar { margin-top: 20px; font-weight: bold; color: #d35400; }
   #feedback { margin-top: 15px; font-weight: bold; }
 
-  .correct { border-color: green; background-color: #c8e6c9 !important; color: #1b5e20 !important; }
-  .incorrect { border-color: red; background-color: #ffcdd2 !important; color: #b71c1c !important; }
+  .correct { border-color: green !important; background-color: #c8e6c9 !important; color: #1b5e20 !important; }
+  .incorrect { border-color: red !important; background-color: #ffcdd2 !important; color: #b71c1c !important; }
 
   button { 
     padding: 10px 20px; 
@@ -101,7 +113,7 @@
 <body>
 
 <div class="game-container">
-  <h1 style="color:#2c3e50;">Game: Imperatives in Uyghur</h1>
+  <h1 style="color:#2c3e50;">Uyghur Imperative Game</h1>
   <div class="score-bar" id="score-bar">Score: 0</div>
   <div class="verb-box" id="verb-box"></div>
   <div class="category-prompt" id="category-prompt"></div>
@@ -112,33 +124,41 @@
 
 <script>
 const verbs = [
-  { uly: "barmaq", arabic: "بارماق", forms: ["بار", "بارغىن", "بېرىڭ", "بېرىڭلار", "بارسۇن"] },
-  { uly: "oqumaq", arabic: "ئوقۇماق", forms: ["ئوقۇ", "ئوقۇغىن", "ئوقۇڭ", "ئوقۇڭلار", "ئوقۇسۇن"] },
-  { uly: "yazmaq", arabic: "يازماق", forms: ["ياز", "يازغىن", "يېزىڭ", "يېزىڭلار", "يازسۇن"] },
-  { uly: "körmek", arabic: "كۆرمەك", forms: ["كۆر", "كۆرگىن", "كۆرۈڭ", "كۆرۈڭلار", "كۆرسۇن"] },
-  { uly: "bilmek", arabic: "بىلىمەك", forms: ["بىل", "بىلگىن", "بىلىڭ", "بىلىڭلار", "بىلسۇن"] },
-  { uly: "bermek", arabic: "بەرمەك", forms: ["بەر", "بەرگىن", "بېرىڭ", "بېرىڭلار", "بەرسۇن"] },
-  { uly: "qilmaq", arabic: "قىلماق", forms: ["قىل", "قىلغىن", "قىلىڭ", "قىلىڭلار", "قىلسۇن"] },
-  { uly: "ishlimek", arabic: "ئىشلىمەك", forms: ["ئىشلە", "ئىشلىگىن", "ئىشلەڭ", "ئىشلەڭلار", "ئىشلىسۇن"] },
-  { uly: "yémek", arabic: "يېمەك", forms: ["يە", "يېگىن", "يەڭ", "يەڭلار", "يېسۇن"] },
-  { uly: "turmaq", arabic: "تۇرماق", forms: ["تۇر", "تۇرغىن", "تۇرۇڭ", "تۇرۇڭلار", "تۇرسۇن"] },
-  { uly: "olturmaq", arabic: "ئولتۇرماق", forms: ["ئولتۇر", "ئولتۇرغىن", "ئولتۇرۇڭ", "ئولتۇرۇڭلار", "ئولتۇرسۇن"] },
-  { uly: "izdimek", arabic: "ئىزدىمەك", forms: ["ئىزدە", "ئىزدىگىن", "ئىزدەڭ", "ئىزدەڭلار", "ئىزدىسۇن"] },
-  { uly: "pishurmaq", arabic: "پىشۇرماق", forms: ["پىشۇر", "پىشۇرغىن", "پىشۇرۇڭ", "پىشۇرۇڭلار", "پىشۇرسۇن"] },
-  { uly: "almaq", arabic: "ئالماق", forms: ["ئال", "ئالغىن", "ئېلىڭ", "ئېلىڭلار", "ئالسۇن"] },
-  { uly: "kelmek", arabic: "كەلمەك", forms: ["كەل", "كەلگىن", "كېلىڭ", "كېلىڭلار", "كەلسۇن"] },
-  { uly: "unutmaq", arabic: "ئۇنۇتماق", forms: ["ئۇنۇت", "ئۇنۇتقىن", "ئۇنتۇڭ", "ئۇنۇتۇڭلار", "ئۇنۇتسۇن"] },
-  { uly: "utmaq", arabic: "ئۇتماق", forms: ["ئۇت", "ئۇتقىن", "ئۇتۇڭ", "ئۇتۇڭلار", "ئۇتسۇن"] },
-  { uly: "chüshenmek", arabic: "چۈشەنمەك", forms: ["چۈشەن", "چۈشەنگىن", "چۈشىنىڭ", "چۈشىىنڭلار", "چۈشەنسۇن"] },
-  { uly: "ketmek", arabic: "كەتمەك", forms: ["كەت", "كەتكىن", "كېتىڭ", "كېتىڭلار", "كەتسۇن"] }
+  { uly: "barmaq", arabic: "بارماق", stem: "بار", english: "to go", forms: ["بار", "بارغىن", "بېرىڭ", "بېرىڭلار", "بارسۇن"] },
+  { uly: "oqumaq", arabic: "ئوقۇماق", stem: "ئوقۇ", english: "to read", forms: ["ئوقۇ", "ئوقۇغىن", "ئوقۇڭ", "ئوقۇڭلار", "ئوقۇسۇن"] },
+  { uly: "yazmaq", arabic: "يازماق", stem: "ياز", english: "to write", forms: ["ياز", "يازغىن", "يېزىڭ", "يېزىڭلار", "يازسۇن"] },
+  { uly: "körmek", arabic: "كۆرمەك", stem: "كۆر", english: "to see", forms: ["كۆر", "كۆرگىن", "كۆرۈڭ", "كۆرۈڭلار", "كۆرسۇن"] },
+  { uly: "bilmek", arabic: "بىلىمەك", stem: "بىل", english: "to know", forms: ["بىل", "بىلگىن", "بىلىڭ", "بىلىڭلار", "بىلسۇن"] },
+  { uly: "bermek", arabic: "بەرمەك", stem: "بەر", english: "to give", forms: ["بەر", "بەرگىن", "بېرىڭ", "بېرىڭلار", "بەرسۇن"] },
+  { uly: "qilmaq", arabic: "قىلماق", stem: "قىل", english: "to do", forms: ["قىل", "قىلغىن", "قىلىڭ", "قىلىڭلار", "قىلسۇن"] },
+  { uly: "ishlimek", arabic: "ئىشلىمەك", stem: "ئىشلە", english: "to work", forms: ["ئىشلە", "ئىشلىگىن", "ئىشلەڭ", "ئىشلەڭلار", "ئىشلىسۇن"] },
+  { uly: "yémek", arabic: "يېمەك", stem: "يە", english: "to eat", forms: ["يە", "يېگىن", "يەڭ", "يەڭلار", "يېسۇن"] },
+  { uly: "turmaq", arabic: "تۇرماق", stem: "تۇر", english: "to stand", forms: ["تۇر", "تۇرغىن", "تۇرۇڭ", "تۇرۇڭلار", "تۇرسۇن"] },
+  { uly: "olturmaq", arabic: "ئولتۇرماق", stem: "ئولتۇر", english: "to sit", forms: ["ئولتۇر", "ئولتۇرغىن", "ئولتۇرۇڭ", "ئولتۇرۇڭلار", "ئولتۇرسۇن"] },
+  { uly: "izdimek", arabic: "ئىزدىمەك", stem: "ئىزدە", english: "to search", forms: ["ئىزدە", "ئىزدىگىن", "ئىزدەڭ", "ئىزدەڭلار", "ئىزدىسۇن"] },
+  { uly: "pishurmaq", arabic: "پىشۇرماق", stem: "پىشۇر", english: "to cook", forms: ["پىشۇر", "پىشۇرغىن", "پىشۇرۇڭ", "پىشۇرۇڭلار", "پىشۇرسۇن"] },
+  { uly: "almaq", arabic: "ئالماق", stem: "ئال", english: "to take", forms: ["ئال", "ئالغىن", "ئېلىڭ", "ئېلىڭلار", "ئالسۇن"] },
+  { uly: "kelmek", arabic: "كەلمەك", stem: "كەل", english: "to come", forms: ["كەل", "كەلگىن", "كېلىڭ", "كېلىڭلار", "كەلسۇن"] },
+  { uly: "unutmaq", arabic: "ئۇنۇتماق", stem: "ئۇنۇت", english: "to forget", forms: ["ئۇنۇت", "ئۇنۇتقىن", "ئۇنتۇڭ", "ئۇنۇتۇڭلار", "ئۇنۇتسۇن"] },
+  { uly: "utmaq", arabic: "ئۇتماق", stem: "ئۇت", english: "to lose", forms: ["ئۇت", "ئۇتقىن", "ئۇتۇڭ", "ئۇتۇڭلار", "ئۇتسۇن"] },
+  { uly: "chüshenmek", arabic: "چۈشەنمەك", stem: "چۈشەن", english: "to understand", forms: ["چۈشەن", "چۈشەنگىن", "چۈشىنىڭ", "چۈشىىنڭلار", "چۈشەنسۇن"] },
+  { uly: "ketmek", arabic: "كەتمەك", stem: "كەت", english: "to leave", forms: ["كەت", "كەتكىن", "كېتىڭ", "كېتىڭلار", "كەتسۇن"] }
 ];
 
 const categories = [
-  { key: 0, label: "2nd Person Informal Strong" },
-  { key: 1, label: "2nd Person Informal Soft" },
-  { key: 2, label: "2nd Person Polite" },
-  { key: 3, label: "2nd Person Plural" },
-  { key: 4, label: "3rd Person (Singular & Plural)" }
+  { key: 0 }, // 2nd Person Informal Strong
+  { key: 1 }, // 2nd Person Informal Soft
+  { key: 2 }, // 2nd Person Polite
+  { key: 3 }, // 2nd Person Plural
+  { key: 4 }  // 3rd Person
+];
+
+const pronounsWithType = [
+  "سەن (Strong)",
+  "سەن (Soft)",
+  "سىز",
+  "سىلەر",
+  "ئۇ / ئۇلار"
 ];
 
 let score = 0;
@@ -149,27 +169,21 @@ function randomQuestion() {
   currentCategory = categories[Math.floor(Math.random() * categories.length)];
 
   document.getElementById('verb-box').innerHTML = `
-    <div class="verb-latin">${currentVerb.uly}</div>
-    <div class="uyghur-arabic">${currentVerb.arabic}</div>
+    <div class="verb-latin">${currentVerb.uly} - ${currentVerb.english}</div>
+    <div class="uyghur-arabic">${currentVerb.arabic} (${currentVerb.stem})</div>
   `;
 
-  const parts = currentCategory.label.split(' ');
   document.getElementById('category-prompt').innerHTML = `
-    <span class="category-line">${parts.slice(0,2).join(' ')}</span>
-    <span class="category-line">${parts.slice(2).join(' ')}</span>
+    <span class="category-line">${pronounsWithType[currentCategory.key]}</span>
   `;
 
-  // Start with all forms of current verb
   let options = [...currentVerb.forms];
-
-  // Add distractor forms from other verbs until we have at least 5
   while (options.length < 5) { 
     let randomVerb = verbs[Math.floor(Math.random() * verbs.length)];
     let randomForm = randomVerb.forms[Math.floor(Math.random() * randomVerb.forms.length)];
     if (!options.includes(randomForm)) options.push(randomForm);
   }
 
-  // Shuffle options and take exactly 5
   options = options.sort(() => Math.random() - 0.5).slice(0, 5);
 
   document.getElementById('choices').innerHTML = options.map(opt => `
@@ -182,8 +196,10 @@ function checkAnswer(el, answer) {
   const allChoices = document.querySelectorAll('.choice');
 
   allChoices.forEach(c => {
-    if (c.textContent === correct) c.classList.add('correct');
-    else if (c !== el) c.classList.remove('correct', 'incorrect');
+    c.style.pointerEvents = 'none';
+    if (c.textContent === correct) {
+      c.classList.add('correct');
+    }
   });
 
   if (answer === correct) {
