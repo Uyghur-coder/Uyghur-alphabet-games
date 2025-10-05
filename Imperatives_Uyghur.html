@@ -2,163 +2,167 @@
 <html lang="ug" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Uyghur Imperative Game</title>
+<title>Uyghur Imperative Form Game</title>
 <style>
-  @font-face {
-    font-family: 'ALKATIPYazma';
-    src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
-  }
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+@font-face {
+  font-family: 'ALKATIPYazma';
+  src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
+}
 
-  body {
-    font-family: Arial, sans-serif;
-    background: #ffffff;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-  }
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f5f9;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
 
-  .game-container {
-    max-width: 900px;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    text-align: center;
-  }
+.game-container {
+  max-width: 900px;
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  text-align: center;
+}
 
-  .verb-box { 
-    font-family: 'ALKATIPYazma', sans-serif;
-    font-size: 26px;
-    margin: 20px 0; 
-    background: linear-gradient(145deg, #bbdefb, #e3f2fd); /* light blue */
-    padding: 15px; 
-    border-radius: 10px;
-    border: 2px solid #64b5f6;
-    box-shadow: 4px 4px 10px rgba(0,0,0,0.2), -4px -4px 10px rgba(255,255,255,0.7);
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-  }
+h1 {
+  color: #2c3e50;
+}
 
-  .verb-box:hover {
-    transform: translateY(-3px);
-    box-shadow: 6px 6px 12px rgba(0,0,0,0.25), -6px -6px 12px rgba(255,255,255,0.8);
-    background: linear-gradient(145deg, #cce4fb, #e6f3fe);
-  }
+.uyghur {
+  font-family: 'ALKATIPYazma';
+}
 
-  .verb-latin {
-    font-family: 'Roboto', sans-serif;
-    font-size: 20px;
-    margin-bottom: 5px;
-  }
+.verb-box { 
+  font-family: 'ALKATIPYazma';
+  font-size: 28px;
+  background: linear-gradient(145deg, #bbdefb, #e3f2fd);
+  padding: 15px; 
+  border-radius: 10px;
+  border: 2px solid #64b5f6;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.25);
+  margin: 20px 0;
+}
 
-  .category-prompt { 
-    font-size: 20px; 
-    margin: 15px 0; 
-    font-weight: bold; 
-  }
+.verb-latin {
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
 
-  .category-line { 
-    display: block;
-    font-family: 'ALKATIPYazma', sans-serif;
-  }
+.category-prompt {
+  font-family: 'ALKATIPYazma';
+  font-size: 24px;
+  font-weight: bold;
+  margin: 15px 0;
+}
 
-  .choices { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 10px; 
-    justify-content: center; 
-  }
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
 
-  .choice { 
-    padding: 10px 20px; 
-    cursor: pointer; 
-    border-radius: 8px; 
-    font-family: 'ALKATIPYazma', sans-serif;
-    font-size: 22px;
-    border: 2px solid #64b5f6;
-    background: linear-gradient(145deg, #ffffff, #f0f0f0);
-    color: #1565c0;
-    box-shadow: 4px 4px 8px rgba(0,0,0,0.2), -4px -4px 8px rgba(255,255,255,0.7);
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-  }
+.choice {
+  padding: 12px 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  font-family: 'ALKATIPYazma';
+  font-size: 24px;
+  border: 2px solid #64b5f6;
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  color: #0d47a1;
+  transition: 0.2s;
+  box-shadow: 4px 4px 10px rgba(0,0,0,0.25);
+}
 
-  .choice:hover { 
-    transform: translateY(-3px); 
-    box-shadow: 6px 6px 12px rgba(0,0,0,0.25), -6px -6px 12px rgba(255,255,255,0.8);
-    background: linear-gradient(145deg, #f9f9f9, #eaeaea);
-  }
+.choice:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 12px rgba(0,0,0,0.25);
+}
 
-  .score-bar { margin-top: 20px; font-weight: bold; color: #d35400; }
-  #feedback { margin-top: 15px; font-weight: bold; }
+.correct {
+  border-color: green !important;
+  background: #c8e6c9 !important;
+  color: #1b5e20 !important;
+}
 
-  .correct { border-color: green !important; background-color: #c8e6c9 !important; color: #1b5e20 !important; }
-  .incorrect { border-color: red !important; background-color: #ffcdd2 !important; color: #b71c1c !important; }
+.incorrect {
+  border-color: red !important;
+  background: #ffcdd2 !important;
+  color: #b71c1c !important;
+}
 
-  button { 
-    padding: 10px 20px; 
-    font-size: 16px; 
-    margin-top: 20px; 
-    background: #42a5f5; 
-    color: white; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    font-weight: bold;
-  }
+.score-bar { 
+  margin-top: 20px; 
+  font-weight: bold; 
+  color: #1565c0; 
+}
 
-  button:hover { background: #1e88e5; }
+#feedback { 
+  margin-top: 15px; 
+  font-weight: bold; 
+}
 
+.note {
+  margin-top: 10px;
+  font-family: 'ALKATIPYazma';
+  font-size: 22px;
+  color: #d32f2f;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #42a5f5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1e88e5;
+}
 </style>
 </head>
 <body>
 
 <div class="game-container">
-  <h1 style="color:#2c3e50;">Uyghur Imperative Game</h1>
+  <h1>Uyghur Imperative Form Game</h1>
   <div class="score-bar" id="score-bar">Score: 0</div>
   <div class="verb-box" id="verb-box"></div>
   <div class="category-prompt" id="category-prompt"></div>
   <div class="choices" id="choices"></div>
-  <div id="feedback"></div>
+  <div id="feedback" class="uyghur"></div>
+  <div id="note" class="note"></div>
   <button onclick="nextQuestion()">Next Question</button>
 </div>
 
 <script>
 const verbs = [
-  { uly: "barmaq", arabic: "بارماق", stem: "بار", english: "to go", forms: ["بار", "بارغىن", "بېرىڭ", "بېرىڭلار", "بارسۇن"] },
-  { uly: "oqumaq", arabic: "ئوقۇماق", stem: "ئوقۇ", english: "to read", forms: ["ئوقۇ", "ئوقۇغىن", "ئوقۇڭ", "ئوقۇڭلار", "ئوقۇسۇن"] },
-  { uly: "yazmaq", arabic: "يازماق", stem: "ياز", english: "to write", forms: ["ياز", "يازغىن", "يېزىڭ", "يېزىڭلار", "يازسۇن"] },
-  { uly: "körmek", arabic: "كۆرمەك", stem: "كۆر", english: "to see", forms: ["كۆر", "كۆرگىن", "كۆرۈڭ", "كۆرۈڭلار", "كۆرسۇن"] },
-  { uly: "bilmek", arabic: "بىلىمەك", stem: "بىل", english: "to know", forms: ["بىل", "بىلگىن", "بىلىڭ", "بىلىڭلار", "بىلسۇن"] },
-  { uly: "bermek", arabic: "بەرمەك", stem: "بەر", english: "to give", forms: ["بەر", "بەرگىن", "بېرىڭ", "بېرىڭلار", "بەرسۇن"] },
-  { uly: "qilmaq", arabic: "قىلماق", stem: "قىل", english: "to do", forms: ["قىل", "قىلغىن", "قىلىڭ", "قىلىڭلار", "قىلسۇن"] },
-  { uly: "ishlimek", arabic: "ئىشلىمەك", stem: "ئىشلە", english: "to work", forms: ["ئىشلە", "ئىشلىگىن", "ئىشلەڭ", "ئىشلەڭلار", "ئىشلىسۇن"] },
-  { uly: "yémek", arabic: "يېمەك", stem: "يە", english: "to eat", forms: ["يە", "يېگىن", "يەڭ", "يەڭلار", "يېسۇن"] },
-  { uly: "turmaq", arabic: "تۇرماق", stem: "تۇر", english: "to stand", forms: ["تۇر", "تۇرغىن", "تۇرۇڭ", "تۇرۇڭلار", "تۇرسۇن"] },
-  { uly: "olturmaq", arabic: "ئولتۇرماق", stem: "ئولتۇر", english: "to sit", forms: ["ئولتۇر", "ئولتۇرغىن", "ئولتۇرۇڭ", "ئولتۇرۇڭلار", "ئولتۇرسۇن"] },
-  { uly: "izdimek", arabic: "ئىزدىمەك", stem: "ئىزدە", english: "to search", forms: ["ئىزدە", "ئىزدىگىن", "ئىزدەڭ", "ئىزدەڭلار", "ئىزدىسۇن"] },
-  { uly: "pishurmaq", arabic: "پىشۇرماق", stem: "پىشۇر", english: "to cook", forms: ["پىشۇر", "پىشۇرغىن", "پىشۇرۇڭ", "پىشۇرۇڭلار", "پىشۇرسۇن"] },
-  { uly: "almaq", arabic: "ئالماق", stem: "ئال", english: "to take", forms: ["ئال", "ئالغىن", "ئېلىڭ", "ئېلىڭلار", "ئالسۇن"] },
-  { uly: "kelmek", arabic: "كەلمەك", stem: "كەل", english: "to come", forms: ["كەل", "كەلگىن", "كېلىڭ", "كېلىڭلار", "كەلسۇن"] },
-  { uly: "unutmaq", arabic: "ئۇنۇتماق", stem: "ئۇنۇت", english: "to forget", forms: ["ئۇنۇت", "ئۇنۇتقىن", "ئۇنتۇڭ", "ئۇنۇتۇڭلار", "ئۇنۇتسۇن"] },
-  { uly: "utmaq", arabic: "ئۇتماق", stem: "ئۇت", english: "to lose", forms: ["ئۇت", "ئۇتقىن", "ئۇتۇڭ", "ئۇتۇڭلار", "ئۇتسۇن"] },
-  { uly: "chüshenmek", arabic: "چۈشەنمەك", stem: "چۈشەن", english: "to understand", forms: ["چۈشەن", "چۈشەنگىن", "چۈشىنىڭ", "چۈشىىنڭلار", "چۈشەنسۇن"] },
-  { uly: "ketmek", arabic: "كەتمەك", stem: "كەت", english: "to leave", forms: ["كەت", "كەتكىن", "كېتىڭ", "كېتىڭلار", "كەتسۇن"] }
+  { uly:"barmaq", arabic:"بارماق", stem:"بار", english:"to go", forms:["بار","بارغىن","بېرىڭ","بېرىڭلار","بارسۇن"], changed:{ "بېرىڭ":"بېرىڭ (بارىڭ - vowel change)", "بېرىڭلار":"بېرىڭلار (بارىڭلار - vowel change)" } },
+  { uly:"oqumaq", arabic:"ئوقۇماق", stem:"ئوقۇ", english:"to read", forms:["ئوقۇ","ئوقۇغىن","ئوقۇڭ","ئوقۇڭلار","ئوقۇسۇن"], changed:{} },
+  { uly:"yazmaq", arabic:"يازماق", stem:"ياز", english:"to write", forms:["ياز","يازغىن","يېزىڭ","يېزىڭلار","يازسۇن"], changed:{ "يېزىڭ":"يېزىڭ (يازىڭ - vowel change)", "يېزىڭلار":"يېزىڭلار (يازىڭلار - vowel change)" } },
+  { uly:"bermek", arabic:"بەرمەك", stem:"بەر", english:"to give", forms:["بەر","بەرگىن","بېرىڭ","بېرىڭلار","بەرسۇن"], changed:{ "بېرىڭ":"بېرىڭ (بەرىڭ - vowel change)", "بېرىڭلار":"بېرىڭلار (بەرىڭلار - vowel change)" } },
+  { uly:"almaq", arabic:"ئالماق", stem:"ئال", english:"to take", forms:["ئال","ئالغىن","ئېلىڭ","ئېلىڭلار","ئالسۇن"], changed:{ "ئېلىڭ":"ئېلىڭ (ئالىڭ - vowel change)", "ئېلىڭلار":"ئېلىڭلار (ئالىڭلار - vowel change)" } },
+  { uly:"kelmek", arabic:"كەلمەك", stem:"كەل", english:"to come", forms:["كەل","كەلگىن","كېلىڭ","كېلىڭلار","كەلسۇن"], changed:{ "كېلىڭ":"كېلىڭ (كەلىڭ - vowel change)", "كېلىڭلار":"كېلىڭلار (كەلىڭلار - vowel change)" } },
+  { uly:"yémek", arabic:"يېمەك", stem:"يە", english:"to eat", forms:["يە","يېگىن","يەڭ","يەڭلار","يېسۇن"], changed:{ "يېگىن":"يېگىن (يەگىن - vowel change)", "يېسۇن":"يېسۇن (يەسۇن - vowel change)" } },
+  { uly:"ishlimek", arabic:"ئىشلىمەك", stem:"ئىشلە", english:"to work", forms:["ئىشلە","ئىشلىگىن","ئىشلەڭ","ئىشلەڭلار","ئىشلەسۇن"], changed:{ "ئىشلىسۇن":"ئىشلىسۇن (ئىشلەسۇن - vowel change)" } },
+  { uly:"izdimek", arabic:"ئىزدىمەك", stem:"ئىزدە", english:"to search", forms:["ئىزدە","ئىزدىگىن","ئىزدەڭ","ئىزدەڭلار","ئىزدىسۇن"], changed:{ "ئىزدىگىن":"ئىزدىگىن (ئىزدەگىن - vowel change)", "ئىزدىسۇن":"ئىزدىسۇن (ئىزدەسۇن - vowel change)" } },
+  { uly:"chüshenmek", arabic:"چۈشەنمەك", stem:"چۈشەن", english:"to understand", forms:["چۈشەن","چۈشەنگىن","چۈشىنىڭ","چۈشىنىڭلار","چۈشەنسۇن"], changed:{ "چۈشىنىڭ":"چۈشىنىڭ (چۈشەنىڭ - vowel change)", "چۈشىنىڭلار":"چۈشىنىڭلار (چۈشەنىڭلار - vowel change)" } },
+  { uly:"ketmek", arabic:"كەتمەك", stem:"كەت", english:"to leave", forms:["كەت","كەتكىن","كېتىڭ","كېتىڭلار","كەتسۇن"], changed:{ "كېتىڭ":"كېتىڭ (كەتىڭ - vowel change)", "كېتىڭلار":"كېتىڭلار (كەتىڭلار - vowel change)" } },
 ];
 
 const categories = [
-  { key: 0 }, // 2nd Person Informal Strong
-  { key: 1 }, // 2nd Person Informal Soft
-  { key: 2 }, // 2nd Person Polite
-  { key: 3 }, // 2nd Person Plural
-  { key: 4 }  // 3rd Person
-];
-
-const pronounsWithType = [
-  "سەن (Strong)",
-  "سەن (Soft)",
-  "سىز",
-  "سىلەر",
-  "ئۇ / ئۇلار"
+  { key: 0, label: "سەن (Strong)" },
+  { key: 1, label: "سەن (Soft)" },
+  { key: 2, label: "سىز" },
+  { key: 3, label: "سىلەر" },
+  { key: 4, label: "ئۇ / ئۇلار" }
 ];
 
 let score = 0;
@@ -170,45 +174,43 @@ function randomQuestion() {
 
   document.getElementById('verb-box').innerHTML = `
     <div class="verb-latin">${currentVerb.uly} - ${currentVerb.english}</div>
-    <div class="uyghur-arabic">${currentVerb.arabic} (${currentVerb.stem})</div>
+    <div class="uyghur">${currentVerb.arabic} (${currentVerb.stem})</div>
   `;
+  document.getElementById('category-prompt').textContent = currentCategory.label;
 
-  document.getElementById('category-prompt').innerHTML = `
-    <span class="category-line">${pronounsWithType[currentCategory.key]}</span>
-  `;
-
-  let options = [...currentVerb.forms];
-  while (options.length < 5) { 
-    let randomVerb = verbs[Math.floor(Math.random() * verbs.length)];
-    let randomForm = randomVerb.forms[Math.floor(Math.random() * randomVerb.forms.length)];
-    if (!options.includes(randomForm)) options.push(randomForm);
+  let options = verbs.flatMap(v => v.forms);
+  options = [...new Set(options)];
+  options = options.sort(() => Math.random() - 0.5).slice(0, 5);
+  if (!options.includes(currentVerb.forms[currentCategory.key])) {
+    options[Math.floor(Math.random() * 5)] = currentVerb.forms[currentCategory.key];
   }
 
-  options = options.sort(() => Math.random() - 0.5).slice(0, 5);
+  document.getElementById('choices').innerHTML = options.map(opt =>
+    `<div class="choice uyghur" onclick="checkAnswer(this,'${opt}')">${opt}</div>`
+  ).join('');
 
-  document.getElementById('choices').innerHTML = options.map(opt => `
-    <div class="choice" onclick='checkAnswer(this,"${opt}")'>${opt}</div>
-  `).join('');
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('note').textContent = '';
 }
 
 function checkAnswer(el, answer) {
   const correct = currentVerb.forms[currentCategory.key];
   const allChoices = document.querySelectorAll('.choice');
-
-  allChoices.forEach(c => {
-    c.style.pointerEvents = 'none';
-    if (c.textContent === correct) {
-      c.classList.add('correct');
-    }
-  });
+  allChoices.forEach(c => c.style.pointerEvents = 'none');
 
   if (answer === correct) {
-    el.classList.add('selected');
-    document.getElementById('feedback').textContent = "✅ Correct!";
+    el.classList.add('correct');
+    document.getElementById('feedback').textContent = "✅ توغرا!";
     score++;
+    if (currentVerb.changed[answer]) {
+      document.getElementById('note').textContent = currentVerb.changed[answer];
+    }
   } else {
     el.classList.add('incorrect');
-    document.getElementById('feedback').textContent = `❌ Incorrect. Correct: ${correct}`;
+    document.getElementById('feedback').textContent = "❌ خاتا!";
+    if (currentVerb.changed[correct]) {
+      document.getElementById('note').textContent = currentVerb.changed[correct];
+    }
   }
 
   document.getElementById('score-bar').textContent = "Score: " + score;
@@ -216,11 +218,9 @@ function checkAnswer(el, answer) {
 
 function nextQuestion() {
   randomQuestion();
-  document.getElementById('feedback').textContent = '';
 }
 
-document.addEventListener("DOMContentLoaded", randomQuestion);
+document.addEventListener('DOMContentLoaded', randomQuestion);
 </script>
-
 </body>
 </html>
