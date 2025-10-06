@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur Imperative Form Game</title>
+<style>
+@font-face {
+  font-family: 'ALKATIPYazma';
+  src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f4f8;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.game-container {
+  max-width: 900px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+h1 { font-family: Arial, sans-serif; color: #00796b; }
+
+.verb-box {
+  font-family: 'ALKATIPYazma', sans-serif;
+  font-size: 30px;
+  margin: 25px 0;
+  background: linear-gradient(145deg, #e0f2f1, #ffffff);
+  padding: 20px;
+  border-radius: 12px;
+  border: 3px solid #00796b;
+  box-shadow: 4px 4px 10px rgba(0,0,0,0.1), -4px -4px 10px rgba(255,255,255,0.7);
+}
+
+.verb-latin {
+  font-family: Arial, sans-serif;
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.category-prompt {  
+  font-family: 'ALKATIPYazma', sans-serif;
+  font-size: 24px;  
+  margin: 20px 0;  
+  font-weight: 800;  
+  color: #d35400;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.choice {
+  padding: 12px 25px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-family: 'ALKATIPYazma', sans-serif;
+  font-size: 24px;
+  border: 2px solid #00796b;
+  background: linear-gradient(145deg, #ffffff, #f5f5f5);
+  color: #004d40;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.1), -3px -3px 6px rgba(255,255,255,0.6);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  min-width: 120px;
+  text-align: center;
+}
+
+.choice:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.15), -4px -4px 8px rgba(255,255,255,0.7);
+  background: linear-gradient(145deg, #f9f9f9, #eaeaea);
+}
+
+.correct { border-color: green !important; background-color: #e8f5e9 !important; color: #388e3c !important; }
+.incorrect { border-color: red !important; background-color: #ffebee !important; color: #d32f2f !important; }
+
+.parentheses { color: #1e88e5; cursor: pointer; }
+
+.score-bar { margin-top: 15px; font-weight: bold; font-size: 1.2em; color: #1e88e5; }
+#feedback { margin-top: 20px; font-weight: bold; font-family: 'ALKATIPYazma', sans-serif; font-size: 26px; min-height: 30px; }
+
+button {
+  padding: 12px 25px;
+  font-size: 18px;
+  margin-top: 25px;
+  background: #4db6ac;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover { background: #00897b; }
+
+.reset-button {
+  background: #f06292;
+}
+
+.reset-button:hover {
+  background: #c2185b;
+}
+</style>
+</head>
+<body>
+
+<div class="game-container">
+  <h1>Uyghur Imperative Form Quiz</h1>
+  <div class="score-bar" id="score-bar">Score: 0 / 0</div>
+  <div class="verb-box" id="verb-box"></div>
+  <div class="category-prompt" id="category-prompt"></div>
+  <div class="choices" id="choices"></div>
+  <div id="feedback"></div>
+  <button onclick="nextQuestion()">Next Question</button>
+  <button class="reset-button" onclick="resetGame()">Reset Game</button>
+</div>
+
+<script>
+const pronouns = [
+  { key: "سەن (strong)", label: "سەن (strong)" },
+  { key: "سەن (soft)", label: "سەن (soft)" },
+  { key: "سىز", label: "سىز" },
+  { key: "سىلەر", label: "سىلەر" },
+  { key: "ئۇ/ئۇلار", label: "ئۇ/ئۇلار" }
+];
+
+const verbs = [
+  { uly: "barmaq", arabic: "بارماق", english: "go", forms: { "سەن (strong)": "بار", "سەن (soft)": ["بارغىن"], "سىز": ["بېرىڭ", "بارىڭ"], "سىلەر": ["بېرىڭلار", "بارىڭلار"], "ئۇ/ئۇلار": "بارسۇن" } },
+  // ... Add the rest of your verbs here as in your previous code
+];
+
+let score = 0, totalQuestions = 0, currentVerbObj, currentPronounObj, isAnswered = false;
+
+function colorParentheses(str){
+  return str.replace(/\(([^)]+)\)/g,'<span class="parentheses" onclick="checkParentheses(this)">$1</span>');
+}
+
+function checkParentheses(spanEl){
+  const text = spanEl.textContent;
+  spanEl.style.fontWeight = 'bold';
+  alert(`Clicked on unchanged part: ${text}`);
+}
+
+function randomQuestion() {
+  isAnswered = false;
+  document.getElementById('feedback').textContent = '';
+  document.querySelectorAll('.choice').forEach(c => { c.classList.remove('correct','incorrect'); c.style.pointerEvents = 'auto'; });
+
+  currentVerbObj = verbs[Math.floor(Math.random() * verbs.length)];
+  currentPronounObj = pronouns[Math.floor(Math.random() * pronouns.length)];
+
+  document.getElementById('verb-box').innerHTML = `<div class="verb-latin">${currentVerbObj.uly} (${currentVerbObj.english})</div><div class="verb-arabic">${currentVerbObj.arabic}</div>`;
+  document.getElementById('category-prompt').textContent = currentPronounObj.label;
+
+  const correctAnswer = currentVerbObj.forms[currentPronounObj.key];
+  let options = [correctAnswer];
+  const allPossibleAnswers = verbs.flatMap(v => Object.values(v.forms));
+  while(options.length < 4) {
+    let rand = allPossibleAnswers[Math.floor(Math.random() * allPossibleAnswers.length)];
+    if(!options.includes(rand)) options.push(rand);
+  }
+
+  options = options.sort(() => Math.random() - 0.5);
+
+  document.getElementById('choices').innerHTML = options.map(opt => {
+    if (Array.isArray(opt)) opt = opt[0];
+    return `<div class="choice" data-answer="${opt}" onclick="checkAnswer(this)">${colorParentheses(opt)}</div>`;
+  }).join('');
+}
+
+function checkAnswer(el){
+  if(isAnswered) return;
+  isAnswered = true;
+  const selected = el.dataset.answer;
+  const correct = currentVerbObj.forms[currentPronounObj.key];
+  const correctText = Array.isArray(correct) ? correct[0] : correct;
+
+  document.querySelectorAll('.choice').forEach(c => c.style.pointerEvents = 'none');
+  if(selected === correctText){ 
+    el.classList.add('correct'); 
+    document.getElementById('feedback').textContent = "✅ Correct!";
+    score++;
+  } else {
+    el.classList.add('incorrect'); 
+    document.querySelector(`.choice[data-answer="${correctText}"]`)?.classList.add('correct');
+    document.getElementById('feedback').textContent = `❌ Incorrect! Correct: ${correctText}`;
+  }
+  totalQuestions++;
+  document.getElementById('score-bar').textContent = `Score: ${score} / ${totalQuestions}`;
+}
+
+function nextQuestion() { randomQuestion(); }
+
+function resetGame() {
+  score = 0;
+  totalQuestions = 0;
+  document.getElementById('score-bar').textContent = `Score: ${score} / ${totalQuestions}`;
+  randomQuestion();
+}
+
+document.addEventListener("DOMContentLoaded", randomQuestion);
+</script>
+
+</body>
+</html>
