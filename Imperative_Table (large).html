@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur Imperative Verb Forms</title>
+<style>
+  @font-face {
+    font-family: 'ALKATIPYazma';
+    src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf');
+  }
+
+  body {
+    font-family: 'ALKATIPYazma', sans-serif;
+    font-size: 20px; /* Increased base font size */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.3s, color 0.3s;
+  }
+
+  :root {
+    --bg: linear-gradient(135deg, #f9fafb, #eef2ff);
+    --text: #111827;
+    --table-bg: #ffffff;
+    --header-bg: #2563eb;
+    --header-text: #ffffff;
+    --row-alt: #f3f4f6;
+    --hover: #e0e7ff;
+    --caption: #1e40af;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: linear-gradient(135deg, #0f172a, #1e293b);
+      --text: #e2e8f0;
+      --table-bg: #1e293b;
+      --header-bg: #3b82f6;
+      --header-text: #f9fafb;
+      --row-alt: #334155;
+      --hover: #475569;
+      --caption: #93c5fd;
+    }
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 85%;
+    max-width: 900px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--table-bg);
+    transition: background 0.3s;
+  }
+
+  caption {
+    caption-side: top;
+    font-size: 1.5em; /* Larger caption */
+    font-weight: normal;
+    padding: 14px;
+    color: var(--caption);
+  }
+
+  thead {
+    background: var(--header-bg);
+    color: var(--header-text);
+    font-size: 1em; /* Larger header text */
+  }
+
+  th, td {
+    padding: 14px 18px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  tbody tr:nth-child(even) {
+    background: var(--row-alt);
+  }
+
+  tbody tr:hover {
+    background: var(--hover);
+  }
+
+  td:first-child {
+    font-weight: normal;
+    color: var(--caption);
+  }
+</style>
+</head>
+<body>
+
+<table>
+  <caption>Uyghur Imperative Verb Forms</caption>
+  <thead>
+    <tr>
+      <th>كىشلىك ئالماش (Pronoun)</th>
+      <th>قوشۇمچە (Suffix / Form Pattern)</th>
+      <th>مەسىلەن (Example)</th>
+      <th>چۈشەنچە (Explanation)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>سەن (strong)</td>
+      <td>Stem alone</td>
+      <td>بار</td>
+      <td>Strong command / familiar tone</td>
+    </tr>
+    <tr>
+      <td>سەن (soft)</td>
+      <td>-غىن / -قىن / -گىن / -كىن</td>
+      <td>بارغىن</td>
+      <td>Softer, polite request</td>
+    </tr>
+    <tr>
+      <td>سىز</td>
+      <td>-ڭ / -ىڭ / -ۇڭ / -ۈڭ</td>
+      <td>بېرىڭ (بارىڭ)</td>
+      <td>Polite singular (“you” formal)</td>
+    </tr>
+    <tr>
+      <td>سىلەر</td>
+      <td>-ڭلار / -ىڭلار / -ۇڭلار / -ۈڭلار</td>
+      <td>بېرىڭلار (بارىڭلار)</td>
+      <td>Plural “you” (respectful)</td>
+    </tr>
+    <tr>
+      <td>ئۇ / ئۇلار</td>
+      <td>-سۇن</td>
+      <td>بارسۇن</td>
+      <td>3rd person singular & plural (“let him/her/them go”)</td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
