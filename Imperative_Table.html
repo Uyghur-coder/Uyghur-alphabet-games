@@ -11,12 +11,9 @@
 
   body {
     font-family: 'ALKATIPYazma', sans-serif;
-    font-size: 20px; /* Increased base font size */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    font-size: 20px;
     margin: 0;
+    padding: 20px;
     background: var(--bg);
     color: var(--text);
     transition: background 0.3s, color 0.3s;
@@ -48,8 +45,9 @@
 
   table {
     border-collapse: collapse;
-    width: 85%;
+    width: 100%;
     max-width: 900px;
+    margin: 0 auto; /* centers table horizontally */
     box-shadow: 0 4px 16px rgba(0,0,0,0.2);
     border-radius: 14px;
     overflow: hidden;
@@ -59,7 +57,7 @@
 
   caption {
     caption-side: top;
-    font-size: 1.5em; /* Larger caption */
+    font-size: 1.5em;
     font-weight: normal;
     padding: 14px;
     color: var(--caption);
@@ -68,7 +66,7 @@
   thead {
     background: var(--header-bg);
     color: var(--header-text);
-    font-size: 1em; /* Larger header text */
+    font-size: 1em;
   }
 
   th, td {
@@ -88,6 +86,16 @@
   td:first-child {
     font-weight: normal;
     color: var(--caption);
+  }
+
+  @media (max-width: 600px) {
+    table, th, td {
+      font-size: 16px; /* smaller font for mobile */
+      padding: 10px;
+    }
+    caption {
+      font-size: 1.2em;
+    }
   }
 </style>
 </head>
