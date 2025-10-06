@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur Imperative Form Game</title>
+<style>
+@font-face {
+  font-family: 'ALKATIPYazma';
+  src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f4f8;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.game-container {
+  max-width: 900px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+h1 { font-family: Arial, sans-serif; color: #00796b; }
+
+.verb-box {
+  font-family: 'ALKATIPYazma', sans-serif;
+  font-size: 30px;
+  margin: 25px 0;
+  background: linear-gradient(145deg, #e0f2f1, #ffffff);
+  padding: 20px;
+  border-radius: 12px;
+  border: 3px solid #00796b;
+  box-shadow: 4px 4px 10px rgba(0,0,0,0.1), -4px -4px 10px rgba(255,255,255,0.7);
+}
+
+.verb-latin {
+  font-family: Arial, sans-serif;
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.category-prompt {  
+  font-family: 'ALKATIPYazma', sans-serif;
+  font-size: 24px;  
+  margin: 20px 0;  
+  font-weight: 800;  
+  color: #d35400;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.choice {
+  padding: 12px 25px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-family: 'ALKATIPYazma', sans-serif;
+  font-size: 24px;
+  border: 2px solid #00796b;
+  background: linear-gradient(145deg, #ffffff, #f5f5f5);
+  color: #004d40;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.1), -3px -3px 6px rgba(255,255,255,0.6);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.choice:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.15), -4px -4px 8px rgba(255,255,255,0.7);
+  background: linear-gradient(145deg, #f9f9f9, #eaeaea);
+}
+
+.correct { border-color: green !important; background-color: #e8f5e9 !important; color: #388e3c !important; }
+.incorrect { border-color: red !important; background-color: #ffebee !important; color: #d32f2f !important; }
+
+.score-bar { margin-top: 15px; font-weight: bold; font-size: 1.1em; color: #1e88e5; }
+#feedback { margin-top: 20px; font-weight: bold; font-family: 'ALKATIPYazma', sans-serif; font-size: 26px; min-height: 30px; }
+
+button {
+  padding: 12px 25px;
+  font-size: 18px;
+  margin-top: 25px;
+  background: #4db6ac;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover { background: #00897b; }
+</style>
+</head>
+<body>
+
+<div class="game-container">
+  <h1>Uyghur Imperative Form Quiz</h1>
+  <div class="score-bar" id="score-bar">Score: 0 / 0</div>
+  <div class="verb-box" id="verb-box"></div>
+  <div class="category-prompt" id="category-prompt"></div>
+  <div class="choices" id="choices"></div>
+  <div id="feedback"></div>
+  <button onclick="nextQuestion()">Next Question</button>
+</div>
+
+<script>
+const pronouns = [
+  { key: "سەن (strong)", label: "سەن (strong)" },
+  { key: "سەن (soft)", label: "سەن (soft)" },
+  { key: "سىز", label: "سىز" },
+  { key: "سىلەر", label: "سىلەر" },
+  { key: "ئۇ/ئۇلار", label: "ئۇ/ئۇلار" }
+];
+
+const verbs = [
+  { uly: "barmaq", arabic: "بارماق", english: "to go", root: "بار", forms: { "سەن (strong)": "بار", "سەن (soft)": "بارغىن", "سىز": "بېرىڭ (بارىڭ)", "سىلەر": "بېرىڭلار (بارىڭلار)", "ئۇ/ئۇلار": "بارسۇن" } },
+  { uly: "oqumaq", arabic: "ئوقۇماق", english: "to read", root: "ئوقۇ", forms: { "سەن (strong)": "ئوقۇ", "سەن (soft)": "ئوقۇغىن", "سىز": "ئوقۇڭ", "سىلەر": "ئوقۇڭلار", "ئۇ/ئۇلار": "ئوقۇسۇن" } },
+  { uly: "yazmaq", arabic: "يازماق", english: "to write", root: "ياز", forms: { "سەن (strong)": "ياز", "سەن (soft)": "يازغىن", "سىز": "يېزىڭ (يازىڭ)", "سىلەر": "يېزىڭلار (يازىڭلار)", "ئۇ/ئۇلار": "يازسۇن" } },
+  { uly: "körmek", arabic: "كۆرمەك", english: "to see", root: "كۆر", forms: { "سەن (strong)": "كۆر", "سەن (soft)": "كۆرگىن", "سىز": "كۆرۈڭ", "سىلەر": "كۆرۈڭلار", "ئۇ/ئۇلار": "كۆرسۇن" } },
+  { uly: "bilmek", arabic: "بىلمەك", english: "to know", root: "بىل", forms: { "سەن (strong)": "بىل", "سەن (soft)": "بىلگىن", "سىز": "بىلىڭ", "سىلەر": "بىلىڭلار", "ئۇ/ئۇلار": "بىلسۇن" } },
+  { uly: "bermek", arabic: "بەرمەك", english: "to give", root: "بەر", forms: { "سەن (strong)": "بەر", "سەن (soft)": "بەرگىن", "سىز": "بېرىڭ (بەرىڭ)", "سىلەر": "بېرىڭلار (بەرىڭلار)", "ئۇ/ئۇلار": "بەرسۇن" } },
+  { uly: "qilmaq", arabic: "قىلماق", english: "to do; make", root: "قىل", forms: { "سەن (strong)": "قىل", "سەن (soft)": "قىلغىن", "سىز": "قىلىڭ", "سىلەر": "قىلىڭلار", "ئۇ/ئۇلار": "قىلسۇن" } },
+  { uly: "ishlimek", arabic: "ئىشلىمەك", english: "to work", root: "ئىشلە", forms: { "سەن (strong)": "ئىشلە", "سەن (soft)": "ئىشلىگىن (ئىشلەگىن)", "سىز": "ئىشلەڭ", "سىلەر": "ئىشلەڭلار", "ئۇ/ئۇلار": "ئىشلىسۇن" } },
+  { uly: "yémek", arabic: "يېمەك", english: "to eat", root: "يە", forms: { "سەن (strong)": "يە", "سەن (soft)": "يېگىن (يەگىن)", "سىز": "يەڭ", "سىلەر": "يەڭلار", "ئۇ/ئۇلار": "يېسۇن (يەسۇن)" } },
+  { uly: "turmaq", arabic: "تۇرماق", english: "to stand", root: "تۇر", forms: { "سەن (strong)": "تۇر", "سەن (soft)": "تۇرغىن", "سىز": "تۇرۇڭ", "سىلەر": "تۇرۇڭلار", "ئۇ/ئۇلار": "تۇرسۇن" } },
+  { uly: "olturmaq", arabic: "ئولتۇرماق", english: "to sit", root: "ئولتۇر", forms: { "سەن (strong)": "ئولتۇر", "سەن (soft)": "ئولتۇرغىن", "سىز": "ئولتۇرۇڭ", "سىلەر": "ئولتۇرۇڭلار", "ئۇ/ئۇلار": "ئولتۇرسۇن" } },
+  { uly: "izdimek", arabic: "ئىزدىمەك", english: "to search", root: "ئىزدە", forms: { "سەن (strong)": "ئىزدە", "سەن (soft)": "ئىزدىگىن (ئىزدەگىن)", "سىز": "ئىزدەڭ", "سىلەر": "ئىزدەڭلار", "ئۇ/ئۇلار": "ئىزدىسۇن" } },
+  { uly: "pishurmaq", arabic: "پىشۇرماق", english: "to cook", root: "پىشۇر", forms: { "سەن (strong)": "پىشۇر", "سەن (soft)": "پىشۇرغىن", "سىز": "پىشۇرۇڭ", "سىلەر": "پىشۇرۇڭلار", "ئۇ/ئۇلار": "پىشۇرسۇن" } },
+  { uly: "almaq", arabic: "ئالماق", english: "to take", root: "ئال", forms: { "سەن (strong)": "ئال", "سەن (soft)": "ئالغىن", "سىز": "ئېلىڭ (ئالىڭ)", "سىلەر": "ئېلىڭلار (ئالىڭلار)", "ئۇ/ئۇلار": "ئالسۇن" } },
+  { uly: "kelmek", arabic: "كەلمەك", english: "to come", root: "كەل", forms: { "سەن (strong)": "كەل", "سەن (soft)": "كەلگىن", "سىز": "كېلىڭ (كەلىڭ)", "سىلەر": "كېلىڭلار (كەلىڭلار)", "ئۇ/ئۇلار": "كەلسۇن" } },
+  { uly: "unutmaq", arabic: "ئۇنۇتماق", english: "to forget", root: "ئۇنۇت", forms: { "سەن (strong)": "ئۇنۇت", "سەن (soft)": "ئۇنۇتقىن", "سىز": "ئۇنۇتۇڭ", "سىلەر": "ئۇنۇتۇڭلار", "ئۇ/ئۇلار": "ئۇنۇتسۇن" } },
+  { uly: "utmaq", arabic: "ئۇتماق", english: "to win", root: "ئۇت", forms: { "سەن (strong)": "ئۇت", "سەن (soft)": "ئۇتقىن", "سىز": "ئۇتۇڭ", "سىلەر": "ئۇتۇڭلار", "ئۇ/ئۇلار": "ئۇتسۇن" } },
+  { uly: "chüshenmek", arabic: "چۈشەنمەك", english: "to understand", root: "چۈشەن", forms: { "سەن (strong)": "چۈشەن", "سەن (soft)": "چۈشەنگىن", "سىز": "چۈشىنىڭ (چۈشەنىڭ)", "سىلەر": "چۈشىنىڭلار (چۈشەنىڭلار)", "ئۇ/ئۇلار": "چۈشەنسۇن" } },
+  { uly: "ketmek", arabic: "كەتمەك", english: "to leave", root: "كەت", forms: { "سەن (strong)": "كەت", "سەن (soft)": "كەتكىن", "سىز": "كېتىڭ (كەتىڭ)", "سىلەر": "كېتىڭلار (كەتىڭلار)", "ئۇ/ئۇلار": "كەتسۇن" } },
+  { uly: "tükürmek", arabic: "تۈكۈرمەك", english: "to spit", root: "تۈكۈر", forms: { "سەن (strong)": "تۈكۈر", "سەن (soft)": "تۈكۈرگىن", "سىز": "تۈكۈرۈڭ", "سىلەر": "تۈكۈرۈڭلار", "ئۇ/ئۇلار": "تۈكۈرسۇن" } },
+  { uly: "chüshmek", arabic: "چۈشمەك", english: "to fall; get off", root: "چۈش", forms: { "سەن (strong)": "چۈش", "سەن (soft)": "چۈشكىن", "سىز": "چۈشۈڭ", "سىلەر": "چۈشۈڭلار", "ئۇ/ئۇلار": "چۈشسۇن" } },
+  { uly: "démek", arabic: "دېمەك", english: "to say", root: "دە", forms: { "سەن (strong)": "دە", "سەن (soft)": "دېگىن (دەگىن)", "سىز": "دەڭ", "سىلەر": "دەڭلار", "ئۇ/ئۇلار": "دېسۇن (دەسۇن)" } },
+  { uly: "sanimaq", arabic: "سانىماق", english: "to count", root: "سانا", forms: { "سەن (strong)": "سانا", "سەن (soft)": "سانىغىن (ساناغىن)", "سىز": "ساناڭ", "سىلەر": "ساناڭلار", "ئۇ/ئۇلار": "سانىسۇن (ساناسۇن)" } },
+  { uly: "soymaq", arabic: "سويماق", english: "to slaughter; cut", root: "سوي", forms: { "سەن (strong)": "سوي", "سەن (soft)": "سويغىن", "سىز": "سويۇڭ", "سىلەر": "سويۇڭلار", "ئۇ/ئۇلار": "سويسۇن" } },
+  { uly: "sözlimek", arabic: "سۆزلىمەك", english: "to speak", root: "سۆزلە", forms: { "سەن (strong)": "سۆزلە", "سەن (soft)": "سۆزلىگىن (سۆزلەگىن)", "سىز": "سۆزلەڭ", "سىلەر": "سۆزلەڭلار", "ئۇ/ئۇلار": "سۆزلىسۇن (سۆزلەسۇن)" } },
+  { uly: "quymaq", arabic: "قۇيماق", english: "to pour; cast", root: "قۇي", forms: { "سەن (strong)": "قۇي", "سەن (soft)": "قۇيغىن", "سىز": "قۇيۇڭ", "سىلەر": "قۇيۇڭلار", "ئۇ/ئۇلار": "قۇيسۇن" } },
+  { uly: "kesmek", arabic: "كەسمەك", english: "to cut", root: "كەس", forms: { "سەن (strong)": "كەس", "سەن (soft)": "كەسكىن", "سىز": "كېسىڭ (كەسىڭ)", "سىلەر": "كېسىڭلار (كەسىڭلار)", "ئۇ/ئۇلار": "كەسسۇن" } },
+  { uly: "körmek", arabic: "كۆرمەك", english: "to see", root: "كۆر", forms: { "سەن (strong)": "كۆر", "سەن (soft)": "كۆرگىن", "سىز": "كۆرۈڭ", "سىلەر": "كۆرۈڭلار", "ئۇ/ئۇلار": "كۆرسۇن" } },
+  { uly: "külmek", arabic: "كۈلمەك", english: "to laugh", root: "كۈل", forms: { "سەن (strong)": "كۈل", "سەن (soft)": "كۈلگىن", "سىز": "كۈلۈڭ", "سىلەر": "كۈلۈڭلار", "ئۇ/ئۇلار": "كۈلسۇن" } },
+  { uly: "kechikmek", arabic: "كېچىكمەك", english: "to be late", root: "كېچىك", forms: { "سەن (strong)": "كېچىك", "سەن (soft)": "كېچىككىن", "سىز": "كېچىكىڭ", "سىلەر": "كېچىكىڭلار", "ئۇ/ئۇلار": "كېچىكسۇن" } },
+  { uly: "ötmek", arabic: "ئۆتمەك", english: "to pass; go beyond", root: "ئۆت", forms: { "سەن (strong)": "ئۆت", "سەن (soft)": "ئۆتكىن", "سىز": "ئۆتۈڭ", "سىلەر": "ئۆتۈڭلار", "ئۇ/ئۇلار": "ئۆتسۇن" } },
+  { uly: "ölchimek", arabic: "ئۆلچىمەك", english: "to measure", root: "ئۆلچە", forms: { "سەن (strong)": "ئۆلچە", "سەن (soft)": "ئۆلچىگىن (ئۆلچەگىن)", "سىز": "ئۆلچەڭ", "سىلەر": "ئۆلچەڭلار", "ئۇ/ئۇلار": "ئۆلچەسۇن (ئۆلچەسۇن)" } },
+  { uly: "yanmaq", arabic: "يانماق", english: "to burn; to return", root: "يان", forms: { "سەن (strong)": "يان", "سەن (soft)": "يانغىن", "سىز": "يېنىڭ (يانىڭ)", "سىلەر": "يېنىڭلار (يانىڭلار)", "ئۇ/ئۇلار": "يانسۇن" } },
+  { uly: "yazmaq", arabic: "يازماق", english: "to write", root: "ياز", forms: { "سەن (strong)": "ياز", "سەن (soft)": "يازغىن", "سىز": "يېزىڭ (يازىڭ)", "سىلەر": "يېزىڭلار (يازىڭلار)", "ئۇ/ئۇلار": "يازسۇن" } }
+];
+
+
+let score = 0, totalQuestions = 0, currentVerbObj, currentPronounObj, isAnswered = false;
+
+function randomQuestion() {
+  isAnswered = false;
+  document.getElementById('feedback').textContent = '';
+  document.querySelectorAll('.choice').forEach(c => {
+    c.classList.remove('correct','incorrect');
+    c.style.pointerEvents = 'auto';
+  });
+  
+  currentVerbObj = verbs[Math.floor(Math.random() * verbs.length)];
+  currentPronounObj = pronouns[Math.floor(Math.random() * pronouns.length)];
+  
+  document.getElementById('verb-box').innerHTML = `
+    <div class="verb-latin">${currentVerbObj.uly} (${currentVerbObj.english})</div>
+    <div class="uyghur-arabic">${currentVerbObj.arabic} → <span style="color:#00796b;font-weight:normal;">${currentVerbObj.root}</span></div>
+  `;
+  
+  document.getElementById('category-prompt').textContent = currentPronounObj.label;
+  const correctAnswer = currentVerbObj.forms[currentPronounObj.key];
+  let options = [correctAnswer];
+  const allPossibleAnswers = verbs.flatMap(v => Object.values(v.forms));
+  while (options.length < 5) {
+    let rand = allPossibleAnswers[Math.floor(Math.random() * allPossibleAnswers.length)];
+    if (!options.includes(rand)) options.push(rand);
+  }
+  options = options.sort(() => Math.random() - 0.5);
+  document.getElementById('choices').innerHTML = options.map(opt => 
+    `<div class="choice" data-answer="${opt}" onclick='checkAnswer(this)'>${opt}</div>`
+  ).join('');
+}
+
+function checkAnswer(el) {
+  if (isAnswered) return;
+  isAnswered = true;
+  const selected = el.dataset.answer;
+  const correct = currentVerbObj.forms[currentPronounObj.key];
+  document.querySelectorAll('.choice').forEach(c => c.style.pointerEvents = 'none');
+  
+  if (selected === correct) {
+    el.classList.add('correct');
+    document.getElementById('feedback').textContent = "✅ توغرا! Correct!";
+    score++;
+  } else {
+    el.classList.add('incorrect');
+    document.querySelector(`.choice[data-answer="${correct}"]`).classList.add('correct');
+    document.getElementById('feedback').textContent = `❌ خاتا! Correct: ${correct}`;
+  }
+  
+  totalQuestions++;
+  document.getElementById('score-bar').textContent = `Score: ${score} / ${totalQuestions}`;
+}
+
+function nextQuestion() { randomQuestion(); }
+
+document.addEventListener("DOMContentLoaded", randomQuestion);
+</script>
+
+</body>
+</html>
