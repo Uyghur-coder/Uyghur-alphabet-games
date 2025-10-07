@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur Imperative Practice Table</title>
+<style>
+  @font-face {
+    font-family: 'ALKATIPYazma';
+    src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    direction: rtl;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 16px;
+  }
+  th {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    font-family: 'ALKATIPYazma', Arial, sans-serif;
+  }
+  td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-family: 'ALKATIPYazma', Arial, sans-serif;
+    font-size: 20px;
+  }
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+  caption {
+    caption-side: top;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 10px;
+    font-family: 'ALKATIPYazma', Arial, sans-serif;
+  }
+</style>
+</head>
+<body>
+
+<table>
+  <caption>ئۇيغۇرچە بۇيرۇق شەكىللىرى — Uyghur Imperative Forms Practice</caption>
+  <thead>
+    <tr>
+      <th>Verb (ULY)</th>
+      <th>Arabic Script</th>
+      <th>Meaning</th>
+      <th>سەن (strong)</th>
+      <th>سەن (soft)</th>
+      <th>سىز</th>
+      <th>سىلەر</th>
+      <th>ئۇ/ئۇلار</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>barmaq (bar)</td><td>بارماق (بار)</td><td>to go</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>oqumaq (oqu)</td><td>ئوقۇماق (ئوقۇ)</td><td>to read</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>yazmaq (yaz)</td><td>يازماق (ياز)</td><td>to write</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>körmek (kör)</td><td>كۆرمەك (كۆر)</td><td>to see</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>bilmek (bil)</td><td>بىلمەك (بىل)</td><td>to know</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>bermek (ber)</td><td>بەرمەك (بەر)</td><td>to give</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>qilmaq (qil)</td><td>قىلماق (قىل)</td><td>to do; make</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>ishlimek (ishle)</td><td>ئىشلىمەك (ئىشلە)</td><td>to work</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>yémek (yé)</td><td>يېمەك (يې)</td><td>to eat</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>turmaq (tur)</td><td>تۇرماق (تۇر)</td><td>to stand</td><td></td><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>
