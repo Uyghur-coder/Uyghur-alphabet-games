@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur Imperative Practice Table</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter&family=Noto+Sans&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'ALKATIPYazma';
+    src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    padding: 10px;
+    margin: 0;
+    direction: rtl;
+    background: #f5f5f5;
+  }
+
+  .table-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 95%;
+    min-width: 900px;
+    max-width: 1200px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  caption {
+    caption-side: top;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px;
+    font-family: 'ALKATIPYazma', Arial, sans-serif;
+    color: #1e40af;
+  }
+
+  th {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px;
+    font-family: 'ALKATIPYazma', Arial, sans-serif;
+    font-size: 16px;
+    word-wrap: break-word;
+  }
+
+  td {
+    border: 1px solid #ddd;
+    padding: 6px 8px;
+    text-align: center;
+    vertical-align: middle;
+    word-wrap: break-word;
+  }
+
+  td.uyghur {
+    font-family: 'ALKATIPYazma', Arial, sans-serif;
+    font-size: 18px;
+  }
+
+  td.latin, th.latin {
+    font-family: 'Inter', 'Noto Sans', 'Arial Unicode MS', 'Segoe UI', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+  }
+
+  td.number {
+    width: 40px;
+  }
+
+  tr:nth-child(even) { background-color: #f9f9f9; }
+  tr:hover { background-color: #e0e7ff; }
+
+  @media (max-width: 600px) {
+    td.uyghur { font-size: 16px; }
+    td.latin { font-size: 12px; }
+    th { font-size: 14px; padding: 6px; }
+    td { padding: 4px 6px; }
+    caption { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="table-container">
+<table>
+  <caption>ئۇيغۇرچە بۇيرۇق شەكىللىرى — Uyghur Imperative Forms Practice</caption>
+  <thead>
+    <tr>
+      <th class="number">#</th>
+      <th class="latin">ULY Verbs (roots)</th>
+      <th>Verbs (Verb roots)</th>
+      <th class="latin">Meaning</th>
+      <th>سەن (strong)</th>
+      <th>سەن (soft)</th>
+      <th>سىز</th>
+      <th>سىلەر</th>
+      <th>ئۇ/ئۇلار</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="number">1</td><td class="latin">barmaq (bar)</td><td class="uyghur">بارماق (بار)</td><td class="latin">to go</td><td class="uyghur">بار</td><td class="uyghur">بارغىن</td><td class="uyghur">بېرىڭ</td><td class="uyghur">بېرىڭلار</td><td class="uyghur">بارسۇن</td></tr>
+    <tr><td class="number">2</td><td class="latin">oqumaq (oqu)</td><td class="uyghur">ئوقۇماق (ئوقۇ)</td><td class="latin">to read</td><td class="uyghur">ئوقۇ</td><td class="uyghur">ئوقۇغىن</td><td class="uyghur">ئوقۇڭ</td><td class="uyghur">ئوقۇڭلار</td><td class="uyghur">ئوقۇسۇن</td></tr>
+    <tr><td class="number">3</td><td class="latin">yazmaq (yaz)</td><td class="uyghur">يازماق (ياز)</td><td class="latin">to write</td><td class="uyghur">ياز</td><td class="uyghur">يازغىن</td><td class="uyghur">يېزىڭ</td><td class="uyghur">يېزىڭلار</td><td class="uyghur">يازسۇن</td></tr>
+    <tr><td class="number">4</td><td class="latin">körmek (kör)</td><td class="uyghur">كۆرمەك (كۆر)</td><td class="latin">to see</td><td class="uyghur">كۆر</td><td class="uyghur">كۆرگىن</td><td class="uyghur">كۆرۈڭ</td><td class="uyghur">كۆرۈڭلار</td><td class="uyghur">كۆرسۇن</td></tr>
+    <tr><td class="number">5</td><td class="latin">bilmek (bil)</td><td class="uyghur">بىلمەك (بىل)</td><td class="latin">to know</td><td class="uyghur">بىل</td><td class="uyghur">بىلگىن</td><td class="uyghur">بىلىڭ</td><td class="uyghur">بىلىڭلار</td><td class="uyghur">بىلىسۇن</td></tr>
+    <tr><td class="number">6</td><td class="latin">bermek (ber)</td><td class="uyghur">بەرمەك (بەر)</td><td class="latin">to give</td><td class="uyghur">بەر</td><td class="uyghur">بەرگىن</td><td class="uyghur">بېرىڭ</td><td class="uyghur">بېرىڭلار</td><td class="uyghur">بەرسۇن</td></tr>
+    <tr><td class="number">7</td><td class="latin">qilmaq (qil)</td><td class="uyghur">قىلماق (قىل)</td><td class="latin">to do; make</td><td class="uyghur">قىل</td><td class="uyghur">قىلغىن</td><td class="uyghur">قىلىڭ</td><td class="uyghur">قىلىڭلار</td><td class="uyghur">قىلسۇن</td></tr>
+    <tr><td class="number">8</td><td class="latin">ishlimek (ishle)</td><td class="uyghur">ئىشلىمەك (ئىشلە)</td><td class="latin">to work</td><td class="uyghur">ئىشلە</td><td class="uyghur">ئىشلىگىن</td><td class="uyghur">ئىشلەڭ</td><td class="uyghur">ئىشلەڭلار</td><td class="uyghur">ئىشلىسۇن</td></tr>
+    <tr><td class="number">9</td><td class="latin">yémek (ye)</td><td class="uyghur">يېمەك (يە)</td><td class="latin">to eat</td><td class="uyghur">يە</td><td class="uyghur">يېگىن</td><td class="uyghur">يەڭ</td><td class="uyghur">يەڭلار</td><td class="uyghur">يېسۇن</td></tr>
+    <tr><td class="number">10</td><td class="latin">turmaq (tur)</td><td class="uyghur">تۇرماق (تۇر)</td><td class="latin">to stand</td><td class="uyghur">تۇر</td><td class="uyghur">تۇرغىن</td><td class="uyghur">تۇرۇڭ</td><td class="uyghur">تۇرۇڭلار</td><td class="uyghur">تۇرسۇن</td></tr>
+  </tbody>
+</table>
+</div>
+
+</body>
+</html>
