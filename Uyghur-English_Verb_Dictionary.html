@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur Verb Dictionary</title>
+<style>
+/* Uyghur font */
+@font-face {
+    font-family: 'ALKATIPYazma';
+    src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
+    unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF;
+}
+
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    padding: 30px;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Search bar */
+#searchInput {
+    padding: 8px 12px;
+    width: 250px;
+    font-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Table styles */
+#verbTable {
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    background-color: #fff;
+}
+
+#verbTable th, #verbTable td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+#verbTable th {
+    background-color: #007ACC;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#verbTable tr:nth-child(even) {
+    background-color: #f4f4f4;
+}
+
+#verbTable tr:hover {
+    background-color: #e0f0ff;
+    transform: scale(1.02);
+    transition: 0.2s;
+}
+
+/* Uyghur font class */
+.uyghur, td.uyghur {
+    font-family: 'ALKATIPYazma', serif !important;
+    font-size: 20px;
+}
+</style>
+</head>
+<body>
+
+<h1>Uyghur Verb Dictionary</h1>
+
+<input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search verbs...">
+
+<table id="verbTable">
+    <thead>
+        <tr>
+            <th>Verb (ULY)</th>
+            <th>Verb (Arabic)</th>
+            <th>Meaning</th>
+            <th>Stem</th>
+        </tr>
+    </thead>
+    <tbody>
+<tr><td>barmaq</td><td class="arabic-uyghur">بارماق</td><td>to go</td><td>بار (bar)</td></tr>
+            <tr><td>kelmek</td><td class="arabic-uyghur">كەلمەك</td><td>to come</td><td>كەل (kel)</td></tr>
+            <tr><td>oqumaq</td><td class="arabic-uyghur">ئوقۇماق</td><td>to read/study</td><td>ئوقۇ (oqu)</td></tr>
+            <tr><td>yazmaq</td><td class="arabic-uyghur">يازماق</td><td>to write</td><td>ياز (yaz)</td></tr>
+            <tr><td>ishlimek</td><td class="arabic-uyghur">ئىشلىمەك</td><td>to work</td><td>ئىشلە (ishle)</td></tr>
+            <tr><td>turmaq</td><td class="arabic-uyghur">تۇرماق</td><td>to stand/stay</td><td>تۇر (tur)</td></tr>
+            <tr><td>oynimaq</td><td class="arabic-uyghur">ئوينىماق</td><td>to play</td><td>ئوينا (oyna)</td></tr>
+            <tr><td>yémek</td><td class="arabic-uyghur">يېمەك</td><td>to eat</td><td>يە (ye)</td></tr>
+            <tr><td>ichmek</td><td class="arabic-uyghur">ئىچمەك</td><td>to drink</td><td>ئىچ (ich)</td></tr>
+            <tr><td>uxlimaq</td><td class="arabic-uyghur">ئۇخلىماق</td><td>to sleep</td><td>ئۇخلا (uxla)</td></tr>
+            <tr><td>körmek</td><td class="arabic-uyghur">كۆرمەك</td><td>to see</td><td>كۆر (kör)</td></tr>
+            <tr><td>anglimaq</td><td class="arabic-uyghur">ئاڭلىماق</td><td>to hear/understand</td><td>ئاڭلا (angla)</td></tr>
+            <tr><td>sozlimek</td><td class="arabic-uyghur">سۆزلىمەك</td><td>to speak</td><td>سۆزلە (sözle)</td></tr>
+            <tr><td>sorimaq</td><td class="arabic-uyghur">سورىماق</td><td>to ask / to inquire</td><td>سورا (sora)</td></tr>
+            <tr><td>almaq</td><td class="arabic-uyghur">ئالماق</td><td>to take/get</td><td>ئال (al)</td></tr>
+            <tr><td>bermek</td><td class="arabic-uyghur">بەرمەك</td><td>to give</td><td>بەر (ber)</td></tr>
+            <tr><td>sezmek</td><td class="arabic-uyghur">سەزمەك</td><td>to feel</td><td>سەز (sez)</td></tr>
+            <tr><td>satmaq</td><td class="arabic-uyghur">ساتماق</td><td>to sell</td><td>سات (sat)</td></tr>
+            <tr><td>oylimaq</td><td class="arabic-uyghur">ئويلىماق</td><td>to think</td><td>ئويلا (oyla)</td></tr>
+            <tr><td>söymek</td><td class="arabic-uyghur">سۆيمەك</td><td>to love</td><td>سۆي (söy)</td></tr>
+            <tr><td>qol qoymaq</td><td class="arabic-uyghur">قول قويماق</td><td>to sign/approve</td><td>قول قوي (qol qoy)</td></tr>
+            <tr><td>yürmek</td><td class="arabic-uyghur">يۈرمەك</td><td>to walk</td><td>يۈر (yür)</td></tr>
+            <tr><td>qoshmaq</td><td class="arabic-uyghur">قوشماق</td><td>to join/add</td><td>قوش (qosh)</td></tr>
+            <tr><td>chüshenmek</td><td class="arabic-uyghur">چۈشەنمەك</td><td>to understand</td><td>چۈشەن (chüshen)</td></tr>
+            <tr><td>ögenmek</td><td class="arabic-uyghur">ئۆگەنمەك</td><td>to learn</td><td>ئۆگەن (ögen)</td></tr>
+            <tr><td>javap bermek</td><td class="arabic-uyghur">جاۋاپ بەرمەك</td><td>to answer</td><td>جاۋاپ بەر (javap ber)</td></tr>
+            <tr><td>qaytmaq</td><td class="arabic-uyghur">قايتماق</td><td>to return / to repeat</td><td>قايت (qayt)</td></tr>
+            <tr><td>yetmek</td><td class="arabic-uyghur">يەتمەك</td><td>to reach</td><td>يەت (yet)</td></tr>
+            <tr><td>ölmek</td><td class="arabic-uyghur">ئۆلمەك</td><td>to die</td><td>ئۆل (öl)</td></tr>
+            <tr><td>qurmaq</td><td class="arabic-uyghur">قۇرماق</td><td>to build</td><td>قۇر (qur)</td></tr>
+            <tr><td>ögetmek</td><td class="arabic-uyghur">ئۆگەتمەك</td><td>to teach</td><td>ئۆگەت (öget)</td></tr>
+            <tr><td>kirmek</td><td class="arabic-uyghur">كىرمەك</td><td>to enter</td><td>كىر (kir)</td></tr>
+            <tr><td>chiqmaq</td><td class="arabic-uyghur">چىقماق</td><td>to exit</td><td>چىق (chiq)</td></tr>
+            <tr><td>adet qilmaq</td><td class="arabic-uyghur">ئادەت قىلماق</td><td>to get used to / to habitually do</td><td>ئادەت قىل (adet qil)</td></tr>
+            <tr><td>almashturmaq</td><td class="arabic-uyghur">ئالماشتۇرماق</td><td>to replace / exchange</td><td>ئالماشتۇر (almashtur)</td></tr>
+            <tr><td>almashmaq</td><td class="arabic-uyghur">ئالماشماق</td><td>to change / swap</td><td>ئالماش (almash)</td></tr>
+            <tr><td>aylanmaq</td><td class="arabic-uyghur">ئايلانماق</td><td>to turn / rotate</td><td>ئايلان (aylan)</td></tr>
+            <tr><td>eske kelmek</td><td class="arabic-uyghur">ئەسكە كەلمەك</td><td>to remember</td><td>ئەسكە كە (eske kel)</td></tr>
+            <tr><td>eks etmek</td><td class="arabic-uyghur">ئەكس ئەتمەك</td><td>to oppose / to do the opposite</td><td>ئەكس ئەت (eks et)</td></tr>
+            <tr><td>bel baghlimaq</td><td class="arabic-uyghur">بەل باغلىماق</td><td>to tie around waist</td><td>بەل باغ (bel bagh)</td></tr>
+            <tr><td>pash bolmaq</td><td class="arabic-uyghur">پاش بولماق</td><td>to be exposed / to be revealed</td><td>پاش بول (pash bol)</td></tr>
+            <tr><td>tarqalmaq</td><td class="arabic-uyghur">تارقالماق</td><td>to disperse / spread</td><td>تارقال (tarqal)</td></tr>
+            <tr><td>talashmaq</td><td class="arabic-uyghur">تالاشماق</td><td>to quarrel / argue</td><td>تالا (talash)</td></tr>
+            <tr><td>tallimaq</td><td class="arabic-uyghur">تاللىماق</td><td>to choose / select</td><td>تاللا (talla)</td></tr>
+            <tr><td>tesir körsetmek</td><td class="arabic-uyghur">تەسىر كۆرسەتمەك</td><td>to influence / affect</td><td>تەسىر كۆرسەت (tesir körset)</td></tr>
+            <tr><td>telim bermek</td><td class="arabic-uyghur">تەلىم بەرمەك</td><td>to educate / teach</td><td>تەلىم بەر (telim ber)</td></tr>
+            <tr><td>toplimaq</td><td class="arabic-uyghur">توپلىماق</td><td>to gather / collect</td><td>توپلا (topla)</td></tr>
+            <tr><td>toghra tapmaq</td><td class="arabic-uyghur">توغرا تاپماق</td><td>to find correct / accurate</td><td>توغرا تاپ (toghra tap)</td></tr>
+            <tr><td>tonushturmaq</td><td class="arabic-uyghur">تونۇشتۇرماق</td><td>to introduce someone</td><td>تونۇشتۇر (tonushtur)</td></tr>
+            <tr><td>tonushuvalmaq</td><td class="arabic-uyghur">تونۇشۇۋالماق</td><td>to get acquainted</td><td>تونۇشۇۋال (tonushuwal)</td></tr>
+            <tr><td>tutashmaq</td><td class="arabic-uyghur">تۇتاشماق</td><td>to connect / join</td><td>تۇتاش (tutash)</td></tr>
+            <tr><td>xewer tapmaq</td><td class="arabic-uyghur">خەۋەر تاپماق</td><td>to get news / find out</td><td>خەۋەر تاپ (xewer tap)</td></tr>
+            <tr><td>zangliq qilmaq</td><td class="arabic-uyghur">زاڭلىق قىلماق</td><td>to make noise / ring</td><td>زاڭلىق قىل (zangliq qil)</td></tr>
+            <tr><td>zérikmek</td><td class="arabic-uyghur">زېرىكمەك</td><td>to be bored</td><td>زېرىك (zérik)</td></tr>
+            <tr><td>musadira qilmaq</td><td class="arabic-uyghur">مۇسادىرە قىلماق</td><td>to confiscate</td><td>مۇسادىرە قىل (musadira qil)</td></tr>
+            <tr><td>özgirish</td><td class="arabic-uyghur">ئۆزگىرىش</td><td>to change / alteration (Verbal Noun)</td><td>ئۆزگىرىش (özgirish)</td></tr>
+            <tr><td>izhar qilmaq</td><td class="arabic-uyghur">ئىزھار قىلماق</td><td>to express / declare</td><td>ئىزھار قىل (izhar qil)</td></tr>
+            <tr><td>salmaq</td><td class="arabic-uyghur">سالماق</td><td>to put / place / weigh</td><td>سال (sal)</td></tr>
+            <tr><td>seghinmaq</td><td class="arabic-uyghur">سېغىنماق</td><td>to miss / long for</td><td>سېغىن (seghin)</td></tr>
+            <tr><td>qobul qilmaq</td><td class="arabic-uyghur">قوبۇل قىلماق</td><td>to accept / approve</td><td>قوبۇل قىل (qobul qil)</td></tr>
+            <tr><td>qoshulmaq</td><td class="arabic-uyghur">قوشۇلماق</td><td>to join / unite</td><td>قوشۇل (qoshul)</td></tr>
+            <tr><td>quymaq</td><td class="arabic-uyghur">قۇيماق</td><td>to pour / place</td><td>قۇي (quy)</td></tr>
+            <tr><td>köpeymek</td><td class="arabic-uyghur">كۆپەيمەك</td><td>to increase / multiply</td><td>كۆپە (köpey)</td></tr>
+            <tr><td>köngül bölmek</td><td class="arabic-uyghur">كۆڭۈل بۆلمەك</td><td>to distract / divide attention</td><td>كۆڭۈل بۆل (köngül böl)</td></tr>
+            <tr><td>maqul bolmaq</td><td class="arabic-uyghur">ماقۇل بولماق</td><td>to agree / to be approved</td><td>ماقۇل بول (maqul bol)</td></tr>
+            <tr><td>aghritmaq</td><td class="arabic-uyghur">ئاغرىتماق</td><td>to hurt / cause pain</td><td>ئاغرىت (aghrit)</td></tr>
+            <tr><td>agahlandurmaq</td><td class="arabic-uyghur">ئاگاھلاندۇرماق</td><td>to warn / alert</td><td>ئاگاھلاندۇر (agahlandur)</td></tr>
+            <tr><td>ehmiyet bermek</td><td class="arabic-uyghur">ئەھمىيەت بەرمەك</td><td>to pay attention / value</td><td>ئەھمىيەت بەر (ehmiyet ber)</td></tr>
+            <tr><td>baqmaq</td><td class="arabic-uyghur">باقماق</td><td>to look / watch / to feed</td><td>باق (baq)</td></tr>
+            <tr><td>tazilimaq</td><td class="arabic-uyghur">تازىلىماق</td><td>to clean / be cleaned</td><td>تازىلا (tazila)</td></tr>
+            <tr><td>taqimaq</td><td class="arabic-uyghur">تاقىماق</td><td>to fasten / put on</td><td>تاقا (taqa)</td></tr>
+            <tr><td>teqsimlimek</td><td class="arabic-uyghur">تەقسىملىمەك</td><td>to distribute</td><td>تەقسىملە (teqsimele)</td></tr>
+            <tr><td>davamlashturmaq</td><td class="arabic-uyghur">داۋاملاشتۇرماق</td><td>to continue</td><td>داۋاملاشتۇر (davamlashtur)</td></tr>
+            <tr><td>ziyaret qilmaq</td><td class="arabic-uyghur">زىيارەت قىلماق</td><td>to visit</td><td>زىيارەت قىل (ziyaret qil)</td></tr>
+            <tr><td>qatnashmaq</td><td class="arabic-uyghur">قاتناشماق</td><td>to participate / attend</td><td>قاتناش (qatnash)</td></tr>
+            <tr><td>qutulmaq</td><td class="arabic-uyghur">قۇتۇلماق</td><td>to escape / get rid of</td><td>قۇتۇل (qutul)</td></tr>
+            <tr><td>kesmek</td><td class="arabic-uyghur">كەسمەك</td><td>to cut</td><td>كەسمەك (kesmek)</td></tr>
+            <tr><td>melum qilmaq</td><td class="arabic-uyghur">مەلۇم قىلماق</td><td>to inform / notify</td><td>مەلۇم قىل (melum qil)</td></tr>
+            <tr><td>heyran bolmaq</td><td class="arabic-uyghur">ھەيران بولماق</td><td>to be amazed / surprised</td><td>ھەيران بول (heyran bol)</td></tr>
+            <tr><td>ishletmek</td><td class="arabic-uyghur">ئىشلەتمەك</td><td>to use / employ</td><td>ئىشلەت (ishlet)</td></tr>
+            <tr><td>xursen bolmaq</td><td class="arabic-uyghur">خۇرسەن بولماق</td><td>to be happy / pleased</td><td>خۇرسەن بول (xursen bol)</td></tr>
+            <tr><td>sozulmaq</td><td class="arabic-uyghur">سوزۇلماق</td><td>to be stretched / extend</td><td>سوزۇل (sozul)</td></tr>
+            <tr><td>qurulmaq</td><td class="arabic-uyghur">قۇرۇلماق</td><td>to be built / constructed</td><td>قۇرۇل (qurul)</td></tr>
+            <tr><td>axturmaq</td><td class="arabic-uyghur">ئاختۇرماق</td><td>to pour / discharge</td><td>ئاختۇر (axtur)</td></tr>
+            <tr><td>alaqilashmaq</td><td class="arabic-uyghur">ئالاقىلاشماق</td><td>to communicate / contact</td><td>ئالاقىلاش (alaqilash)</td></tr>
+            <tr><td>egeshmek</td><td class="arabic-uyghur">ئەگەشمەك</td><td>to follow / obey</td><td>ئەگەش (egesh)</td></tr>
+            <tr><td>endishe qilmaq</td><td class="arabic-uyghur">ئەندىشە قىلماق</td><td>to worry / be concerned</td><td>ئەندىشە قىل (endishe qil)</td></tr>
+            <tr><td>buzulup qalmaq</td><td class="arabic-uyghur">بۇزۇلماق</td><td>to break down / spoil</td><td>بۇزۇل (buzul)</td></tr>
+            <tr><td>besiwalmaq</td><td class="arabic-uyghur">بېسىۋالماق</td><td>to press / seize</td><td>بېسىۋال (besiwal)</td></tr>
+            <tr><td>tartinmaq</td><td class="arabic-uyghur">تارتىنماق</td><td>to hesitate / restrain</td><td>تارتىن (tartin)</td></tr>
+            <tr><td>terjime qilmaq</td><td class="arabic-uyghur">تەرجىمە قىلماق</td><td>to translate</td><td>تەرجىمە قىل (terjime qil)</td></tr>
+            <tr><td>testiqlanmaq</td><td class="arabic-uyghur">تەستىقلانماق</td><td>to be confirmed / verified</td><td>تەستىقلان (testiqlan)</td></tr>
+            <tr><td>tesir qilmaq</td><td class="arabic-uyghur">تەسىر قىلماق</td><td>to influence / affect</td><td>تەسىر قىل (tesir qil)</td></tr>
+            <tr><td>tekshürmek</td><td class="arabic-uyghur">تەكشۈرمەك</td><td>to check / examine</td><td>تەكشۈر (tekshür)</td></tr>
+            <tr><td>toplanmaq</td><td class="arabic-uyghur">توپلانماق</td><td>to be gathered / assemble</td><td>توپلان (toplan)</td></tr>
+            <tr><td>jabdunmaq</td><td class="arabic-uyghur">جابدۇنماق</td><td>to hide / be concealed</td><td>جابدۇن (jabdun)</td></tr>
+            <tr><td>hésablanmaq</td><td class="arabic-uyghur">ھېسابلانماق</td><td>to be calculated / accounted</td><td>ھېساب (hésab)</td></tr>
+            <tr><td>uchrashmaq</td><td class="arabic-uyghur">ئۇچراشماق</td><td>to meet / encounter</td><td>ئۇچراش (uchrash)</td></tr>
+            <tr><td>igilimek</td><td class="arabic-uyghur">ئىگىلىمەك</td><td>to acquire / master</td><td>ئىگىلە (igile)</td></tr>
+            <tr><td>yer tevrimek</td><td class="arabic-uyghur">يەر تەۋرىمەك</td><td>to tremble / quake</td><td>يەر تەۋرە (yer tevre)</td></tr>
+            <tr><td>kütüwalmaq</td><td class="arabic-uyghur">كۈتۈۋالماق</td><td>to receive / wait for</td><td>كۈتۈۋال (kütüwal)</td></tr>
+            <tr><td>hayajanlanmaq</td><td class="arabic-uyghur">ھاياجانلانماق</td><td>to be excited</td><td>ھاياجانلان (hayajanlan)</td></tr>
+            <tr><td>arilashturmaq</td><td class="arabic-uyghur">ئارىلاشتۇرماق</td><td>to mix / blend</td><td>ئارىلاشتۇر (arilashtur)</td></tr>
+            <tr><td>tashlimaq</td><td class="arabic-uyghur">تاشلىماق</td><td>to throw</td><td>تاشلا (tashla)</td></tr>
+            <tr><td>toghrimaq</td><td class="arabic-uyghur">توغرىماق</td><td>to correct / fix</td><td>توغرا (toghri)</td></tr>
+            <tr><td>depne qilmaq</td><td class="arabic-uyghur">دەپنە قىلماق</td><td>to bury</td><td>دەپنە قىل (depne qil)</td></tr>
+            <tr><td>demlimek</td><td class="arabic-uyghur">دەملىمەك</td><td>to brew / infuse</td><td>دەملە (demle)</td></tr>
+            <tr><td>dümlimek</td><td class="arabic-uyghur">دۈملىمەك</td><td>to steam / cook with steam</td><td>دۈملە (dümle)</td></tr>
+            <tr><td>qorumaq</td><td class="arabic-uyghur">قورۇماق</td><td>to fry / protect</td><td>قورۇ (qoru)</td></tr>
+            <tr><td>köchürmek</td><td class="arabic-uyghur">كۆچۈرمەك</td><td>to copy / transfer</td><td>كۆچۈر (köchür)</td></tr>
+            <tr><td>uqmaq</td><td class="arabic-uyghur">ئۇقماق</td><td>to read / study</td><td>ئۇق (uq)</td></tr>
+            <tr><td>eghiz tegmek</td><td class="arabic-uyghur">ئېغىز تەگمەك</td><td>to bite / gnaw</td><td>ئېغىز تەگ (eghiz teg)</td></tr>
+            <tr><td>renjimek</td><td class="arabic-uyghur">رەنجىمەك</td><td>to be upset / resent</td><td>رەنجى (renji)</td></tr>
+            <tr><td>saqlimaq</td><td class="arabic-uyghur">ساقلىماق</td><td>to protect / keep</td><td>ساقلا (saqla)</td></tr>
+            <tr><td>sughurmaq</td><td class="arabic-uyghur">سۇغۇرماق</td><td>to extract / suck out</td><td>سۇغۇر (sughur)</td></tr>
+            <tr><td>sugharmaq</td><td class="arabic-uyghur">سۇغارماق</td><td>to water / irrigate</td><td>سۇغار (sughar)</td></tr>
+            <tr><td>qaplimaq</td><td class="arabic-uyghur">قاپلىماق</td><td>to cover</td><td>قاپلا (qapla)</td></tr>
+            <tr><td>qachmaq</td><td class="arabic-uyghur">قاچماق</td><td>to run away / escape</td><td>قاچ (qach)</td></tr>
+            <tr><td>qaldurmaq</td><td class="arabic-uyghur">قالدۇرماق</td><td>to leave / let remain</td><td>قالدۇر (qaldur)</td></tr>
+            <tr><td>qollanmaq</td><td class="arabic-uyghur">قوللانماق</td><td>to be used / applied</td><td>قوللان (qollan)</td></tr>
+            <tr><td>qollimaq</td><td class="arabic-uyghur">قوللىماق</td><td>To support</td><td>قوللا (qolla)</td></tr>
+            <tr><td>qutquzmaq</td><td class="arabic-uyghur">قۇتقۇزماق</td><td>to rescue / save</td><td>قۇتقۇز (qutquz)</td></tr>
+            <tr><td>arzulimaq</td><td class="arabic-uyghur">ئارزۇلىماق</td><td>to desire / wish</td><td>ئارزۇلا (arzula)</td></tr>
+            <tr><td>ensirimek</td><td class="arabic-uyghur">ئەنسىرىمەك</td><td>to worry / be anxious</td><td>ئەنسىرە (ensire)</td></tr>
+            <tr><td>boysunmaq</td><td class="arabic-uyghur">بويسۇنماق</td><td>to obey / submit</td><td>بويسۇن (boysun)</td></tr>
+            <tr><td>bir terep qilmaq</td><td class="arabic-uyghur">بىر تەرەپ قىلماق</td><td>to settle / resolve</td><td>بىر تەرەپ قىل (bir terep qil)</td></tr>
+            <tr><td>telep qilmaq</td><td class="arabic-uyghur">تەلەپ قىلماق</td><td>to demand / require</td><td>تەلەپ قىل (telep qil)</td></tr>
+            <tr><td>ittipaqlashmaq</td><td class="arabic-uyghur">ئىتتىپاقلاشماق</td><td>to unite / ally</td><td>ئىتتىپاقلاش (ittipaqlash)</td></tr>
+            <tr><td>yanmaq</td><td class="arabic-uyghur">يانماق</td><td>to burn</td><td>يان (yan)</td></tr>
+            <tr><td>kolimaq</td><td class="arabic-uyghur">كولىماق</td><td>to be wide / expand</td><td>كولا (kola)</td></tr>
+            <tr><td>men‘iy qilmaq</td><td class="arabic-uyghur">مەنئىي قىلماق</td><td>to forbid / prohibit</td><td>مەنئىي قىل (men‘iy qil)</td></tr>
+            <tr><td>hemkarlashmaq</td><td class="arabic-uyghur">ھەمكارلاشماق</td><td>to cooperate</td><td>ھەمكارلاش (hemkarlash)</td></tr>
+            <tr><td>uchrimaq</td><td class="arabic-uyghur">ئۇچرىماق</td><td>to meet / encounter</td><td>ئۇچرا (uchra)</td></tr>
+            <tr><td>bahalimaq</td><td class="arabic-uyghur">باھالىماق</td><td>to evaluate / assess</td><td>باھالا (bahala)</td></tr>
+            <tr><td>pexirlenmek</td><td class="arabic-uyghur">پەخىرلەنمەك</td><td>to be proud</td><td>پەخىرلەن (pexirlen)</td></tr>
+            <tr><td>tereqqiy qilmaq</td><td class="arabic-uyghur">تەرەققىي قىلماق</td><td>to develop / progress</td><td>تەرەققىي قىل (tereqqiy qil)</td></tr>
+            <tr><td>rawan sözlimek</td><td class="arabic-uyghur">راۋان سۆزلىمەك</td><td>to speak fluently</td><td>راۋان سۆزلە (rawan sözle)</td></tr>
+            <tr><td>ipade qilmaq</td><td class="arabic-uyghur">ئىپادە قىلماق</td><td>to express</td><td>ئىپادە قىل (ipade qil)</td></tr>
+            <tr><td>tartishmaq</td><td class="arabic-uyghur">تارتىشماق</td><td>to debate / argue</td><td>تارتىش (tartish)</td></tr>
+            <tr><td>tallap bermek</td><td class="arabic-uyghur">تاللاپ بەرمەك</td><td>to select and give</td><td>تاللا بەر (talla ber)</td></tr>
+            <tr><td>teshkil qilmaq</td><td class="arabic-uyghur">تەشكىل قىلماق</td><td>to organize / arrange</td><td>تەشكىل قىل (teshkil qil)</td></tr>
+            <tr><td>teminlemek</td><td class="arabic-uyghur">تەمىنلىمەك</td><td>to provide / supply</td><td>تەمىنلە (teminle)</td></tr>
+            <tr><td>toshumaq</td><td class="arabic-uyghur">توشۇماق</td><td>to carry / transport</td><td>توشۇ (toshu)</td></tr>
+            <tr><td>tizimletmek</td><td class="arabic-uyghur">تىزىملاتماق</td><td>to register / enlist</td><td>تىزىملات (tizimlat)</td></tr>
+            <tr><td>tizimlimaq</td><td class="arabic-uyghur">تىزىملىماق</td><td>to make a list, to make a register</td><td>تىزىملا (tizimla)</td></tr>
+            <tr><td>javapkar bolmaq</td><td class="arabic-uyghur">جاۋاپكار بولماق</td><td>to be responsible</td><td>جاۋاپكار بول (javapkar bol)</td></tr>
+            <tr><td>soraqqa tartmaq</td><td class="arabic-uyghur">سوراققا تارتماق</td><td>to interrogate / question</td><td>سوراققا تارت (soraqqa tart)</td></tr>
+            <tr><td>sinap baqmaq</td><td class="arabic-uyghur">سىناپ باقماق</td><td>to try / test</td><td>سىناپ باق (sinap baq)</td></tr>
+            <tr><td>qatnimaq</td><td class="arabic-uyghur">قاتنىماق</td><td>to participate / attend</td><td>قاتنا (qatna)</td></tr>
+            <tr><td>qarashmaq</td><td class="arabic-uyghur">قاراشماق</td><td>to look / watch</td><td>قاراش (qarash)</td></tr>
+            <tr><td>qollamaq</td><td class="arabic-uyghur">قوللىماق</td><td>to support / assist</td><td>قوللا (qolla)</td></tr>
+            <tr><td>qiziqturmaq</td><td class="arabic-uyghur">قىزىقتۇرماق</td><td>to interest / make curious</td><td>قىزىقتۇر (qiziqtur)</td></tr>
+            <tr><td>közi chüshmek</td><td class="arabic-uyghur">كۆزى چۈشمەك</td><td>to notice / spot something valuable</td><td>كۆز چۈش (köz chüsh)</td></tr>
+            <tr><td>kélishmek</td><td class="arabic-uyghur">كېلىشمەك</td><td>to agree / come to agreement</td><td>كېلىش (kélish)</td></tr>
+            <tr><td>orunlashturup bermek</td><td class="arabic-uyghur">ئورۇنلاشتۇرۇپ بەرمەك</td><td>to arrange / allocate</td><td>ئورۇنلاشتۇر بەر (orunlashtur ber)</td></tr>
+            <tr><td>tapilmaq</td><td class="arabic-uyghur">تاپىلىماق</td><td>to be found / discovered</td><td>تاپىل (tapil)</td></tr>
+            <tr><td>tamasha qilmaq</td><td class="arabic-uyghur">تاماشا قىلماق</td><td>to watch / observe</td><td>تاماشا قىل (tamasha qil)</td></tr>
+            <tr><td>tuymaq</td><td class="arabic-uyghur">تۇيماق</td><td>to taste / feel</td><td>تۇي (tuy)</td></tr>
+            <tr><td>jem bolmaq</td><td class="arabic-uyghur">جەم بولماق</td><td>to gather / assemble</td><td>جەم بول (jem bol)</td></tr>
+            <tr><td>cheklenmek</td><td class="arabic-uyghur">چەكلەنمەك</td><td>to be limited / restricted</td><td>چەكلەن (cheklen)</td></tr>
+            <tr><td>cheklimek</td><td class="arabic-uyghur">چەكلىمەك</td><td>to limit / restrict</td><td>چەكلە (chekle)</td></tr>
+            <tr><td>chölderep qalmaq</td><td class="arabic-uyghur">چۆلدەرەپ قالماق</td><td>to be stranded / abandoned</td><td>چۆلدەرەپ قال (chölderep qal)</td></tr>
+            <tr><td>xijil bolmaq</td><td class="arabic-uyghur">خىجىل بولماق</td><td>to be embarrassed / shy</td><td>خىجىل بول (xijil bol)</td></tr>
+            <tr><td>qarshi almaq</td><td class="arabic-uyghur">قارشى ئالماق</td><td>to oppose / receive someone</td><td>قارشى ئال (qarshi al)</td></tr>
+            <tr><td>qedem almaq</td><td class="arabic-uyghur">قەدەم ئالماق</td><td>to step / make a move</td><td>قەدەم ئال (qedem al)</td></tr>
+            <tr><td>qesem qilmaq / ichmek</td><td class="arabic-uyghur">قەسەم قىلماق / ئىچمەك</td><td>to swear an oath / drink</td><td>قەسەم قىل / قەسەم ئىچ (qesem qil / qesem ich)</td></tr>
+            <tr><td>qoghdimaq</td><td class="arabic-uyghur">قوغدىماق</td><td>to protect / guard</td><td>قوغدا (qoghda)</td></tr>
+            <tr><td>maslashmaq</td><td class="arabic-uyghur">ماسلاشماق</td><td>to adapt / fit together</td><td>ماسلاش (maslash)</td></tr>
+            <tr><td>orunlamaq</td><td class="arabic-uyghur">ئورۇنلىماق</td><td>to occupy / take place</td><td>ئورۇنلا (orunla)</td></tr>
+            <tr><td>ongshalmaq</td><td class="arabic-uyghur">ئوڭشالماق</td><td>to be corrected / fixed</td><td>ئوڭشال (ongshal)</td></tr>
+            <tr><td>ongshimaq</td><td class="arabic-uyghur">ئوڭشىماق</td><td>to correct / repair</td><td>ئوڭشا (ongsha)</td></tr>
+            <tr><td>ösüp ketmek</td><td class="arabic-uyghur">ئۆسۈپ كەتمەك</td><td>to grow / increase</td><td>ئۆس (ös)</td></tr>
+            <tr><td>ösmek</td><td class="arabic-uyghur">ئۆسمەك</td><td>to grow / increase</td><td>ئۆس (ös)</td></tr>
+            <tr><td>asrimaq</td><td class="arabic-uyghur">ئاسرىماق</td><td>to protect / take care of</td><td>ئاسرا (asra)</td></tr>
+            <tr><td>esir almaq</td><td class="arabic-uyghur">ئەسىر ئالماق</td><td>to capture / take prisoner</td><td>ئەسىر ئال (esir al)</td></tr>
+            <tr><td>bazargha salmaq</td><td class="arabic-uyghur">بازارغا سالماق</td><td>to put on the market / sell</td><td>بازارغا سال (bazargha sal)</td></tr>
+            <tr><td>payda qilmaq</td><td class="arabic-uyghur">پايدا قىلماق</td><td>to make profit / benefit</td><td>پايدا قىل (payda qil)</td></tr>
+            <tr><td>perhiz tutmaq</td><td class="arabic-uyghur">پەرھىز تۇتماق</td><td>to diet / abstain</td><td>پەرھىز تۇت (perhiz tut)</td></tr>
+            <tr><td>tevsiye qilmaq</td><td class="arabic-uyghur">تەۋسىيە قىلماق</td><td>to recommend</td><td>تەۋسىيە قىل (tevsiye qil)</td></tr>
+            <tr><td>toldurmaq</td><td class="arabic-uyghur">تولدۇرماق</td><td>to fill / complete</td><td>تولدۇر (toldur)</td></tr>
+            <tr><td>chaqirmaq</td><td class="arabic-uyghur">چاقىرماق</td><td>to call / invite</td><td>چاقىر (chaqir)</td></tr>
+            <tr><td>chidimaq</td><td class="arabic-uyghur">چىدىماق</td><td>to endure / tolerate</td><td>چىدا (chida)</td></tr>
+            <tr><td>davalimaq</td><td class="arabic-uyghur">داۋالىماق</td><td>to treat / heal</td><td>داۋالا (davala)</td></tr>
+            <tr><td>diqqat qilmaq</td><td class="arabic-uyghur">دىققەت قىلماق</td><td>to pay attention</td><td>دىققەت قىل (diqqat qil)</td></tr>
+            <tr><td>riaye qilmaq</td><td class="arabic-uyghur">رىئايە قىلماق</td><td>to observe / follow rules</td><td>رىئايە قىل (riaye qil)</td></tr>
+            <tr><td>zeherlemek</td><td class="arabic-uyghur">زەھەرلىمەك</td><td>to poison</td><td>زەھەرلە (zeherle)</td></tr>
+            <tr><td>sarghaymaq</td><td class="arabic-uyghur">سارغايماق</td><td>to turn yellow / fade</td><td>سارغاي (sarghay)</td></tr>
+            <tr><td>kötürmek</td><td class="arabic-uyghur">كۆتۈرمەك</td><td>to lift / raise</td><td>كۆتۈر (kötür)</td></tr>
+            <tr><td>köchmek</td><td class="arabic-uyghur">كۆچمەك</td><td>to move / migrate</td><td>كۆچ (köch)</td></tr>
+            <tr><td>kökermek</td><td class="arabic-uyghur">كۆكەرمەك</td><td>to turn blue / swell / turn green</td><td>كۆكەر (köker)</td></tr>
+            <tr><td>köngül tartmaq</td><td class="arabic-uyghur">كۆڭۈل تارتماق</td><td>to attract attention / interest</td><td>كۆڭۈل تارت (köngül tart)</td></tr>
+            <tr><td>kéngeymek</td><td class="arabic-uyghur">كېڭەيمەك</td><td>to expand / widen</td><td>كېڭەي (kéngey)</td></tr>
+            <tr><td>hasil qilmaq</td><td class="arabic-uyghur">ھاسىل قىلماق</td><td>to obtain / produce</td><td>ھاسىل قىل (hasil qil)</td></tr>
+            <tr><td>istémal qilmaq</td><td class="arabic-uyghur">ئىستېمال قىلماق</td><td>to use / consume</td><td>ئىستېمال قىل (istémal qil)</td></tr>
+            <tr><td>yengmek</td><td class="arabic-uyghur">يەڭمەك</td><td>to defeat / overcome</td><td>يەڭ (yeng)</td></tr>
+            <tr><td>yüz bermek</td><td class="arabic-uyghur">يۈز بەرمەك</td><td>to happen / occur</td><td>يۈز بەر (yüz ber)</td></tr>
+            <tr><td>yéngilmek</td><td class="arabic-uyghur">يېڭىلمەك</td><td>to be defeated</td><td>يېڭىل (yéngil)</td></tr>
+            <tr><td>barliqqa kelmek</td><td class="arabic-uyghur">بارلىققا كەلمەك</td><td>to come into existence / appear</td><td>بارلىققا كەل (barliqqa kel)</td></tr>
+            <tr><td>baghlimaq</td><td class="arabic-uyghur">باغلىماق</td><td>to tie / bind</td><td>باغلا (baghla)</td></tr>
+            <tr><td>berbat qilmaq</td><td class="arabic-uyghur">بەربات قىلماق</td><td>to ruin / destroy</td><td>بەربات قىل (berbat qil)</td></tr>
+            <tr><td>boghuzlimaq</td><td class="arabic-uyghur">بوغۇزلىماق</td><td>to strangle / throttle</td><td>بوغۇزلا (boghuzla)</td></tr>
+            <tr><td>payandaz salmaq</td><td class="arabic-uyghur">پايانداز سالماق</td><td>to put a lock / seal</td><td>پايانداز سال (payandaz sal)</td></tr>
+            <tr><td>teselli bermek</td><td class="arabic-uyghur">تەسەللى بەرمەك</td><td>to console / comfort</td><td>تەسەللى بەر (teselli ber)</td></tr>
+            <tr><td>tesevur qilmaq</td><td class="arabic-uyghur">تەسەۋۇر قىلماق</td><td>to imagine / conceive</td><td>تەسەۋۇر قىل (tesevur qil)</td></tr>
+            <tr><td>tekitlimek</td><td class="arabic-uyghur">تەكىتلىمەك</td><td>to emphasize / stress</td><td>تەكىتلە (tekitle)</td></tr>
+            <tr><td>ten bermek</td><td class="arabic-uyghur">تەن بەرمەك</td><td>to surrender / give oneself</td><td>تەن بەر (ten ber)</td></tr>
+            <tr><td>tökmek</td><td class="arabic-uyghur">تۆكمەك</td><td>to pour / spill</td><td>تۆك (tök)</td></tr>
+            <tr><td>tilgha almaq</td><td class="arabic-uyghur">تىلغا ئالماق</td><td>to mention / refer to</td><td>تىلغا ئال (tilgha al)</td></tr>
+            <tr><td>tilimek</td><td class="arabic-uyghur">تىلىمەك</td><td>to beg / plead</td><td>تىلە (tile)</td></tr>
+            <tr><td>xumar bolmaq</td><td class="arabic-uyghur">خۇمار بولماق</td><td>to be intoxicated / obsessed</td><td>خۇمار بول (xumar bol)</td></tr>
+            <tr><td>xijalet bolmaq</td><td class="arabic-uyghur">خىجالەت بولماق</td><td>to be embarrassed / ashamed</td><td>خىجالەت بول (xijalet bol)</td></tr>
+            <tr><td>zorlimaq</td><td class="arabic-uyghur">زورلىماق</td><td>to force / compel</td><td>زورلا (zorla)</td></tr>
+            <tr><td>qerz almaq</td><td class="arabic-uyghur">قەرز ئالماق</td><td>to borrow / take a loan</td><td>قەرز ئال (qerz al)</td></tr>
+            <tr><td>mejbur bolmaq</td><td class="arabic-uyghur">مەجبۇر بولماق</td><td>to be obliged / forced</td><td>مەجبۇر بول (mejbur bol)</td></tr>
+            <tr><td>mejburlimaq</td><td class="arabic-uyghur">مەجبۇرلىماق</td><td>to compel / force</td><td>مەجبۇرلا (mejburlima)</td></tr>
+            <tr><td>étibar bermek</td><td class="arabic-uyghur">ئېتىبار بەرمەك</td><td>to pay attention / respect / give extra discount</td><td>ئېتىبار بەر (étibar ber)</td></tr>
+            <tr><td>tebriklimek</td><td class="arabic-uyghur">تەبرىكلە</td><td>to congratulate</td><td>تەبرىكلە (tebrikle)</td></tr>
+            <tr><td>chiniqmaq</td><td class="arabic-uyghur">چىنىقماق</td><td>to train / exercise</td><td>چىنىق (chiniq)</td></tr>
+            <tr><td>oyghanmaq</td><td class="arabic-uyghur">ئويغانماق</td><td>to wake up</td><td>ئويغان (oyghan)</td></tr>
+            <tr><td>yaxshi körmek</td><td class="arabic-uyghur">ياخشى كۆرمەك</td><td>to like / love</td><td>ياخشى كۆر (yaxshi kör)</td></tr>
+            <tr><td>yardem qilmaq</td><td class="arabic-uyghur">ياردەم قىلماق</td><td>to help / assist</td><td>ياردەم قىل (yardem qil)</td></tr>
+            <tr><td>yuyunmaq</td><td class="arabic-uyghur">يۇيۇنماق</td><td>to wash oneself / bathe</td><td>يۇيۇن (yuyun)</td></tr>
+            <tr><td>teyyarlanmaq</td><td class="arabic-uyghur">تەييارلانماق</td><td>to get ready / prepare</td><td>تەييارلان (teyyarlan)</td></tr>
+            <tr><td>chalmaq</td><td class="arabic-uyghur">چالماق</td><td>to play (instrument) / strike</td><td>چال (chal)</td></tr>
+            <tr><td>sözleshmek</td><td class="arabic-uyghur">سۆزلەشمەك</td><td>to converse / talk</td><td>سۆزلەش (sözlesh)</td></tr>
+            <tr><td>köngli yérim bolmaq</td><td class="arabic-uyghur">كۆڭلى يېرىم بولماق</td><td>to be heartbroken / disappointed</td><td>كۆڭل يېرىم بول (köngli yérim bol)</td></tr>
+            <tr><td>könüp qalmaq</td><td class="arabic-uyghur">كۆنۈپ قالماق</td><td>to get used to / accustomed</td><td>كۆنۈپ قال (könüp qal)</td></tr>
+            <tr><td>mest bolmaq</td><td class="arabic-uyghur">مەست بولماق</td><td>to be intoxicated / drunk</td><td>مەست بول (mest bol)</td></tr>
+            <tr><td>heyran qalmaq</td><td class="arabic-uyghur">ھەيران قالماق</td><td>to be amazed / surprised</td><td>ھەيران قال (heyran qal)</td></tr>
+            <tr><td>oxshimoq</td><td class="arabic-uyghur">ئوخشىماق</td><td>to resemble / be similar</td><td>ئوخشا (oxsha)</td></tr>
+            <tr><td>atlanmaq</td><td class="arabic-uyghur">ئاتلانماق</td><td>to be named / called</td><td>ئاتلان (atlan)</td></tr>
+            <tr><td>toy qilmaq</td><td class="arabic-uyghur">توي قىلماق</td><td>to marry / hold a wedding</td><td>توي قىل (toy qil)</td></tr>
+            <tr><td>tughulmaq</td><td class="arabic-uyghur">تۇغۇلماق</td><td>to be born</td><td>تۇغۇل (tughul)</td></tr>
+            <tr><td>soymaq</td><td class="arabic-uyghur">سويماق</td><td>to slaughter / skin</td><td>سوي (soy)</td></tr>
+            <tr><td>qizarmaq</td><td class="arabic-uyghur">قىزارماق</td><td>to blush / turn red</td><td>قىزار (qizar)</td></tr>
+            <tr><td>élan qilmaq</td><td class="arabic-uyghur">ئېلان قىلماق</td><td>to announce / proclaim</td><td>ئېلان قىل (élan qil)</td></tr>
+            <tr><td>yatmaq</td><td class="arabic-uyghur">ياتماق</td><td>to lie down / sleep</td><td>يات (yat)</td></tr>
+            <tr><td>yoqlimaq</td><td class="arabic-uyghur">يوقلىماق</td><td>to check / see if someone is present</td><td>يوقلا (yoqla)</td></tr>
+            <tr><td>etmek</td><td class="arabic-uyghur">ئەتمەك</td><td>to cook / to make</td><td>ئەت (et)</td></tr>
+            <tr><td>püttürmek</td><td class="arabic-uyghur">پۈتتۈرمەك</td><td>to finish</td><td>پۈتتۈر (püttür)</td></tr>
+            <tr><td>pishurmaq</td><td class="arabic-uyghur">پىشۇرماق</td><td>to cook</td><td>پىشۇر (pishur)</td></tr>
+            <tr><td>tallimaq</td><td class="arabic-uyghur">تاللىماق</td><td>to select (verbal noun)</td><td>تاللا (talla)</td></tr>
+            <tr><td>terbiyilimek</td><td class="arabic-uyghur">تەربىيىلىمەك</td><td>to educate (verbal noun)</td><td>تەربىيلە (terbiyile)</td></tr>
+            <tr><td>tölimek</td><td class="arabic-uyghur">تۆلىمەك</td><td>to pay</td><td>تۆلە (töle)</td></tr>
+            <tr><td>tindurmaq</td><td class="arabic-uyghur">تېندۇرماق</td><td>to pause</td><td>تىندۇر (tindur)</td></tr>
+            <tr><td>jari qildurmaq</td><td class="arabic-uyghur">جارى قىلدۇرماق</td><td>to carry on / activate</td><td>جارى قىلدۇر (jari qildur)</td></tr>
+            <tr><td>sozmaq</td><td class="arabic-uyghur">سوزماق</td><td>to stretch</td><td>سوز (soz)</td></tr>
+            <tr><td>qaynatmaq</td><td class="arabic-uyghur">قايناتماق</td><td>to boil</td><td>قاينات (qaynat)</td></tr>
+            <tr><td>qaynimaq</td><td class="arabic-uyghur">قاينىماق</td><td>to be boiled</td><td>قاينا (qayna)</td></tr>
+            <tr><td>ussimoq</td><td class="arabic-uyghur">ئۇسسىماق</td><td>to be thirsty</td><td>ئۇسسا (ussa)</td></tr>
+            <tr><td>eyitmaq</td><td class="arabic-uyghur">ئېيتماق</td><td>to tell / to sing</td><td>ئېيىت (eyit)</td></tr>
+            <tr><td>yashimaq</td><td class="arabic-uyghur">ياشىماق</td><td>to live</td><td>ياشا (yasha)</td></tr>
+            <tr><td>xizmet qilmaq</td><td class="arabic-uyghur">خىزمەت قىلماق</td><td>to serve</td><td>خىزمەت قىل (xizmet qil)</td></tr>
+            <tr><td>dorimaq</td><td class="arabic-uyghur">دورىماق</td><td>to imitate / mock</td><td>دورا (dora)</td></tr>
+            <tr><td>du’a qilmaq</td><td class="arabic-uyghur">دۇئا قىلماق</td><td>to pray</td><td>دۇئا قىل (du’a qil)</td></tr>
+            <tr><td>kir yumaq</td><td class="arabic-uyghur">كىر يۇماق</td><td>to do the laundry</td><td>كىر يۇ (kir yu)</td></tr>
+            <tr><td>urmaq</td><td class="arabic-uyghur">ئۇرماق</td><td>to hit / strike</td><td>ئۇر (ur)</td></tr>
+            <tr><td>yol mangmaq</td><td class="arabic-uyghur">يول ماڭماق</td><td>to travel / go on a trip</td><td>يول ماڭ (yol mang)</td></tr>
+            <tr><td>yumaq</td><td class="arabic-uyghur">يۇماق</td><td>to wash</td><td>يۇ (yu)</td></tr>
+            <tr><td>tonglimaq</td><td class="arabic-uyghur">توڭلىماق</td><td>to freeze</td><td>توڭلا (tongla)</td></tr>
+            <tr><td>chaqmaq</td><td class="arabic-uyghur">چاقماق</td><td>to strike / to bite / to shell / crack</td><td>چاق (chaq)</td></tr>
+            <tr><td>soghuq chüshmek</td><td class="arabic-uyghur">سوغۇق چۈشمەك</td><td>to turn cold (fall to winter)</td><td>سوغۇق چۈش (soghuq chüsh)</td></tr>
+            <tr><td>qorsaq achmaq</td><td class="arabic-uyghur">قورساق ئاچماق</td><td>to get hungry</td><td>قورساق ئاچ (qorsaq ach)</td></tr>
+            <tr><td>muzlimaq</td><td class="arabic-uyghur">مۇزلىماق</td><td>to get cold / freeze</td><td>مۇزلا (muzla)</td></tr>
+            <tr><td>issimaq</td><td class="arabic-uyghur">ئىسسىماق</td><td>to get warm</td><td>ئىسسى (issi)</td></tr>
+            <tr><td>yaghmaq</td><td class="arabic-uyghur">ياغماق</td><td>to fall (rain, snow)</td><td>ياغ (yagh)</td></tr>
+            <tr><td>ayrilmaq</td><td class="arabic-uyghur">ئايرىلماق</td><td>to separate</td><td>ئايرىل (ayril)</td></tr>
+            <tr><td>bölünmek</td><td class="arabic-uyghur">بۆلۈنمەك</td><td>to be divided</td><td>بۆلۈن (bölün)</td></tr>
+            <tr><td>birleshtürmek</td><td class="arabic-uyghur">بىرلەشتۈرمەك</td><td>to combine</td><td>بىرلەشتۈر (birleshtür)</td></tr>
+            <tr><td>birleshmek</td><td class="arabic-uyghur">بىرلەشمەك</td><td>to unite</td><td>بىرلەش (birlesh)</td></tr>
+            <tr><td>parcha satmaq</td><td class="arabic-uyghur">پارچە ساتماق</td><td>to sell retail</td><td>پارچە سات (parcha sat)</td></tr>
+            <tr><td>parqiratmaq</td><td class="arabic-uyghur">پارقىراتماق</td><td>to make shine</td><td>پارقىرات (parqirat)</td></tr>
+            <tr><td>top satmaq</td><td class="arabic-uyghur">توپ ساتماق</td><td>to sell wholesale</td><td>توپ سات (top sat)</td></tr>
+            <tr><td>selishturmaq</td><td class="arabic-uyghur">سېلىشتۇرماق</td><td>to compare</td><td>سېلىشتۇر (selishtur)</td></tr>
+            <tr><td>körüshmek</td><td class="arabic-uyghur">كۆرۈشمەك</td><td>to meet</td><td>كۆرۈش (körüsh)</td></tr>
+            <tr><td>urushmaq</td><td class="arabic-uyghur">ئۇرۇشماق</td><td>to fight</td><td>ئۇرۇش (urush)</td></tr>
+            <tr><td>wapat bolmaq</td><td class="arabic-uyghur">ۋاپات بولماق</td><td>to pass away</td><td>ۋاپات بول (wapat bol)</td></tr>
+            <tr><td>yoqap ketmek</td><td class="arabic-uyghur">يوقاپ كەتمەك</td><td>to be lost</td><td>يوقاپ كەت (yoqap ket)</td></tr>
+            <tr><td>yitip ketmek</td><td class="arabic-uyghur">يىتىپ كەتمەك</td><td>to be lost</td><td>يىتىپ كەت (yitip ket)</td></tr>
+            <tr><td>yoqimaq</td><td class="arabic-uyghur">يوقىماق</td><td>to get lost, disappear</td><td>يوقا (yoqa)</td></tr>
+            <tr><td>yitmek</td><td class="arabic-uyghur">يىتمەك</td><td>to disappear, to vanish</td><td>يىت (yit)</td></tr>
+        <!-- Add more verbs here -->
+    </tbody>
+</table>
+
+<script>
+// Search filter
+function filterTable() {
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById("verbTable");
+    const trs = table.getElementsByTagName("tr");
+    for (let i = 1; i < trs.length; i++) {
+        const tds = trs[i].getElementsByTagName("td");
+        let show = false;
+        for (let j = 0; j < tds.length; j++) {
+            if (tds[j].textContent.toLowerCase().includes(filter)) {
+                show = true;
+                break;
+            }
+        }
+        trs[i].style.display = show ? "" : "none";
+    }
+}
+
+// Automatically apply Uyghur font to pasted content
+function applyUyghurClass() {
+    document.querySelectorAll('#verbTable td').forEach(td => {
+        if (/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(td.textContent)) {
+            td.classList.add('uyghur');
+        }
+    });
+}
+
+window.onload = applyUyghurClass;
+document.addEventListener('paste', () => setTimeout(applyUyghurClass, 50));
+</script>
+
+</body>
+</html>
