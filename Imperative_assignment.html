@@ -12,38 +12,63 @@
 
   body {
     font-family: Arial, sans-serif;
-    padding: 20px;
+    padding: 10px;
+    margin: 0;
     direction: rtl;
+    background: #f5f5f5;
   }
 
   table {
-    border-collapse: collapse;
     width: 100%;
-    font-size: 16px;
+    min-width: 700px;       /* ensures table isn’t too narrow */
+    max-width: 1200px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    table-layout: fixed;     /* even column widths */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    background: #fff;
+  }
+
+  caption {
+    caption-side: top;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px;
+    font-family: 'ALKATIPYazma', Arial, sans-serif;
+    color: #1e40af;
   }
 
   th {
-    background-color: #4CAF50;
+    background-color: #2563eb;
     color: white;
     padding: 10px;
     font-family: 'ALKATIPYazma', Arial, sans-serif;
+    font-size: 16px;
+    word-wrap: break-word;
   }
 
   td {
     border: 1px solid #ddd;
-    padding: 10px;
+    padding: 6px 8px;
     text-align: center;
-    font-size: 20px;
     vertical-align: middle;
+    word-wrap: break-word;
   }
 
   td.uyghur {
     font-family: 'ALKATIPYazma', Arial, sans-serif;
+    font-size: 18px;
   }
 
   td.latin {
     font-family: 'Inter', 'Noto Sans', Arial, sans-serif;
-    font-size: 16px;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  td.number {
+    width: 40px;
   }
 
   tr:nth-child(even) {
@@ -51,20 +76,26 @@
   }
 
   tr:hover {
-    background-color: #f1f1f1;
+    background-color: #e0e7ff;
   }
 
-  caption {
-    caption-side: top;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    padding: 10px;
-    font-family: 'ALKATIPYazma', Arial, sans-serif;
-  }
-
-  td.number {
-    width: 40px;
+  @media (max-width: 600px) {
+    td.uyghur {
+      font-size: 16px;
+    }
+    td.latin {
+      font-size: 12px;
+    }
+    th {
+      font-size: 14px;
+      padding: 6px;
+    }
+    td {
+      padding: 4px 6px;
+    }
+    caption {
+      font-size: 18px;
+    }
   }
 </style>
 </head>
@@ -76,7 +107,7 @@
     <tr>
       <th class="number">#</th>
       <th>Verb (ULY)</th>
-      <th>Verb (Verb stem)</th>
+      <th>Arabic Script</th>
       <th>Meaning</th>
       <th>سەن (strong)</th>
       <th>سەن (soft)</th>
@@ -94,7 +125,7 @@
     <tr><td class="number">6</td><td class="uyghur">bermek (ber)</td><td class="uyghur">بەرمەك (بەر)</td><td class="latin">to give</td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td></tr>
     <tr><td class="number">7</td><td class="uyghur">qilmaq (qil)</td><td class="uyghur">قىلماق (قىل)</td><td class="latin">to do; make</td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td></tr>
     <tr><td class="number">8</td><td class="uyghur">ishlimek (ishle)</td><td class="uyghur">ئىشلىمەك (ئىشلە)</td><td class="latin">to work</td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td></tr>
-    <tr><td class="number">9</td><td class="uyghur">yémek (ye)</td><td class="uyghur">يېمەك (يە)</td><td class="latin">to eat</td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td></tr>
+    <tr><td class="number">9</td><td class="uyghur">yémek (yې)</td><td class="uyghur">يېمەك (يە)</td><td class="latin">to eat</td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td></tr>
     <tr><td class="number">10</td><td class="uyghur">turmaq (tur)</td><td class="uyghur">تۇرماق (تۇر)</td><td class="latin">to stand</td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td><td class="uyghur"></td></tr>
   </tbody>
 </table>
