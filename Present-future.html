@@ -9,11 +9,6 @@
     src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
   }
 
-  @font-face {
-    font-family: 'LatinFont';
-    src: url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-  }
-
   body {
     font-family: Arial, sans-serif;
     background-color: #f0f4f8;
@@ -45,22 +40,15 @@
     flex-wrap: wrap;
   }
 
-  #verbTile span {
-    font-size: 26px;
-  }
-
-  #verbTile .uyghur {
+  #verbTile span.uyghur {
     font-family: 'ALKATIPYazma', Arial, sans-serif;
+    font-size: 28px;
+    font-weight: normal;
+    color: #2a7f4d;
   }
 
-  #verbTile .uly, #verbTile .stem {
-    font-family: 'LatinFont', Arial, sans-serif;
-    font-size: 22px;
-    color: #333;
-  }
-
-  #verbTile .english {
-    font-family: 'LatinFont', Arial, sans-serif;
+  #verbTile span.english {
+    font-family: Arial, sans-serif;
     font-size: 22px;
     color: #555;
   }
@@ -69,7 +57,7 @@
     font-family: 'ALKATIPYazma', Arial, sans-serif;
     font-size: 26px;
     margin-bottom: 15px;
-    font-weight: bold;
+    font-weight: normal;
     color: #333;
   }
 
@@ -92,27 +80,30 @@
     transition: all 0.2s;
     min-width: 120px;
     font-family: 'ALKATIPYazma', Arial, sans-serif;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   }
 
   button:hover {
     background-color: #4CAF50;
     color: white;
-    transform: translateY(-2px);
   }
 
   .correct {
     background-color: #2196F3 !important;
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
   }
 
   .wrong {
     background-color: #f44336 !important;
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
   }
 
   #score {
-    font-family: 'LatinFont', Arial, sans-serif;
+    font-family: Arial, sans-serif;
     font-size: 20px;
     margin-top: 10px;
   }
@@ -139,8 +130,7 @@
 
   <div id="verbTile">
     <span class="uyghur" id="fullVerb"></span>
-    <span class="uly" id="ulyVerb"></span>
-    <span class="stem" id="stem"></span>
+    <span class="uyghur" id="verbRoot"></span>
     <span class="english" id="verbEnglish"></span>
   </div>
 
@@ -154,11 +144,232 @@
 
 <script>
 const verbs = [
-  { uly: "barmaq", arabic: "بارماق", root: "بار", english: "to go", forms: { "مەن": "بارىمەن", "سەن": "بارىسەن", "سىز": "بارىسىز", "ئۇ": "بارىدۇ", "بىز": "بارىمىز", "سىلەر": "بارىسىلەر", "ئۇلار": "بارىدۇ" } },
-  { uly: "oqumaq", arabic: "ئوقۇماق", root: "ئوقۇ", english: "to read", forms: { "مەن": "ئوقۇيمەن", "سەن": "ئوقۇيسەن", "سىز": "ئوقۇيسىز", "ئۇ": "ئوقۇيدۇ", "بىز": "ئوقۇيمىز", "سىلەر": "ئوقۇيسىلەر", "ئۇلار": "ئوقۇيدۇ" } },
-  { uly: "yazmaq", arabic: "يازماق", root: "ياز", english: "to write", forms: { "مەن": "يازىمەن", "سەن": "يازىسەن", "سىز": "يازىسىز", "ئۇ": "يازىدۇ", "بىز": "يازىمىز", "سىلەر": "يازىسىلەر", "ئۇلار": "يازىدۇ" } },
-  { uly: "körmek", arabic: "كۆرمەك", root: "كۆر", english: "to see", forms: { "مەن": "كۆرىمەن", "سەن": "كۆرىسەن", "سىز": "كۆرىسىز", "ئۇ": "كۆرىدۇ", "بىز": "كۆرىمىز", "سىلەر": "كۆرىسىلەر", "ئۇلار": "كۆرىدۇ" } }
+  {
+    uly: "barmaq",
+    arabic: "بارماق",
+    english: "to go",
+    root: "بار",
+    forms: { "مەن": "بارىمەن", "سەن": "بارىسەن", "سىز": "بارىسىز", "ئۇ": "بارىدۇ", "بىز": "بارىمىز", "سىلەر": "بارىسىلەر", "ئۇلار": "بارىدۇ" }
+  },
+  {
+    uly: "oqumaq",
+    arabic: "ئوقۇماق",
+    english: "to read",
+    root: "ئوقۇ",
+    forms: { "مەن": "ئوقۇيمەن", "سەن": "ئوقۇيسەن", "سىز": "ئوقۇيسىز", "ئۇ": "ئوقۇيدۇ", "بىز": "ئوقۇيمىز", "سىلەر": "ئوقۇيسىلەر", "ئۇلار": "ئوقۇيدۇ" }
+  },
+  {
+    uly: "yazmaq",
+    arabic: "يازماق",
+    english: "to write",
+    root: "ياز",
+    forms: { "مەن": "يازىمەن", "سەن": "يازىسەن", "سىز": "يازىسىز", "ئۇ": "يازىدۇ", "بىز": "يازىمىز", "سىلەر": "يازىسىلەر", "ئۇلار": "يازىدۇ" }
+  },
+  {
+    uly: "körmek",
+    arabic: "كۆرمەك",
+    english: "to see",
+    root: "كۆر",
+    forms: { "مەن": "كۆرىمەن", "سەن": "كۆرىسەن", "سىز": "كۆرىسىز", "ئۇ": "كۆرىدۇ", "بىز": "كۆرىمىز", "سىلەر": "كۆرىسىلەر", "ئۇلار": "كۆرىدۇ" }
+  },
+  {
+    uly: "bilmek",
+    arabic: "بىلمەك",
+    english: "to know",
+    root: "بىل",
+    forms: { "مەن": "بىلىمەن", "سەن": "بىلىسەن", "سىز": "بىلىسىز", "ئۇ": "بىلىدۇ", "بىز": "بىلىمىز", "سىلەر": "بىلىسىلەر", "ئۇلار": "بىلىدۇ" }
+  },
+  {
+    uly: "bermek",
+    arabic: "بەرمەك",
+    english: "to give",
+    root: "بەر",
+    forms: { "مەن": "بېرىمەن", "سەن": "بېرىسەن", "سىز": "بېرىسىز", "ئۇ": "بېرىدۇ", "بىز": "بېرىمىز", "سىلەر": "بېرىسىلەر", "ئۇلار": "بېرىدۇ" }
+  },
+  {
+    uly: "qilmaq",
+    arabic: "قىلماق",
+    english: "to do; make",
+    root: "قىل",
+    forms: { "مەن": "قىلىمەن", "سەن": "قىلىسەن", "سىز": "قىلىسىز", "ئۇ": "قىلىدۇ", "بىز": "قىلىمىز", "سىلەر": "قىلىسىلەر", "ئۇلار": "قىلىدۇ" }
+  },
+  {
+    uly: "ishlimek",
+    arabic: "ئىشلىمەك",
+    english: "to work",
+    root: "ئىشلە",
+    forms: { "مەن": "ئىشلەيمەن", "سەن": "ئىشلەيسەن", "سىز": "ئىشلەيسىز", "ئۇ": "ئىشلەيدۇ", "بىز": "ئىشلەيمىز", "سىلەر": "ئىشلەيسىلەر", "ئۇلار": "ئىشلەيدۇ" }
+  },
+  {
+    uly: "yémek",
+    arabic: "يېمەك",
+    english: "to eat",
+    root: "يە",
+    forms: { "مەن": "يەيمەن", "سەن": "يەيسەن", "سىز": "يەيسىز", "ئۇ": "يەيدۇ", "بىز": "يەيمىز", "سىلەر": "يەيسىلەر", "ئۇلار": "يەيدۇ" }
+  },
+  {
+    uly: "turmaq",
+    arabic: "تۇرماق",
+    english: "to stand",
+    root: "تۇر",
+    forms: { "مەن": "تۇرىمەن", "سەن": "تۇرىسەن", "سىز": "تۇرىسىز", "ئۇ": "تۇرىدۇ", "بىز": "تۇرىمىز", "سىلەر": "تۇرىسىلەر", "ئۇلار": "تۇرىدۇ" }
+  },
+  {
+    uly: "olturmaq",
+    arabic: "ئولتۇرماق",
+    english: "to sit",
+    root: "ئولتۇر",
+    forms: { "مەن": "ئولتۇرىمەن", "سەن": "ئولتۇرىسەن", "سىز": "ئولتۇرىسىز", "ئۇ": "ئولتۇرىدۇ", "بىز": "ئولتۇرىمىز", "سىلەر": "ئولتۇرىسىلەر", "ئۇلار": "ئولتۇرىدۇ" }
+  },
+  {
+    uly: "izdimek",
+    arabic: "ئىزدىمەك",
+    english: "to search",
+    root: "ئىزدە",
+    forms: { "مەن": "ئىزدەيمەن", "سەن": "ئىزدەيسەن", "سىز": "ئىزدەيسىز", "ئۇ": "ئىزدەيدۇ", "بىز": "ئىزدەيمىز", "سىلەر": "ئىزدەيسىلەر", "ئۇلار": "ئىزدەيدۇ" }
+  },
+  {
+    uly: "pishurmaq",
+    arabic: "پىشۇرماق",
+    english: "to cook",
+    root: "پىشۇر",
+    forms: { "مەن": "پىشۇرىمەن", "سەن": "پىشۇرىسەن", "سىز": "پىشۇرىسىز", "ئۇ": "پىشۇرىدۇ", "بىز": "پىشۇرىمىز", "سىلەر": "پىشۇرىسىلەر", "ئۇلار": "پىشۇرىدۇ" }
+  },
+  {
+    uly: "almaq",
+    arabic: "ئالماق",
+    english: "to take",
+    root: "ئال",
+    forms: { "مەن": "ئالىمەن", "سەن": "ئالىسەن", "سىز": "ئالىسىز", "ئۇ": "ئالىدۇ", "بىز": "ئالىمىز", "سىلەر": "ئالىسىلەر", "ئۇلار": "ئالىدۇ" }
+  },
+  {
+    uly: "kelmek",
+    arabic: "كەلمەك",
+    english: "to come",
+    root: "كەل",
+    forms: { "مەن": "كېلىمەن", "سەن": "كېلىسەن", "سىز": "كېلىسىز", "ئۇ": "كېلىدۇ", "بىز": "كېلىمىز", "سىلەر": "كېلىسىلەر", "ئۇلار": "كېلىدۇ" }
+  },
+  {
+    uly: "unutmaq",
+    arabic: "ئۇنۇتماق",
+    english: "to forget",
+    root: "ئۇنۇت",
+    forms: { "مەن": "ئۇنۇتىمەن", "سەن": "ئۇنۇتىسەن", "سىز": "ئۇنۇتىسىز", "ئۇ": "ئۇنۇتىدۇ", "بىز": "ئۇنۇتىمىز", "سىلەر": "ئۇنۇتىسىلەر", "ئۇلار": "ئۇنۇتىدۇ" }
+  },
+  {
+    uly: "utmaq",
+    arabic: "ئۇتماق",
+    english: "to win",
+    root: "ئۇت",
+    forms: { "مەن": "ئۇتىمەن", "سەن": "ئۇتىسەن", "سىز": "ئۇتىسىز", "ئۇ": "ئۇتىدۇ", "بىز": "ئۇتىمىز", "سىلەر": "ئۇتىسىلەر", "ئۇلار": "ئۇتىدۇ" }
+  },
+  {
+    uly: "chüshenmek",
+    arabic: "چۈشەنمەك",
+    english: "to understand",
+    root: "چۈشەن",
+    forms: { "مەن": "چۈشىنىمەن", "سەن": "چۈشىنىسەن", "سىز": "چۈشىنىسىز", "ئۇ": "چۈشىنىدۇ", "بىز": "چۈشىنىمىز", "سىلەر": "چۈشىنىسىلەر", "ئۇلار": "چۈشىنىدۇ" }
+  },
+  {
+    uly: "ketmek",
+    arabic: "كەتمەك",
+    english: "to leave",
+    root: "كەت",
+    forms: { "مەن": "كېتىمەن", "سەن": "كېتىسەن", "سىز": "كېتىسىز", "ئۇ": "كېتىدۇ", "بىز": "كېتىمىز", "سىلەر": "كېتىسىلەر", "ئۇلار": "كېتىدۇ" }
+  },
+  {
+    uly: "tükürmek",
+    arabic: "تۈكۈرمەك",
+    english: "to spit",
+    root: "تۈكۈر",
+    forms: { "مەن": "تۈكۈرىمەن", "سەن": "تۈكۈرىسەن", "سىز": "تۈكۈرىسىز", "ئۇ": "تۈكۈرىدۇ", "بىز": "تۈكۈرىمىز", "سىلەر": "تۈكۈرىسىلەر", "ئۇلار": "تۈكۈرىدۇ" }
+  },
+  {
+    uly: "chüshmek",
+    arabic: "چۈشمەك",
+    english: "to fall; get off",
+    root: "چۈش",
+    forms: { "مەن": "چۈشىمەن", "سەن": "چۈشىسەن", "سىز": "چۈشىسىز", "ئۇ": "چۈشىدۇ", "بىز": "چۈشىمىز", "سىلەر": "چۈشىسىلەر", "ئۇلار": "چۈشىدۇ" }
+  },
+  {
+    uly: "démek",
+    arabic: "دېمەك",
+    english: "to say",
+    root: "دە",
+    forms: { "مەن": "دەيمەن", "سەن": "دەيسەن", "سىز": "دەيسىز", "ئۇ": "دەيدۇ", "بىز": "دەيمىز", "سىلەر": "دەيسىلەر", "ئۇلار": "دەيدۇ" }
+  },
+  {
+    uly: "sanimaq",
+    arabic: "سانىماق",
+    english: "to count",
+    root: "سانا",
+    forms: { "مەن": "سانايمەن", "سەن": "سانايسەن", "سىز": "سانايسىز", "ئۇ": "سانايدۇ", "بىز": "سانايمىز", "سىلەر": "سانايسىلەر", "ئۇلار": "سانايدۇ" }
+  },
+  {
+    uly: "soymaq",
+    arabic: "سويماق",
+    english: "to slaughter; cut",
+    root: "سوي",
+    forms: { "مەن": "سويىمەن", "سەن": "سويىسەن", "سىز": "سويىسز", "ئۇ": "سويىدۇ", "بىز": "سويىمىز", "سىلەر": "سويىسىلەر", "ئۇلار": "سويىدۇ" }
+  },
+  {
+    uly: "sözlimek",
+    arabic: "سۆزلىمەك",
+    english: "to speak",
+    root: "سۆزلە",
+    forms: { "مەن": "سۆزلەيمەن", "سەن": "سۆزلەيسەن", "سىز": "سۆزلەيسىز", "ئۇ": "سۆزلەيدۇ", "بىز": "سۆزلەيمىز", "سىلەر": "سۆزلەيسىلەر", "ئۇلار": "سۆزلەيدۇ" }
+  },
+  {
+    uly: "quymaq",
+    arabic: "قۇيماق",
+    english: "to pour; cast",
+    root: "قۇي",
+    forms: { "مەن": "قۇيىمەن", "سەن": "قۇيىسەن", "سىز": "قۇيىسىز", "ئۇ": "قۇيىدۇ", "بىز": "قۇيىمىز", "سىلەر": "قۇيىسىلەر", "ئۇلار": "قۇيىدۇ" }
+  },
+  {
+    uly: "kesmek",
+    arabic: "كەسمەك",
+    english: "to cut",
+    root: "كەس",
+    forms: { "مەن": "كېسىمەن", "سەن": "كېسىسەن", "سىز": "كېسىسىز", "ئۇ": "كېسىدۇ", "بىز": "كېسىمىز", "سىلەر": "كېسىسىلەر", "ئۇلار": "كېسىدۇ" }
+  },
+  {
+    uly: "külmek",
+    arabic: "كۈلمەك",
+    english: "to laugh",
+    root: "كۈل",
+    forms: { "مەن": "كۈلىمەن", "سەن": "كۈلىسەن", "سىز": "كۈلىسىز", "ئۇ": "كۈلىدۇ", "بىز": "كۈلىمىز", "سىلەر": "كۈلىسىلەر", "ئۇلار": "كۈلىدۇ" }
+  },
+  {
+    uly: "kechikmek",
+    arabic: "كېچىكمەك",
+    english: "to be late",
+    root: "كېچىك",
+    forms: { "مەن": "كېچىكىمەن", "سەن": "كېچىكىسەن", "سىز": "كېچىكىسىز", "ئۇ": "كېچىكىدۇ", "بىز": "كېچىكىمىز", "سىلەر": "كېچىكىسىلەر", "ئۇلار": "كېچىكىدۇ" }
+  },
+  {
+    uly: "ötmek",
+    arabic: "ئۆتمەك",
+    english: "to pass; go beyond",
+    root: "ئۆت",
+    forms: { "مەن": "ئۆتىمەن", "سەن": "ئۆتىسەن", "سىز": "ئۆتىسىز", "ئۇ": "ئۆتىدۇ", "بىز": "ئۆتىمىز", "سىلەر": "ئۆتىسىلەر", "ئۇلار": "ئۆتىدۇ" }
+  },
+  {
+    uly: "ölchimek",
+    arabic: "ئۆلچىمەك",
+    english: "to measure",
+    root: "ئۆلچە",
+    forms: { "مەن": "ئۆلچەيمەن", "سەن": "ئۆلچەيسەن", "سىز": "ئۆلچەيسىز", "ئۇ": "ئۆلچەيدۇ", "بىز": "ئۆلچەيمىز", "سىلەر": "ئۆلچەيسىلەر", "ئۇلار": "ئۆلچەيدۇ" }
+  },
+  {
+    uly: "yanmaq",
+    arabic: "يانماق",
+    english: "to burn; to return",
+    root: "يان",
+    forms: { "مەن": "يانىمەن", "سەن": "يانىسەن", "سىز": "يانىسىز", "ئۇ": "يانىدۇ", "بىز": "يانىمىز", "سىلەر": "يانىسىلەر", "ئۇلار": "يانىدۇ" }
+  }
 ];
+
 
 const persons = ["مەن", "سەن", "سىز", "ئۇ", "بىز", "سىلەر", "ئۇلار"];
 let score = 0;
@@ -174,8 +385,7 @@ function newQuestion() {
   currentPerson = persons[Math.floor(Math.random() * persons.length)];
 
   document.getElementById("fullVerb").textContent = currentVerb.arabic;
-  document.getElementById("ulyVerb").textContent = `(${currentVerb.uly})`;
-  document.getElementById("stem").textContent = `(${currentVerb.root})`;
+  document.getElementById("verbRoot").textContent = `(${currentVerb.root})`; // root in Uyghur font
   document.getElementById("verbEnglish").textContent = currentVerb.english;
   document.getElementById("pronoun").textContent = currentPerson;
 
