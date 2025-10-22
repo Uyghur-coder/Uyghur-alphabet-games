@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Uyghur Pronouns and Verb Endings (Reversed)</title>
+
+  <style>
+    @font-face {
+      font-family: 'ALKATIPYazma';
+      src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
+      unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF;
+    }
+
+    .uyghur-font {
+      font-family: 'ALKATIPYazma', sans-serif;
+      color: #1310cc;
+      word-spacing: 4px;
+      font-size: 1.2em;
+    }
+
+    body {
+      background-color: #e6f0fa;
+      margin: 0;
+      padding: 2rem;
+      font-family: Arial, sans-serif;
+      color: #1a3c57;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      color: #1a3c57;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    th {
+      background-color: #1310cc;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 14px 10px;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    td {
+      padding: 14px 10px;
+      border-bottom: 1px solid #d6eafc;
+      text-align: center;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f0f6fb;
+    }
+
+    tr:hover {
+      background-color: #e6f3fa;
+      transition: background-color 0.25s ease;
+    }
+
+    /* Uyghur text columns */
+    td:nth-child(2),
+    td:nth-child(3),
+    td:nth-child(4) {
+      font-family: 'ALKATIPYazma', sans-serif;
+      direction: rtl;
+      unicode-bidi: embed;
+      color: #1310cc;
+      word-spacing: 4px;
+      font-size: 1.6em;
+    }
+
+    td:nth-child(2) span,
+    td:nth-child(3) span,
+    td:nth-child(4) span {
+      color: #ff4500;
+      font-weight: bold;
+    }
+
+    /* Personal pronouns align right */
+    td:nth-child(3) {
+      text-align: right;
+      padding-right: 20px;
+    }
+
+    /* Person/Number Description left-aligned */
+    td:nth-child(1) {
+      direction: ltr;
+      unicode-bidi: isolate;
+      text-align: left;
+      font-family: Arial, sans-serif;
+      color: #1a3c57;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.6rem; }
+      th, td { padding: 10px 6px; font-size: 1rem; }
+      td:nth-child(2),
+      td:nth-child(3),
+      td:nth-child(4) { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Uyghur Pronouns and Verb (Person) Endings</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Person/Number</th>
+      <th>Personal Pronouns</th>
+      <th>Type 1 Person Endings</th>
+      <th>Type 2 Person Endings</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1st person singular</td>
+      <td class="uyghur-font">مەن</td>
+      <td class="uyghur-font"><span>-مەن</span> (بارىمەن)</td>
+      <td class="uyghur-font"><span>-دىم</span> (بارامدىم؟)</td>
+    </tr>
+    <tr>
+      <td>2nd person singular formal</td>
+      <td class="uyghur-font">سىز</td>
+      <td class="uyghur-font">-سىز</td>
+      <td class="uyghur-font">-سىز</td>
+    </tr>
+    <tr>
+      <td>2nd person singular informal</td>
+      <td class="uyghur-font">سەن</td>
+      <td class="uyghur-font">-سەن</td>
+      <td class="uyghur-font">-سەن</td>
+    </tr>
+    <tr>
+      <td>3rd person singular</td>
+      <td class="uyghur-font">ئۇ</td>
+      <td class="uyghur-font">-دۇ</td>
+      <td class="uyghur-font">-دۇ</td>
+    </tr>
+    <tr>
+      <td>1st person plural</td>
+      <td class="uyghur-font">بىز</td>
+      <td class="uyghur-font"><span>-مىز</span> (بارىمىز)</td>
+      <td class="uyghur-font"><span>-دۇق</span> (بارامدۇق؟)</td>
+    </tr>
+    <tr>
+      <td>2nd person plural</td>
+      <td class="uyghur-font">سىلەر</td>
+      <td class="uyghur-font">-سىلەر</td>
+      <td class="uyghur-font">-سىلەر</td>
+    </tr>
+    <tr>
+      <td>3rd person plural</td>
+      <td class="uyghur-font">ئۇلار</td>
+      <td class="uyghur-font">-دۇ</td>
+      <td class="uyghur-font">-دۇ</td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
