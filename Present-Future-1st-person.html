@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uyghur Verb Stem Conjugation Table</title>
+  <style>
+    @font-face {
+      font-family: 'ALKATIPYazma';
+      src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf') format('truetype');
+      unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF;
+    }
+
+    body {
+      background-color: #e6f0fa;
+      margin: 0;
+      padding: 2rem;
+      font-family: Arial, sans-serif;
+      color: #1a3c57;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      color: #1310cc;
+      margin-bottom: 2rem;
+    }
+
+    table {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    th {
+      background-color: #1310cc;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 14px 10px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    td {
+      padding: 14px 10px;
+      border-bottom: 1px solid #d6eafc;
+      text-align: center;
+      font-size: 1.4rem;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f0f6fb;
+    }
+
+    tr:hover {
+      background-color: #e6f3fa;
+      transition: background-color 0.25s ease;
+    }
+
+    .uyghur-font {
+      font-family: 'ALKATIPYazma', sans-serif;
+      color: #1310cc;
+      font-weight: normal;
+      word-spacing: 4px;
+      direction: rtl;
+      unicode-bidi: embed;
+    }
+
+    .stem, .vowel, .ending {
+      display: inline-block;
+      margin: 0 4px;
+    }
+
+    td:nth-child(2), td:nth-child(3), td:nth-child(4) {
+      direction: rtl;
+      unicode-bidi: embed;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.4rem;
+      }
+      th, td {
+        padding: 10px 6px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Uyghur Verb Conjugation (Present/Future Tense)</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Verb Roots</th>
+      <th>Verb Stem + i/y + Person Ending</th>
+      <th>1st Person Singular</th>
+      <th>ى or ي (Connecting Vowel/Glide)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="uyghur-font">بار-</td>
+      <td class="uyghur-font"><span class="stem">بار</span> <span class="vowel">ى</span> <span class="ending">مەن</span></td>
+      <td class="uyghur-font">بارىمەن</td>
+      <td class="uyghur-font">ى after a consonant</td>
+    </tr>
+    <tr>
+      <td class="uyghur-font">كەل-</td>
+      <td class="uyghur-font"><span class="stem">كەل</span> <span class="vowel">ى</span> <span class="ending">مەن</span></td>
+      <td class="uyghur-font">كېلىمەن (كەلىمەن)</td>
+      <td class="uyghur-font">ى after a consonant</td>
+    </tr>
+    <tr>
+      <td class="uyghur-font">ئوقۇ-</td>
+      <td class="uyghur-font"><span class="stem">ئوقۇ</span> <span class="vowel">ي</span> <span class="ending">مەن</span></td>
+      <td class="uyghur-font">ئوقۇيمەن</td>
+      <td class="uyghur-font">ي after a vowel</td>
+    </tr>
+    <tr>
+      <td class="uyghur-font">ياز-</td>
+      <td class="uyghur-font"><span class="stem">ياز</span> <span class="vowel">ى</span> <span class="ending">مەن</span></td>
+      <td class="uyghur-font">يازىمەن</td>
+      <td class="uyghur-font">ى after a consonant</td>
+    </tr>
+    <tr>
+      <td class="uyghur-font">تۇر-</td>
+      <td class="uyghur-font"><span class="stem">تۇر</span> <span class="vowel">ى</span> <span class="ending">مەن</span></td>
+      <td class="uyghur-font">تۇرىمەن</td>
+      <td class="uyghur-font">ى after a consonant</td>
+    </tr>
+    <tr>
+      <td class="uyghur-font">ئىشلە-</td>
+      <td class="uyghur-font"><span class="stem">ئىشلە</span> <span class="vowel">ي</span> <span class="ending">مەن</span></td>
+      <td class="uyghur-font">ئىشلەيمەن</td>
+      <td class="uyghur-font">ي after a vowel</td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
