@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uyghur Possessive Pronoun Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: "ALKATIPYazma";
+      src: url("https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #fffacd; /* light yellow */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      padding: 20px;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #8b6b00;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
+    }
+
+    p {
+      color: #9c7b00;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .card {
+      background: white;
+      border: none;
+      border-radius: 15px;
+      padding: 10px;
+      margin: 5px;
+      width: 160px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      font-size: 1.3rem;
+      transition: transform 0.2s, background 0.3s;
+      text-align: center;
+    }
+
+    .card:hover {
+      background-color: #fff9c4;
+      transform: translateY(-4px);
+    }
+
+    .uyghur-text {
+      font-family: "ALKATIPYazma", sans-serif;
+      direction: rtl;
+      text-align: center;
+      color: #222;
+    }
+
+    .correct { background-color: #dcedc8 !important; color: #33691e; }
+    .wrong { background-color: #ffcdd2 !important; color: #b71c1c; }
+
+    #nextBtn {
+      margin-top: 15px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 12px;
+      background-color: #fbc02d;
+      color: #333;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    #nextBtn:hover {
+      background-color: #f9a825;
+      transform: translateY(-3px);
+    }
+
+    #feedback {
+      margin-top: 10px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    #score {
+      margin-top: 10px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #8b6b00;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.4);
+    }
+
+    #translation {
+      margin-top: 5px;
+      font-size: 1rem;
+      font-style: italic;
+      color: #9c7b00;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.4);
+    }
+
+    @media (max-width: 600px) {
+      .card { width: 45%; font-size: 1.1rem; padding: 8px; }
+      h1 { font-size: 1.6rem; }
+    }
+
+    @media (max-width: 400px) {
+      .card { width: 90%; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Genitive-Possessive Construction Quiz</h1>
+  <p>Match the possessive pronoun with the correct possessed noun form.</p>
+
+  <h2 id="pronoun" class="uyghur-text">...</h2>
+  <div id="translation">...</div>
+  <div class="options" id="options"></div>
+  <div id="feedback"></div>
+  <div id="score">Score: 0</div>
+  <button id="nextBtn">Next</button>
+
+  <script>
+    // Your words array
+const words = [
+  {
+    "base": "ئاچا",
+    "translation": "elder sister",
+    "forms": {
+      "1sg": "ئاچام",
+      "2sg": "ئاچاڭ",
+      "2sgf": "ئاچىڭىز",
+      "3": "ئاچىسى",
+      "1pl": "ئاچىمىز",
+      "2pl": "ئاچاڭلار"
+    }
+  },
+  {
+    "base": "ئاكا",
+    "translation": "elder brother",
+    "forms": {
+      "1sg": "ئاكام",
+      "2sg": "ئاكاڭ",
+      "2sgf": "ئاكىڭىز",
+      "3": "ئاكىسى",
+      "1pl": "ئاكىمىز",
+      "2pl": "ئاكاڭلار"
+    }
+  },
+  {
+    "base": "ئاياغ",
+    "translation": "shoe / foot",
+    "forms": {
+      "1sg": "ئايىغىم",
+      "2sg": "ئايىغىڭ",
+      "2sgf": "ئايىغىڭىز",
+      "3": "ئاياغى",
+      "1pl": "ئايىغىمىز",
+      "2pl": "ئايىغىڭلار"
+    }
+  },
+  {
+    "base": "ئانا",
+    "translation": "mother",
+    "forms": {
+      "1sg": "ئانام",
+      "2sg": "ئاناڭ",
+      "2sgf": "ئانىڭىز",
+      "3": "ئانىسى",
+      "1pl": "ئانىمىز",
+      "2pl": "ئاناڭلار"
+    }
+  },
+  {
+    "base": "ئۆي",
+    "translation": "house",
+    "forms": {
+      "1sg": "ئۆيىم",
+      "2sg": "ئۆيىڭ",
+      "2sgf": "ئۆيىڭىز",
+      "3": "ئۆيى",
+      "1pl": "ئۆيىمىز",
+      "2pl": "ئۆيىڭلار"
+    }
+  },
+  {
+    "base": "ئوغۇل",
+    "translation": "son / boy",
+    "forms": {
+      "1sg": "ئوغلۇم",
+      "2sg": "ئوغلۇڭ",
+      "2sgf": "ئوغلۇڭىز",
+      "3": "ئوغلى",
+      "1pl": "ئوغلىمىز",
+      "2pl": "ئوغلۇڭلار"
+    }
+  },
+  {
+    "base": "بوۋا",
+    "translation": "grandfather",
+    "forms": {
+      "1sg": "بوۋام",
+      "2sg": "بوۋاڭ",
+      "2sgf": "بوۋىڭىز",
+      "3": "بوۋىسى",
+      "1pl": "بوۋىمىز",
+      "2pl": "بوۋاڭلار"
+    }
+  },
+  {
+    "base": "تاغا",
+    "translation": "maternal uncle",
+    "forms": {
+      "1sg": "تاغام",
+      "2sg": "تاغاڭ",
+      "2sgf": "تاغىڭىز",
+      "3": "تاغىسى",
+      "1pl": "تاغىمىز",
+      "2pl": "تاغاڭلار"
+    }
+  },
+  {
+    "base": "تېلېفون",
+    "translation": "telephone / phone",
+    "forms": {
+      "1sg": "تېلېفونۇم",
+      "2sg": "تېلېفونۇڭ",
+      "2sgf": "تېلېفونىڭىز",
+      "3": "تېلېفونى",
+      "1pl": "تېلېفونىمىز",
+      "2pl": "تېلېفونۇڭلار"
+    }
+  },
+  {
+    "base": "دادا",
+    "translation": "father",
+    "forms": {
+      "1sg": "دادام",
+      "2sg": "داداڭ",
+      "2sgf": "دادىڭىز",
+      "3": "دادىسى",
+      "1pl": "دادىمىز",
+      "2pl": "داداڭلار"
+    }
+  },
+  {
+    "base": "سىڭىل",
+    "translation": "younger sister",
+    "forms": {
+      "1sg": "سىڭلىم",
+      "2sg": "سىڭلىڭ",
+      "2sgf": "سىڭلىڭىز",
+      "3": "سىڭلىسى",
+      "1pl": "سىڭلىمىز",
+      "2pl": "سىڭلىڭلار"
+    }
+  },
+  {
+    "base": "سومكا",
+    "translation": "bag / purse",
+    "forms": {
+      "1sg": "سومكام",
+      "2sg": "سومكاڭ",
+      "2sgf": "سومكىڭىز",
+      "3": "سومكىسى",
+      "1pl": "سومكىمىز",
+      "2pl": "سومكاڭلار"
+    }
+  },
+  {
+    "base": "قەلەم",
+    "translation": "pen / pencil",
+    "forms": {
+      "1sg": "قەلىمىم",
+      "2sg": "قەلىمىڭ",
+      "2sgf": "قەلىمىڭىز",
+      "3": "قەلىمى",
+      "1pl": "قەلىمىمىز",
+      "2pl": "قەلىمىڭلار"
+    }
+  },
+  {
+    "base": "قىز",
+    "translation": "daughter / girl",
+    "forms": {
+      "1sg": "قىزىم",
+      "2sg": "قىزىڭ",
+      "2sgf": "قىزىڭىز",
+      "3": "قىزى",
+      "1pl": "قىزىمىز",
+      "2pl": "قىزىڭلار"
+    }
+  },
+  {
+    "base": "كىتاب",
+    "translation": "book",
+    "forms": {
+      "1sg": "كىتابىم",
+      "2sg": "كېتابىڭ",
+      "2sgf": "كىتابىڭىز",
+      "3": "كېتابى",
+      "1pl": "كىتابىمىز",
+      "2pl": "كىتابىڭلار"
+    }
+  },
+  {
+    "base": "ماشىنا",
+    "translation": "car / machine",
+    "forms": {
+      "1sg": "ماشىنام",
+      "2sg": "ماشىناڭ",
+      "2sgf": "ماشىنىڭىز",
+      "3": "ماشىنىسى",
+      "1pl": "ماشىنىمىز",
+      "2pl": "ماشىناڭلار"
+    }
+  },
+  {
+    "base": "ھامما",
+    "translation": "paternal aunt",
+    "forms": {
+      "1sg": "ھاممام",
+      "2sg": "ھامماڭ",
+      "2sgf": "ھاممىڭىز",
+      "3": "ھاممىسى",
+      "1pl": "ھاممىمىز",
+      "2pl": "ھامماڭلار"
+    }
+  }
+];
+
+    // Pronouns and form keys
+    const pronouns = [
+      { pronoun: 'مېنىڭ (my)', formKey: '1sg' },
+      { pronoun: 'سېنىڭ (your)', formKey: '2sg' },
+      { pronoun: 'ئۇنىڭ / ئۇلارنىڭ (his/her / their)', formKey: '3' },
+      { pronoun: 'بىزنىڭ (our)', formKey: '1pl' }
+    ];
+
+    // Generate questions dynamically
+    function generateQuestions() {
+      return pronouns.map(p => {
+        const word = words[Math.floor(Math.random() * words.length)];
+        return {
+          pronoun: p.pronoun,
+          correct: word.forms[p.formKey],
+          options: Object.values(word.forms),
+          translation: word.translation
+        };
+      });
+    }
+
+    let questions = generateQuestions();
+    let current = 0;
+    let score = 0;
+
+    const pronounEl = document.getElementById('pronoun');
+    const translationEl = document.getElementById('translation');
+    const optionsEl = document.getElementById('options');
+    const feedbackEl = document.getElementById('feedback');
+    const scoreEl = document.getElementById('score');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function loadQuestion() {
+      const q = questions[current];
+      pronounEl.textContent = q.pronoun;
+      translationEl.textContent = q.translation;
+      feedbackEl.textContent = '';
+      optionsEl.innerHTML = '';
+
+      const shuffledOptions = shuffleArray([...q.options]);
+      shuffledOptions.forEach(word => {
+        const div = document.createElement('div');
+        div.className = 'card uyghur-text';
+        div.textContent = word;
+        div.onclick = () => selectOption(div, q.correct);
+        optionsEl.appendChild(div);
+      });
+    }
+
+    function selectOption(div, correctWord) {
+      // Normalize both strings to NFC to avoid Unicode mismatches
+      const selected = div.textContent.normalize('NFC');
+      const correct = correctWord.normalize('NFC');
+
+      if(selected === correct){
+        div.classList.add('correct');
+        feedbackEl.textContent = '✅ Correct!';
+        feedbackEl.style.color = '#33691e';
+        score += 1;
+        scoreEl.textContent = 'Score: ' + score;
+      } else {
+        div.classList.add('wrong');
+        feedbackEl.textContent = '❌ Wrong!';
+        feedbackEl.style.color = '#b71c1c';
+      }
+
+      document.querySelectorAll('.card').forEach(c => c.onclick = null);
+    }
+
+    nextBtn.onclick = () => {
+      current = (current + 1) % questions.length;
+      questions = generateQuestions();
+      loadQuestion();
+    };
+
+    loadQuestion();
+  </script>
+</body>
+</html>
