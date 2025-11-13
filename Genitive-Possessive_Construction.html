@@ -5,38 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Uyghur Possessive Pronoun Quiz</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
     @font-face {
       font-family: "ALKATIPYazma";
-      src: url("https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPYazma.ttf") format("truetype");
+      src: url("https://cdn.jsdelivr.net/gh/Uyghur-coder/Uyghur-alphabet-games/fonts/ALKATIPYazma.ttf") format("truetype");
       font-weight: normal;
       font-style: normal;
       font-display: swap;
     }
 
-    body {
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* prevents scrollbars in iframe */
+      height: 100%;
+      box-sizing: border-box;
+      direction: rtl;
+      background: #fffacd;
+      color: #333;
       font-family: 'Roboto', sans-serif;
-      background: #fffacd; /* light yellow */
+    }
+
+    .container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       text-align: center;
-      padding: 20px;
+      padding: 15px;
+      max-width: 600px;
+      margin: 0 auto;
       min-height: 100vh;
-      color: #333;
+      box-sizing: border-box;
     }
 
     h1 {
-      font-size: 2rem;
-      margin-bottom: 10px;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
       color: #8b6b00;
       text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
     }
 
     p {
       color: #9c7b00;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       margin-bottom: 20px;
     }
 
@@ -55,18 +68,17 @@
       border: none;
       border-radius: 15px;
       padding: 10px;
-      margin: 5px;
-      width: 160px;
+      width: 140px;
       cursor: pointer;
       box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       transition: transform 0.2s, background 0.3s;
       text-align: center;
     }
 
     .card:hover {
       background-color: #fff9c4;
-      transform: translateY(-4px);
+      transform: translateY(-3px);
     }
 
     .uyghur-text {
@@ -76,18 +88,26 @@
       color: #222;
     }
 
+#pronoun {
+  font-weight: normal; /* 👈 removes bold */
+  font-size: 2rem; /* change this to whatever size you like */
+  color: #8e24aa;  /* optional: the color you chose */
+  font-weight: normal; /* optional: remove bold */
+}
+
+
     .correct { background-color: #dcedc8 !important; color: #33691e; }
     .wrong { background-color: #ffcdd2 !important; color: #b71c1c; }
 
     #nextBtn {
-      margin-top: 15px;
-      padding: 12px 25px;
+      margin-top: 12px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       background-color: #fbc02d;
       color: #333;
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 15px;
+      font-weight: normal;
       cursor: pointer;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
       transition: transform 0.2s, background 0.3s;
@@ -95,35 +115,37 @@
 
     #nextBtn:hover {
       background-color: #f9a825;
-      transform: translateY(-3px);
+      transform: translateY(-2px);
     }
 
     #feedback {
-      margin-top: 10px;
-      font-size: 1.3rem;
-      font-weight: bold;
+      margin-top: 8px;
+      font-size: 1.2rem;
+      font-weight: normal;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
 
     #score {
-      margin-top: 10px;
-      font-size: 1.3rem;
-      font-weight: bold;
+      margin-top: 8px;
+      font-size: 1.2rem;
+      font-weight: normal;
       color: #8b6b00;
       text-shadow: 1px 1px 2px rgba(255,255,255,0.4);
     }
 
-    #translation {
-      margin-top: 5px;
-      font-size: 1rem;
-      font-style: italic;
-      color: #9c7b00;
-      text-shadow: 1px 1px 2px rgba(255,255,255,0.4);
-    }
+#translation {
+  margin-top: 5px;
+  margin-bottom: 15px; /* 👈 add this */
+  font-size: 1rem;
+  font-style: italic;
+  color: #007b7f;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.4);
+}
+
 
     @media (max-width: 600px) {
       .card { width: 45%; font-size: 1.1rem; padding: 8px; }
-      h1 { font-size: 1.6rem; }
+      h1 { font-size: 1.5rem; }
     }
 
     @media (max-width: 400px) {
@@ -131,19 +153,21 @@
     }
   </style>
 </head>
-<body>
-  <h1>Genitive-Possessive Construction Quiz</h1>
-  <p>Match the possessive pronoun with the correct possessed noun form.</p>
 
-  <h2 id="pronoun" class="uyghur-text">...</h2>
-  <div id="translation">...</div>
-  <div class="options" id="options"></div>
-  <div id="feedback"></div>
-  <div id="score">Score: 0</div>
-  <button id="nextBtn">Next</button>
+<body>
+  <div class="container">
+    <h1>Uyghur Possessive Pronoun Quiz</h1>
+    <p>Match the possessive pronoun with the correct possessed noun form</p>
+
+    <h2 id="pronoun" class="uyghur-text">...</h2>
+    <div id="translation">...</div>
+    <div class="options" id="options"></div>
+    <div id="feedback"></div>
+    <div id="score">Score: 0</div>
+    <button id="nextBtn">Next</button>
+  </div>
 
   <script>
-    // Your words array
 const words = [
   {
     "base": "ئاچا",
@@ -197,12 +221,12 @@ const words = [
     "base": "ئۆي",
     "translation": "house",
     "forms": {
-      "1sg": "ئۆيىم",
-      "2sg": "ئۆيىڭ",
+      "1sg": "ئۆيۈم",
+      "2sg": "ئۆيۈڭ",
       "2sgf": "ئۆيىڭىز",
       "3": "ئۆيى",
       "1pl": "ئۆيىمىز",
-      "2pl": "ئۆيىڭلار"
+      "2pl": "ئۆيۈڭلار"
     }
   },
   {
@@ -231,7 +255,7 @@ const words = [
   },
   {
     "base": "تاغا",
-    "translation": "maternal uncle",
+    "translation": "uncle",
     "forms": {
       "1sg": "تاغام",
       "2sg": "تاغاڭ",
@@ -339,7 +363,7 @@ const words = [
   },
   {
     "base": "ھامما",
-    "translation": "paternal aunt",
+    "translation": "aunt",
     "forms": {
       "1sg": "ھاممام",
       "2sg": "ھامماڭ",
@@ -351,7 +375,6 @@ const words = [
   }
 ];
 
-    // Pronouns and form keys
     const pronouns = [
       { pronoun: 'مېنىڭ (my)', formKey: '1sg' },
       { pronoun: 'سېنىڭ (your)', formKey: '2sg' },
@@ -359,7 +382,6 @@ const words = [
       { pronoun: 'بىزنىڭ (our)', formKey: '1pl' }
     ];
 
-    // Generate questions dynamically
     function generateQuestions() {
       return pronouns.map(p => {
         const word = words[Math.floor(Math.random() * words.length)];
@@ -409,19 +431,18 @@ const words = [
     }
 
     function selectOption(div, correctWord) {
-      // Normalize both strings to NFC to avoid Unicode mismatches
       const selected = div.textContent.normalize('NFC');
       const correct = correctWord.normalize('NFC');
 
-      if(selected === correct){
+      if (selected === correct) {
         div.classList.add('correct');
-        feedbackEl.textContent = '✅ Correct!';
+        feedbackEl.textContent = '✅ !Correct';
         feedbackEl.style.color = '#33691e';
-        score += 1;
+        score++;
         scoreEl.textContent = 'Score: ' + score;
       } else {
         div.classList.add('wrong');
-        feedbackEl.textContent = '❌ Wrong!';
+        feedbackEl.textContent = '❌ !Wrong';
         feedbackEl.style.color = '#b71c1c';
       }
 
