@@ -342,7 +342,7 @@ const words = [
     "translation": "book",
     "forms": {
       "1sg": "كىتابىم",
-      "2sg": "كېتابىڭ",
+      "2sg": "كىتابىڭ",
       "2sgf": "كىتابىڭىز",
       "3": "كېتابى",
       "1pl": "كىتابىمىز",
@@ -375,12 +375,14 @@ const words = [
   }
 ];
 
-    const pronouns = [
-      { pronoun: 'مېنىڭ (my)', formKey: '1sg' },
-      { pronoun: 'سېنىڭ (your)', formKey: '2sg' },
-      { pronoun: 'ئۇنىڭ / ئۇلارنىڭ (his/her / their)', formKey: '3' },
-      { pronoun: 'بىزنىڭ (our)', formKey: '1pl' }
-    ];
+const pronouns = [
+  { pronoun: 'مېنىڭ (my)', formKey: '1sg' },
+  { pronoun: 'سېنىڭ (your, singular informal)', formKey: '2sg' },
+  { pronoun: 'سىزنىڭ (your, singular formal)', formKey: '2sgf' },
+  { pronoun: 'سىلەرنىڭ (your, plural)', formKey: '2pl' },
+  { pronoun: 'ئۇنىڭ / ئۇلارنىڭ (his/her / their)', formKey: '3' },
+  { pronoun: 'بىزنىڭ (our)', formKey: '1pl' }
+];
 
     function generateQuestions() {
       return pronouns.map(p => {
