@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ug">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur Past Tense Quiz Game</title>
+<style>
+@font-face {
+  font-family: "ALKATIP Asliya";
+  src: url("https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPAsliya.TTF") format("truetype");
+}
+
+body {
+  font-family: "ALKATIP Asliya", Arial, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  color: #333;
+}
+
+h1 {
+  margin-top: 40px;
+  text-align: center;
+  color: #2b2b7a;
+  text-shadow: 1px 1px #fff;
+}
+
+#quiz-container {
+  background: #fff;
+  padding: 25px 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  width: 90%;
+  max-width: 700px;
+  margin-top: 30px;
+}
+
+.question {
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.options button {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  margin: 8px 0;
+  font-size: 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  transition: 0.2s;
+  font-family: "ALKATIP Asliya", Arial, sans-serif;
+}
+
+.options button:hover {
+  background-color: #2b2b7a;
+  color: #fff;
+  transform: scale(1.03);
+}
+
+.options button.correct {
+  background-color: #28a745 !important;
+  color: #fff;
+}
+
+.options button.wrong {
+  background-color: #dc3545 !important;
+  color: #fff;
+}
+
+#score {
+  font-size: 22px;
+  margin-top: 20px;
+  font-weight: bold;
+  color: #2b2b7a;
+}
+
+#restart {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #ff7f50;
+  color: #fff;
+  transition: 0.2s;
+}
+
+#restart:hover {
+  background-color: #ff6347;
+  transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<h1>Uyghur Past Tense Quiz Game</h1>
+<p>Click the correct past tense form for the given subject and verb!</p>
+
+<div id="quiz-container">
+  <div id="question" class="question"></div>
+  <div class="options" id="options"></div>
+</div>
+
+<div id="score"></div>
+<button id="restart" onclick="startGame()" style="display:none;">Restart Game</button>
+
+<script>
+const quizData = [
+  {question: "مەن يېڭى بىر خىزمەتكە — ئورۇنلاشماق", translation: "I [started] a new job.", answer: "ئورۇنلاشتىم", options: ["ئورۇنلاشتىم","ئورۇنلاشتىڭ","ئورۇنلاشتىڭىز","ئورۇنلاشتۇق"]},
+  {question: "ئارسلان دالادا — تۇغۇلماق", translation: "The lion cub [was born] in the field.", answer: "تۇغۇلدى", options: ["تۇغۇلدى","تۇغۇلدىڭ","تۇغۇلدىڭىز","تۇغۇلدۇق"]},
+  {question: "بىز قۇمدا بىر ئىز — قالدۇرماق", translation: "We [left] a trace in the sand.", answer: "قالدۇردۇق", options: ["قالدۇردۇق","قالدۇردىڭ","قالدۇردىڭلار","قالدۇردى"]},
+  {question: "تەرجىمان — كۈلمەك", translation: "The interpreter [laughed].", answer: "كۈلدى", options: ["كۈلدى","كۈلدىڭ","كۈلدىڭىز","كۈلدۇق"]},
+  {question: "سىز كىملىك — كۆرسەتمەك", translation: "You [showed] the I.D.", answer: "كۆرسەتتىڭىز", options: ["كۆرسەتتىڭىز","كۆرسەتتىڭ","كۆرسەتتىڭلار","كۆرسەتتىم"]},
+  {question: "كارۋان سەپەرگە — ئاتلانماق", translation: "The caravan [set out] on a journey.", answer: "ئاتلاندى", options: ["ئاتلاندى","ئاتلاندىڭ","ئاتلاندىڭىز","ئاتلاندۇق"]},
+  {question: "ئاسپرانت مەنزىلگە — يېتىپ بارماق", translation: "The graduate student [arrived] at the destination.", answer: "يېتىپ باردى", options: ["يېتىپ باردى","يېتىپ باردىڭ","يېتىپ باردىڭىز","يېتىپ باردۇق"]},
+  {question: "موماي قەبرە يېنىدا — ناماز ئوقۇماق", translation: "The old woman [prayed] near the grave.", answer: "ناماز ئوقۇدى", options: ["ناماز ئوقۇدى","ناماز ئوقۇدىڭ","ناماز ئوقۇدىڭىز","ناماز ئوقۇدۇق"]},
+  {question: "سەن تۇنجى نومۇرنى — ئالماق", translation: "You [took/received] the first number.", answer: "ئالدىڭ", options: ["ئالدىڭ","ئالدىڭىز","ئالدى","ئالدۇق"]},
+  {question: "دوكتور بىر مۈشكۈل ھېكايە — ئېلان قىلماق", translation: "The Ph.D. [published] a difficult story.", answer: "ئېلان قىلدى", options: ["ئېلان قىلدى","ئېلان قىلدىڭ","ئېلان قىلدىڭىز","ئېلان قىلدۇق"]},
+  {question: "يىگىت تۆگىگە — مىنمەك", translation: "The young man [rode] the camel.", answer: "مىندى", options: ["مىندى","مىندىڭ","مىندىڭىز","مىندۇق"]},
+  {question: "بوۋاق كارىۋاتتا — ياتماق", translation: "The infant [lay down] on the bed.", answer: "ياتتى", options: ["ياتتى","ياتتىڭ","ياتتىڭىز","ياتتۇق"]}
+];
+
+let shuffledQuestions, currentIndex, score;
+
+function shuffleArray(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function startGame() {
+  shuffledQuestions = shuffleArray([...quizData]);
+  currentIndex = 0;
+  score = 0;
+  document.getElementById('score').textContent = '';
+  document.getElementById('restart').style.display = 'none';
+  showQuestion();
+}
+
+function showQuestion() {
+  if(currentIndex >= shuffledQuestions.length){
+    document.getElementById('quiz-container').style.display = 'none';
+    document.getElementById('score').textContent = `Game Over! Your score: ${score} / ${shuffledQuestions.length}`;
+    document.getElementById('restart').style.display = 'inline-block';
+    return;
+  }
+  const q = shuffledQuestions[currentIndex];
+  document.getElementById('quiz-container').style.display = 'block';
+  
+  // Show question + translation
+  document.getElementById('question').innerHTML = 
+    `Q${currentIndex+1}: ${q.question}<br><small style="color:#555; font-size:16px;">${q.translation}</small>`;
+  
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+  
+  shuffleArray(q.options).forEach(opt => {
+    const btn = document.createElement('button');
+    btn.textContent = opt;
+    btn.onclick = () => handleAnswer(btn, opt, q.answer);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+function handleAnswer(button, selected, correct){
+  const allButtons = document.querySelectorAll('.options button');
+  allButtons.forEach(btn => btn.disabled = true); // disable all after click
+  
+  if(selected === correct){
+    button.classList.add('correct');
+    score++;
+  } else {
+    button.classList.add('wrong');
+    // highlight correct button
+    allButtons.forEach(btn => {
+      if(btn.textContent === correct) btn.classList.add('correct');
+    });
+  }
+  
+  currentIndex++;
+  // move to next question after 1.2 seconds
+  setTimeout(() => showQuestion(), 1200);
+}
+
+startGame();
+</script>
+
+</body>
+</html>
