@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Uyghur → English Vocabulary Quiz</title>
+
+<style>
+@font-face {
+  font-family: "ALKATIP Asliya";
+  src: url("https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPAsliya.TTF")
+       format("truetype");
+}
+
+/* ---------- GLOBAL ---------- */
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+/* ---------- CARD ---------- */
+.quiz-box {
+  background: #ffffff;
+  width: 520px;
+  max-width: 95%;
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  text-align: center;
+}
+
+/* ---------- HEADER ---------- */
+.quiz-box h1 {
+  margin: 0 0 12px;
+  font-size: 26px;
+  color: #1e293b;
+}
+
+/* ---------- QUESTION ---------- */
+.question {
+  font-family: "ALKATIP Asliya", serif;
+  font-size: 36px;
+  direction: rtl;
+  margin: 20px 0 26px;
+  color: #0f172a;
+}
+
+/* ---------- CHOICES ---------- */
+.choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.choice {
+  padding: 14px;
+  font-size: 17px;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.choice:hover {
+  transform: translateY(-2px);
+  border-color: #2563eb;
+  background: #eef2ff;
+}
+
+/* ---------- FEEDBACK STATES ---------- */
+.correct {
+  background: #dcfce7 !important;
+  border-color: #22c55e !important;
+  color: #14532d;
+}
+
+.wrong {
+  background: #fee2e2 !important;
+  border-color: #ef4444 !important;
+  color: #7f1d1d;
+}
+
+/* ---------- FEEDBACK TEXT ---------- */
+.feedback {
+  margin-top: 18px;
+  font-size: 18px;
+  min-height: 26px;
+  font-weight: 600;
+}
+
+/* ---------- SCORE ---------- */
+.score {
+  margin-top: 8px;
+  font-size: 15px;
+  color: #334155;
+}
+
+/* ---------- BUTTON ---------- */
+button {
+  margin-top: 18px;
+  padding: 12px 22px;
+  font-size: 16px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37,99,235,0.45);
+}
+</style>
+</head>
+
+<body>
+
+<div class="quiz-box">
+  <h1>Uyghur Vocabulary Quiz</h1>
+  <div class="question" id="question"></div>
+  <div class="choices" id="choices"></div>
+  <div class="feedback" id="feedback"></div>
+  <div class="score" id="score"></div>
+  <button onclick="nextQuestion()">Next</button>
+</div>
+
+<script>
+const vocab = [
+  ["to set out","ئاتلانماق"], ["lion cub","ئارسلان"], ["graduate student","ئاسپرانت"],
+  ["primary school","باشلانغۇچ مەكتەپ"], ["boss","باشلىق"], ["holiday","بايرام"],
+  ["storm","بوران"], ["infant","بوۋاق"], ["old man","بوۋاي"], ["vacation","تەتىل"],
+  ["interpreter","تەرجىمان"], ["wedding","توي"], ["to marry","توي قىلماق"],
+  ["to be born","تۇغۇلماق"], ["first","تۇنجى"], ["camel","تۆگە"],
+  ["life; people","جان"], ["desert","چۆل"], ["job","خىزمەت"], ["field","دالا"],
+  ["slope","داۋان"], ["Ph.D.","دوكتور"], ["picture","رەسىم"], ["journey","سەپەر"],
+  ["to slaughter","سويماق"], ["to leave","قالدۇرماق"], ["grave","قەبرە"],
+  ["uprising","قوزغىلاڭ"], ["sand","قۇم"], ["to blush","قىزارماق"],
+  ["caravan","كارۋان"], ["to laugh","كۈلمەك"], ["I.D.","كىملىك"],
+  ["mahjong","ماجاڭ"], ["destination","مەنزىل"], ["old woman","موماي"],
+  ["stable; permanent","مۇقىم"], ["difficult","مۈشكۈل"], ["to ride","مىنمەك"],
+  ["prayer, worship","ناماز"], ["to be printed","نەشىردىن چىقماق"],
+  ["number","نومۇر"], ["short story","ھېكايە"], ["Eid","ھېيت"],
+  ["middle school","ئوتتۇرا مەكتەپ"], ["to enroll in a school","ئوقۇشقا كىرمەك"],
+  ["long","ئۇزۇن"], ["degree","ئۇنۋان"], ["homeland","ۋەتەن"],
+  ["to announce","ئېلان قىلماق"], ["trace","ئىز"], ["to lie down","ياتماق"],
+  ["age; young","ياش"], ["to visit","يوقلىماق"], ["tamarisk tree","يۇلغۇن"],
+  ["young man","يىگىت"]
+];
+
+let current, score = 0, total = 0, answered = false;
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+function nextQuestion() {
+  answered = false;
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("choices").innerHTML = "";
+
+  current = vocab[Math.floor(Math.random() * vocab.length)];
+  document.getElementById("question").textContent = current[1];
+
+  const correct = current[0];
+  const wrong = shuffle(vocab.filter(v => v[0] !== correct)).slice(0, 3);
+  const options = shuffle([correct, ...wrong.map(v => v[0])]);
+
+  options.forEach(opt => {
+    const div = document.createElement("div");
+    div.className = "choice";
+    div.textContent = opt;
+    div.onclick = () => selectAnswer(div, opt === correct);
+    document.getElementById("choices").appendChild(div);
+  });
+}
+
+function selectAnswer(el, correct) {
+  if (answered) return;
+  answered = true;
+  total++;
+
+  if (correct) {
+    score++;
+    el.classList.add("correct");
+    document.getElementById("feedback").textContent = "✅ Correct";
+  } else {
+    el.classList.add("wrong");
+    document.getElementById("feedback").textContent = "❌ Incorrect";
+    document.querySelectorAll(".choice").forEach(c => {
+      if (c.textContent === current[0]) c.classList.add("correct");
+    });
+  }
+
+  document.getElementById("score").textContent = `Score: ${score} / ${total}`;
+}
+
+nextQuestion();
+</script>
+
+</body>
+</html>
