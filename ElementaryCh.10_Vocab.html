@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uyghur Vocabulary Canvas Game</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+  @font-face {
+    font-family: 'ALKATIP Asliya';
+    src: url('https://raw.githubusercontent.com/Uyghur-coder/Uyghur-alphabet-games/main/fonts/ALKATIPAsliya.TTF') format('truetype');
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+  }
+
+  h1 {
+    margin-top: 30px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(18px);
+    border-radius: 28px;
+    padding: 20px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+    margin-top: 20px;
+  }
+
+  canvas {
+    border-radius: 20px;
+    background: linear-gradient(180deg, #ffffff, #f4f6ff);
+  }
+
+  .footer {
+    margin-top: 20px;
+    opacity: 0.8;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Uyghur Vocabulary Trainer</h1>
+
+<div class="card">
+  <canvas id="gameCanvas" width="720" height="480"></canvas>
+</div>
+
+<div class="footer">Click the correct meaning • Build your score • Learn Uyghur faster</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+const vocab = [
+  {u:"ئالما", e:"apple"},
+  {u:"ئانار", e:"pomegranate"},
+  {u:"بانان", e:"banana"},
+  {u:"پىياز", e:"onion"},
+  {u:"تاۋۇز", e:"watermelon"},
+  {u:"تۇخۇم", e:"egg"},
+  {u:"سۈت", e:"milk"},
+  {u:"سېرىق ماي", e:"butter"},
+  {u:"شېكەر", e:"sugar"},
+  {u:"ھەسەل", e:"honey"},
+  {u:"گۆش", e:"meat"},
+  {u:"گۈرۈچ", e:"rice"},
+  {u:"كۆكتات", e:"vegetable"},
+  {u:"كاپۇستا", e:"cabbage"},
+  {u:"كاۋا", e:"pumpkin"},
+  {u:"ياڭيۇ", e:"potato"},
+  {u:"بۆلجۈرگەن", e:"strawberry"},
+  {u:"شاپتۇل", e:"peach"},
+  {u:"ئۈزۈم", e:"grape"}
+];
+
+let score = 0;
+let question;
+let choices = [];
+let message = "Choose the correct English meaning";
+let selectedIndex = -1;
+let feedbackState = null; // 'correct' or 'wrong'
+let feedbackTimer = 0;
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function newQuestion() {
+  question = vocab[Math.floor(Math.random() * vocab.length)];
+  let wrong = vocab.filter(v => v.e !== question.e);
+  shuffle(wrong);
+  choices = [question.e, wrong[0].e, wrong[1].e, wrong[2].e];
+  shuffle(choices);
+  selectedIndex = -1;
+  feedbackState = null;
+}
+
+function drawRoundedRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Score badge
+  ctx.fillStyle = '#4f46e5';
+  drawRoundedRect(20, 20, 140, 50, 16);
+  ctx.fill();
+  ctx.fillStyle = 'white';
+  ctx.font = '600 20px Inter';
+  ctx.fillText('Score: ' + score, 35, 52);
+
+  // Title
+  ctx.fillStyle = '#111827';
+  ctx.font = '600 26px Inter';
+  ctx.fillText('Uyghur Word', 20, 120);
+
+  // Uyghur word display
+  ctx.fillStyle = '#111827';
+  ctx.font = '56px "ALKATIP Asliya"';
+  ctx.direction = 'rtl';
+  ctx.fillText(question.u, canvas.width - 40, 190);
+  ctx.direction = 'ltr';
+
+  // Message
+  ctx.fillStyle = '#374151';
+  ctx.font = '18px Inter';
+  ctx.fillText(message, 20, 230);
+
+  // Choices
+  for (let i = 0; i < choices.length; i++) {
+    let x = 40;
+    let y = 270 + i * 62; // adjusted spacing
+
+    let bg = 'white';
+
+    if (feedbackState && i === selectedIndex) {
+      if (feedbackState === 'correct') bg = '#d1fae5';
+      if (feedbackState === 'wrong') bg = '#fee2e2';
+    }
+
+    if (feedbackState === 'wrong' && choices[i] === question.e) {
+      bg = '#d1fae5'; // show correct answer in green
+    }
+
+    ctx.fillStyle = bg;
+    drawRoundedRect(x, y - 36, 640, 52, 18);
+    ctx.fill();
+
+    ctx.fillStyle = '#111827';
+    ctx.font = '500 22px Inter';
+    ctx.fillText(choices[i], x + 20, y);
+  }
+
+  if (feedbackTimer > 0) {
+    feedbackTimer--;
+    if (feedbackTimer === 0) {
+      newQuestion();
+      message = 'Choose the correct English meaning';
+    }
+  }
+}
+
+canvas.addEventListener('click', function(e) {
+  if (feedbackTimer > 0) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const mouseY = e.clientY - rect.top;
+
+  for (let i = 0; i < choices.length; i++) {
+    let y = 270 + i * 62;
+    if (mouseY > y - 36 && mouseY < y + 16) {
+      selectedIndex = i;
+
+      if (choices[i] === question.e) {
+        score++;
+        message = 'Correct ✓';
+        feedbackState = 'correct';
+      } else {
+        message = 'Incorrect';
+        feedbackState = 'wrong';
+      }
+
+      feedbackTimer = 60;
+      break;
+    }
+  }
+});
+
+newQuestion();
+
+function gameLoop() {
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+</script>
+
+</body>
+</html>
