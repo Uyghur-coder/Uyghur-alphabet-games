@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementary Uyghur: Chapter 11 Vocabulary</title>
+<style>
+@font-face {
+    font-family: 'ALKATIP';
+    src: url('fonts/ALKATIPAsliya.ttf') format('truetype');
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f0f2f5, #d9e2ec);
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+    color: #2c3e50;
+}
+
+.app {
+    background: #ffffff;
+    width: 100%;
+    max-width: 650px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+}
+
+h1 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.nav {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.nav button {
+    background: #1abc9c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: 500;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.nav button:hover {
+    background: #16a085;
+}
+
+.uyghur {
+    font-family: 'ALKATIP';
+    font-size: 2.1rem;
+    text-align: center;
+    margin: 25px 0;
+    color: black; /* <-- make Uyghur words black */
+}
+
+.options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+button.option-btn {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #eaf6f4;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button.option-btn:hover {
+    background: #c3ede7;
+}
+
+.hud {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+#hearts {
+    color: #e74c3c;
+}
+
+#feedback {
+    text-align: center;
+    margin-top: 12px;
+    font-weight: 500;
+}
+
+.correct {
+    color: #1abc9c;
+}
+
+.wrong {
+    color: #e74c3c;
+}
+
+#nextBtn {
+    background: #1abc9c;
+    color: white;
+    margin-top: 15px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+#nextBtn:hover {
+    background: #16a085;
+}
+
+.progress-bar {
+    background: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 20px;
+    background: #1abc9c;
+    width: 0%;
+    transition: width 0.4s ease;
+}
+
+#dashboard h2 {
+    text-align: center;
+    font-weight: 600;
+}
+
+#achievements div {
+    padding: 6px 0;
+}
+
+.hidden {
+    display: none;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+<h1>Elementary Uyghur: Chapter 11 Vocabulary</h1>
+
+<div class="nav">
+    <button onclick="showQuiz()">Practice</button>
+    <button onclick="showDashboard()">Dashboard</button>
+</div>
+
+<div id="quiz">
+    <div class="hud">
+        XP: <span id="xp">0</span> |
+        Level: <span id="level">1</span> |
+        🔥 <span id="streak">0</span> |
+        <span id="hearts">❤️❤️❤️</span> |
+        Score: <span id="sessionScore">0</span>/<span id="totalQuestions">0</span>
+    </div>
+
+    <div id="word" class="uyghur"></div>
+
+    <div id="options" class="options"></div>
+
+    <div id="feedback"></div>
+
+    <button id="nextBtn" class="hidden" onclick="generateQuestion()">Next Question</button>
+    <button id="resetBtn" onclick="resetSession()" style="margin-top:10px;">Start New Session</button>
+</div>
+
+<div id="dashboard" class="hidden">
+    <h2>📊 Dashboard</h2>
+    <p><strong>Daily Goal</strong></p>
+    <div class="progress-bar">
+        <div id="dailyFill" class="progress-fill"></div>
+    </div>
+    <p id="dailyText"></p>
+    <h3>Achievements</h3>
+    <div id="achievements"></div>
+</div>
+
+</div>
+
+<script>
+// ---- Data ----
+const DAILY_GOAL = 50;
+const vocab = [ { u: "ئاشپەز", e: "cook, chef" }, { u: "ئاشخانا", e: "restaurant" }, { u: "ئاڭلىماق", e: "to listen; to hear" }, { u: "ئالماق", e: "to take" }, { u: "ئەتمەك", e: "to cook; to make" }, { u: "ئەدەب", e: "politeness" }, { u: "ئەقىل", e: "wisdom; smarts" }, { u: "بارماق", e: "to go; finger" }, { u: "بەخت", e: "happiness" }, { u: "بوش", e: "soft; empty" }, { u: "بوغالتىر", e: "accountant" }, { u: "بىرلەڭ", e: "unity" }, { u: "پۇرسەت", e: "opportunity" }, { u: "پۈتتۈرمەك", e: "to finish" }, { u: "پېداگوگىكا", e: "pedagogy" }, { u: "پىششىق", e: "cooked; ripe; fluent" }, { u: "پىشۇرماق", e: "to cook" }, { u: "پىلتە", e: "dough stick" }, { u: "تائام", e: "food" }, { u: "تالانت", e: "talent" }, { u: "تاللاش", e: "to select" }, { u: "تاماق", e: "food" }, { u: "تەجرىبىلىك", e: "experienced" }, { u: "تەربىيىلەش", e: "to educate" }, { u: "تەم", e: "taste" }, { u: "تونۇر", e: "tandoor oven" }, { u: "تۇزلۇق", e: "salty" }, { u: "تۆلىمەك", e: "to pay" }, { u: "تۈر", e: "kind" }, { u: "تىندۇرماق", e: "to pause" }, { u: "جارى قىلدۇرماق", e: "carry forward" }, { u: "جىددىي", e: "serious, stern, urgent" }, { u: "چارەك", e: "one-fourth" }, { u: "چامغۇر", e: "turnip" }, { u: "چۆچۈرە", e: "small soup dumpling" }, { u: "خېمىر", e: "dough" }, { u: "دەسلەپكى", e: "initial, first" }, { u: "دېمەك", e: "to say" }, { u: "زۇۋۇلا", e: "dough bit" }, { u: "سامساق", e: "garlic" }, { u: "ساياھەت", e: "travel" }, { u: "سودا", e: "trade; business" }, { u: "سوزماق", e: "to stretch" }, { u: "سوغۇق", e: "cold" }, { u: "سۆزلىمەك", e: "to speak" }, { u: "شاكىلات", e: "chocolate" }, { u: "شەربەت", e: "juice" }, { u: "شورپا", e: "soup" }, { u: "شىركەت", e: "corporation" }, { u: "غەنىمەت", e: "precious; booty" }, { u: "قايناتماق", e: "to boil" }, { u: "قاينىماق", e: "to be boiled" }, { u: "قورۇما", e: "name of dish; stir fry" }, { u: "قۇۋۋەتلىك", e: "nutritious; powerful" }, { u: "قىشلىق", e: "winter" }, { u: "كۇرس", e: "course" }, { u: "كۆچمەك", e: "to move" }, { u: "كۆرمەك", e: "to see" }, { u: "كۆل", e: "lake" }, { u: "كۈتكۈچى", e: "waiter" }, { u: "كۈچلۈك", e: "strong" }, { u: "گۇۋاھنامە", e: "certificate" }, { u: "لازا/مۇچ", e: "pepper" }, { u: "لازىم/كېرەك", e: "need" }, { u: "لاياقەت", e: "qualification" }, { u: "ماركا", e: "make, brand" }, { u: "مازار", e: "tomb" }, { u: "ماگىزىن", e: "shop" }, { u: "مۇز", e: "ice" }, { u: "مىللىي", e: "national" }, { u: "نۇرلۇق", e: "shining" }, { u: "ھاۋا", e: "air, weather" }, { u: "ئوزۇقلۇق قىممىتى", e: "nutritional value" }, { u: "ئۇسسىماق", e: "to be thirsty" }, { u: "ئۆملۈك", e: "unity, communality" }, { u: "ئۆمۈرلۈك", e: "life-long" }, { u: "ۋەقە", e: "accident" }, { u: "ئېيتماق", e: "to tell" }, { u: "ئىچمەك", e: "to drink" }, { u: "ياردەم", e: "help" }, { u: "يازلىق", e: "summer" }, { u: "ياشىماق", e: "to live" }, { u: "يۇرت", e: "hometown" }, { u: "يۇقۇرى", e: "high" }, { u: "يۇلتۇز", e: "star" }, { u: "يېتەكچى", e: "guide" }, { u: "يېرىم", e: "half" } ];
+
+// ---- State ----
+let xp = parseInt(localStorage.getItem("xp"))||0;
+let level = parseInt(localStorage.getItem("level"))||1;
+let streak = 0;
+let hearts = 3;
+
+let todayXP = parseInt(localStorage.getItem("todayXP"))||0;
+let lastDate = localStorage.getItem("lastDate")||new Date().toDateString();
+if(lastDate!==new Date().toDateString()){ todayXP=0; localStorage.setItem("lastDate", new Date().toDateString()); }
+
+let srs = JSON.parse(localStorage.getItem("srs"))||{};
+vocab.forEach(w=>{ if(!srs[w.u]) srs[w.u]={interval:0,reps:0,ease:2.5,next:Date.now()}; });
+
+let currentWord=null;
+let sessionScore=0;
+let totalQuestions=0;
+
+// ---- Functions ----
+function save(){
+    localStorage.setItem("xp", xp);
+    localStorage.setItem("level", level);
+    localStorage.setItem("todayXP", todayXP);
+    localStorage.setItem("srs", JSON.stringify(srs));
+}
+
+function updateHUD(){
+    document.getElementById("xp").innerText = xp;
+    document.getElementById("level").innerText = level;
+    document.getElementById("streak").innerText = streak;
+    document.getElementById("hearts").innerText = "❤️".repeat(hearts);
+    document.getElementById("sessionScore").innerText = sessionScore;
+    document.getElementById("totalQuestions").innerText = totalQuestions;
+}
+
+function dueWords(){ return vocab.filter(w=>srs[w.u].next<=Date.now()); }
+
+function generateQuestion(){
+    if(hearts<=0){gameOver(); return;}
+    let due = dueWords();
+    if(due.length===0){
+        document.getElementById("word").innerText="No words due today 🌱";
+        document.getElementById("options").innerHTML="";
+        return;
+    }
+    currentWord = due[Math.floor(Math.random()*due.length)];
+    document.getElementById("word").innerText = currentWord.u;
+    document.getElementById("feedback").innerHTML="";
+    document.getElementById("nextBtn").classList.add("hidden");
+
+    let opts=[currentWord.e];
+    while(opts.length<4){
+        let r=vocab[Math.floor(Math.random()*vocab.length)].e;
+        if(!opts.includes(r)) opts.push(r);
+    }
+    opts.sort(()=>Math.random()-0.5);
+
+    let container = document.getElementById("options");
+    container.innerHTML = "";
+    opts.forEach(o=>{
+        let b=document.createElement("button");
+        b.classList.add("option-btn");
+        b.style.direction="ltr";
+        b.innerText=o;
+        b.onclick = ()=>checkAnswer(o);
+        container.appendChild(b);
+    });
+}
+
+function updateSRS(correct){
+    let d = srs[currentWord.u];
+    if(correct){
+        d.reps++;
+        d.interval = d.reps===1?1:d.reps===2?3:Math.round(d.interval*d.ease);
+        d.ease += 0.1;
+    } else { d.reps=0; d.interval=1; d.ease = Math.max(1.3,d.ease-0.2); }
+    d.next = Date.now() + d.interval*86400000;
+}
+
+function checkAnswer(ans){
+    let correct = ans===currentWord.e;
+    document.querySelectorAll(".option-btn").forEach(b=>b.disabled=true);
+    totalQuestions++;
+
+    if(correct){
+        xp+=10; todayXP+=10; streak++; sessionScore++;
+        if(xp>=level*100) level++;
+        document.getElementById("feedback").innerHTML="<span class='correct'>Correct! +10 XP</span>";
+    } else {
+        hearts--; streak=0;
+        document.getElementById("feedback").innerHTML="<span class='wrong'>Wrong! "+currentWord.e+"</span>";
+    }
+    updateSRS(correct);
+    save();
+    updateHUD();
+    document.getElementById("nextBtn").classList.remove("hidden");
+}
+
+function getGrade(){
+    if(totalQuestions===0) return "N/A";
+    let percent = (sessionScore/totalQuestions)*100;
+    if(percent>=90) return "A";
+    if(percent>=80) return "B";
+    if(percent>=70) return "C";
+    if(percent>=60) return "D";
+    return "F";
+}
+
+function gameOver(){
+    document.getElementById("word").innerText="Game Over 💀";
+    document.getElementById("options").innerHTML="";
+    let grade = getGrade();
+    document.getElementById("feedback").innerHTML = `Your grade: <strong>${grade}</strong> (${sessionScore}/${totalQuestions})`;
+}
+
+function resetSession(){
+    sessionScore=0; totalQuestions=0; hearts=3; streak=0;
+    updateHUD(); generateQuestion();
+    document.getElementById("feedback").innerHTML="";
+}
+
+function showDashboard(){
+    document.getElementById("quiz").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+    let percent = Math.min((todayXP/DAILY_GOAL)*100,100);
+    document.getElementById("dailyFill").style.width = percent+"%";
+    document.getElementById("dailyText").innerText = todayXP+" / "+DAILY_GOAL+" XP";
+
+    let achievements=[
+        {name:"First XP 🌱", cond:xp>=10},
+        {name:"Streak 5 🔥", cond:streak>=5},
+        {name:"Level 5 🏆", cond:level>=5},
+        {name:"XP 200 ⚡", cond:xp>=200}
+    ];
+    let list=document.getElementById("achievements");
+    list.innerHTML="";
+    achievements.forEach(a=>{
+        let div=document.createElement("div");
+        div.innerText=(a.cond?"✅ ":"⬜ ")+a.name;
+        list.appendChild(div);
+    });
+}
+
+function showQuiz(){
+    document.getElementById("dashboard").classList.add("hidden");
+    document.getElementById("quiz").classList.remove("hidden");
+}
+
+// ---- Init ----
+updateHUD();
+generateQuestion();
+</script>
+
+</body>
+</html>
