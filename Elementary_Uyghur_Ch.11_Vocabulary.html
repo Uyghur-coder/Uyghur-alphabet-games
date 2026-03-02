@@ -237,11 +237,9 @@ function dueWords(){ return vocab.filter(w=>srs[w.u].next<=Date.now()); }
 function generateQuestion(){
     if(hearts<=0){gameOver(); return;}
     let due = dueWords();
-    if(due.length===0){
-        document.getElementById("word").innerText="No words due today 🌱";
-        document.getElementById("options").innerHTML="";
-        return;
-    }
+if(due.length===0){
+    due = vocab; // fallback so practice always continues
+}
     currentWord = due[Math.floor(Math.random()*due.length)];
     document.getElementById("word").innerText = currentWord.u;
     document.getElementById("feedback").innerHTML="";
